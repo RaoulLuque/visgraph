@@ -4,3 +4,5 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+petgraph = "0.8.3"
+resvg = { version = "0.45.1", features = ["text", "system-fonts"] }
