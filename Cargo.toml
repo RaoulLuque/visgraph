@@ -6,3 +6,10 @@ edition = "2024"
 [dependencies]
 petgraph = "0.8.3"
 resvg = { version = "0.45.1", features = ["text", "system-fonts"] }
+
+[dev-dependencies]
+criterion = { version = "0.7.0", features = ["html_reports"] }
+
+[[bench]]
+name = "graph_to_svg"
+harness = false
