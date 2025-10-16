@@ -1,7 +1,15 @@
 [package]
 name = "visgraph"
 version = "0.1.0"
-edition = "2024"
+readme = "README.md"
+license = "MIT OR Apache-2.0"
+
+description = "A library to convert graphs to images"
+documentation = "https://docs.rs/visgraph"
+repository = "https://github.com/raoulluque/visgraph"
+
+rust-version = "1.67.1"
+edition = "2021"
 
 [dependencies]
 petgraph = "0.8.3"
