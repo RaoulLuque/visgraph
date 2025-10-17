@@ -1,8 +1,8 @@
-use visgraph::Settings;
+use visgraph::settings::Settings;
 
 fn main() {
     let mut graph = petgraph::Graph::<&str, &str>::new();
-    let node_a = graph.add_node("A");
+    let node_a = graph.add_node("ABCDEDF");
     let node_b = graph.add_node("B");
     let node_c = graph.add_node("C");
     let node_d = graph.add_node("D");

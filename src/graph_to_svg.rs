@@ -2,10 +2,8 @@ use petgraph::visit::{
     EdgeIndexable, EdgeRef, IntoEdgeReferences, IntoNodeReferences, NodeIndexable, NodeRef,
 };
 
-use crate::{
-    layout::{self, Layout},
-    Settings,
-};
+use crate::layout::{self, Layout};
+use crate::settings::Settings;
 
 const EDGE_CLOSENESS_THRESHOLD: f32 = 0.001;
 
@@ -23,35 +21,37 @@ where
     let mut svg_buffer = String::with_capacity(graph.node_bound() * 120 + graph.edge_bound() * 50);
     svg_buffer.push_str(&format!(
         r#"<svg width="{}" height="{}" xmlns="http://www.w3.org/2000/svg">"#,
-        settings.width, settings.height
+        settings.width(),
+        settings.height()
     ));
 
     for node in graph.node_references() {
         let id = node.id();
-        let (coord_x, coord_y) = position_map(id);
+        let (scaled_x, scaled_y) = scale(position_map(id), &settings);
         let node_label = label_map(id);
         draw_node(
             &mut svg_buffer,
-            coord_x,
-            coord_y,
+            scaled_x,
+            scaled_y,
             &node_label,
-            settings.radius,
-            settings.font_size,
+            settings.radius(),
+            settings.font_size(),
         );
     }
 
     for edge in graph.edge_references() {
         let source = edge.source();
         let target = edge.target();
-        let (coord_x_source, coord_y_source) = position_map(source);
-        let (coord_x_target, coord_y_target) = position_map(target);
+        let (scaled_x_source, scaled_y_source) = scale(position_map(source), &settings);
+        let (scaled_x_target, scaled_y_target) = scale(position_map(target), &settings);
+
         draw_edge(
             &mut svg_buffer,
-            coord_x_source,
-            coord_y_source,
-            coord_x_target,
-            coord_y_target,
-            settings.radius,
+            scaled_x_source,
+            scaled_y_source,
+            scaled_x_target,
+            scaled_y_target,
+            settings.radius(),
         );
     }
 
@@ -129,4 +129,17 @@ fn draw_edge(
         "   <line x1=\"{}\" y1=\"{}\" x2=\"{}\" y2=\"{}\" stroke=\"black\"/>\n",
         start_x, start_y, end_x, end_y
     ));
+}
+
+fn scale((normalized_x, normalized_y): (f32, f32), settings: &Settings) -> (f32, f32) {
+    let margin_x = settings.margin_x();
+    let margin_y = settings.margin_y();
+
+    let margin_adjusted_normalized_x = margin_x + normalized_x * (1.0 - 2.0 * margin_x);
+    let margin_adjusted_normalized_y = margin_y + normalized_y * (1.0 - 2.0 * margin_y);
+
+    let scaled_x = margin_adjusted_normalized_x * settings.width();
+    let scaled_y = margin_adjusted_normalized_y * settings.height();
+
+    (scaled_x, scaled_y)
 }

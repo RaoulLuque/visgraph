@@ -2,7 +2,8 @@ use std::path::Path;
 
 use resvg::{render, tiny_skia};
 
-use crate::{errors::SvgToImageError, Settings};
+use crate::errors::SvgToImageError;
+use crate::settings::Settings;
 
 pub fn parse_svg_to_img<P>(
     svg_data: &str,
@@ -16,14 +17,15 @@ where
     let mut opt = resvg::usvg::Options::default();
     opt.fontdb_mut().load_system_fonts();
     opt.default_size =
-        resvg::usvg::Size::from_wh(settings.width, settings.height).ok_or_else(|| {
-            SvgToImageError::ProvidedDimensionsAreZero((settings.width, settings.height))
+        resvg::usvg::Size::from_wh(settings.width(), settings.height()).ok_or_else(|| {
+            SvgToImageError::ProvidedDimensionsAreZero((settings.width(), settings.height()))
         })?;
 
     let svg_tree = resvg::usvg::Tree::from_data(svg_data.as_bytes(), &opt)?;
 
     // Render to pixmap
-    let mut pixmap = tiny_skia::Pixmap::new(settings.width as u32, settings.height as u32).unwrap();
+    let mut pixmap =
+        tiny_skia::Pixmap::new(settings.width() as u32, settings.height() as u32).unwrap();
     render(
         &svg_tree,
         tiny_skia::Transform::identity(),

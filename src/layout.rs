@@ -13,8 +13,8 @@ where
     move |node_id| {
         let index = graph.to_index(node_id) as f32;
         let angle = index / node_count * std::f32::consts::TAU;
-        let x = 150.0 + 100.0 * angle.cos();
-        let y = 150.0 + 100.0 * angle.sin();
+        let x = 0.5 + 0.5 * angle.cos();
+        let y = 0.5 + 0.5 * angle.sin();
         (x, y)
     }
 }
