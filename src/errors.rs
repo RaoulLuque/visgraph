@@ -5,6 +5,7 @@ use std::{error::Error, fmt::Display};
 pub enum SvgToImageError {
     SVGParserError(UsvgError),
     ProvidedDimensionsAreZero((f32, f32)),
+    PNGEncodingError(Box<dyn Error + Send + Sync>),
 }
 
 impl Display for SvgToImageError {
@@ -17,6 +18,9 @@ impl Display for SvgToImageError {
                     "Provided dimensions are not non-zero and thus invalid: width={}, height={}",
                     w, h
                 )
+            }
+            SvgToImageError::PNGEncodingError(e) => {
+                write!(f, "PNG encoding error: {}", e)
             }
         }
     }

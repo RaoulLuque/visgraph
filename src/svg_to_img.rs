@@ -1,12 +1,18 @@
+use std::path::Path;
+
 use resvg::{render, tiny_skia};
 
 use crate::errors::SvgToImageError;
 
-pub fn parse_svg_to_img(
+pub fn parse_svg_to_img<P>(
     svg_data: &str,
     width: f32,
     height: f32,
-) -> Result<tiny_skia::Pixmap, SvgToImageError> {
+    path: P,
+) -> Result<(), SvgToImageError>
+where
+    P: AsRef<Path>,
+{
     // Setup usvg options
     let mut opt = resvg::usvg::Options::default();
     opt.fontdb_mut().load_system_fonts();
@@ -22,5 +28,9 @@ pub fn parse_svg_to_img(
         tiny_skia::Transform::identity(),
         &mut pixmap.as_mut(),
     );
-    Ok(pixmap)
+    pixmap
+        .save_png(path)
+        .map_err(|e| SvgToImageError::PNGEncodingError(Box::new(e)))?;
+
+    Ok(())
 }

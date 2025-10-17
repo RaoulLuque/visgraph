@@ -14,6 +14,5 @@ fn main() {
         |node_id| graph.node_weight(node_id).unwrap().to_string(),
     );
 
-    let pixmap = visgraph::parse_svg_to_img(&svg_data, 1000.0, 1000.0).unwrap();
-    pixmap.save_png("graph.png").unwrap();
+    visgraph::parse_svg_to_img(&svg_data, 1000.0, 1000.0, "graph.png").unwrap();
 }
