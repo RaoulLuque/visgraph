@@ -1,7 +1,7 @@
 mod common;
 use common::build_2d_grid;
 
-use criterion::{Criterion, criterion_group, criterion_main};
+use criterion::{criterion_group, criterion_main, Criterion};
 use visgraph;
 
 fn graph_to_svg_benchmark(c: &mut Criterion) {
@@ -9,7 +9,7 @@ fn graph_to_svg_benchmark(c: &mut Criterion) {
 
     c.bench_function("graph_to_svg", |b| {
         b.iter(|| {
-            visgraph::graph_to_svg(
+            visgraph::graph_to_svg_with_positions(
                 &graph,
                 |node_id| {
                     let (x, y) = *graph.node_weight(node_id).unwrap();
