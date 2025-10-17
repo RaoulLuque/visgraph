@@ -21,7 +21,10 @@ where
     FnLabel: Fn(G::NodeId) -> String,
 {
     let mut svg_buffer = String::with_capacity(graph.node_bound() * 120 + graph.edge_bound() * 50);
-    svg_buffer.push_str(&format!(r#"<svg width="{}" height="400" xmlns="http://www.w3.org/2000/svg">"#, settings.radius * 2.0));
+    svg_buffer.push_str(&format!(
+        r#"<svg width="{}" height="{}" xmlns="http://www.w3.org/2000/svg">"#,
+        settings.width, settings.height
+    ));
 
     for node in graph.node_references() {
         let id = node.id();
