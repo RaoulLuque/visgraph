@@ -2,7 +2,7 @@ use petgraph::visit::{
     EdgeIndexable, EdgeRef, IntoEdgeReferences, IntoNodeReferences, NodeIndexable, NodeRef,
 };
 
-use crate::layout::Layout;
+use crate::layout::{self, Layout};
 
 const RADIUS: f32 = 20.0;
 const FONT_SIZE: f32 = 14.0;
@@ -53,36 +53,11 @@ where
 {
     match layout {
         Layout::Circular => {
-            let node_count = graph.node_references().count() as f32;
-            let position_map = move |node_id| {
-                let index = NodeIndexable::to_index(&graph, node_id) as f32;
-                let angle = index / node_count * std::f32::consts::TAU;
-                let x = 150.0 + 100.0 * angle.cos();
-                let y = 150.0 + 100.0 * angle.sin();
-                (x, y)
-            };
-
+            let position_map = layout::get_circular_position_map(&graph);
             graph_to_svg_with_positions(graph, position_map, label_map)
         }
         Layout::Hierarchical => {
-            let mut levels: Vec<Vec<G::NodeId>> = Vec::new();
-            for node in graph.node_references() {
-                let level = NodeIndexable::to_index(&graph, node.id()) / 2;
-                if levels.len() <= level {
-                    levels.push(Vec::new());
-                }
-                levels[level].push(node.id());
-            }
-            let position_map = move |node_id| {
-                let index = NodeIndexable::to_index(&graph, node_id);
-                let level = index / 2;
-                let position_in_level = levels[level].iter().position(|&id| id == node_id).unwrap();
-                let nodes_in_level = levels[level].len();
-                let x = 50.0 + (position_in_level as f32) * (200.0 / (nodes_in_level as f32));
-                let y = 50.0 + (level as f32) * 100.0;
-                (x, y)
-            };
-
+            let position_map = layout::get_hierarchical_position_map(&graph);
             graph_to_svg_with_positions(graph, position_map, label_map)
         }
     }
