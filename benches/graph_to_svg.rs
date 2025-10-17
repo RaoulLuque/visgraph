@@ -16,6 +16,7 @@ fn graph_to_svg_benchmark(c: &mut Criterion) {
                     (x as f32, y as f32)
                 },
                 |node_id| format!("{:?}", graph.node_weight(node_id).unwrap()),
+                visgraph::settings::Settings::default(),
             )
         })
     });
