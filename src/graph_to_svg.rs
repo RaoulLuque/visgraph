@@ -6,6 +6,7 @@ use crate::layout::Layout;
 
 const RADIUS: f32 = 20.0;
 const FONT_SIZE: f32 = 14.0;
+const EDGE_CLOSENESS_THRESHOLD: f32 = 0.001;
 
 pub fn graph_to_svg_with_positions<G, FnPos, FnLabel>(
     graph: G,
@@ -20,7 +21,6 @@ where
     let mut svg_buffer = String::with_capacity(graph.node_bound() * 120 + graph.edge_bound() * 50);
     svg_buffer.push_str(r#"<svg width="300" height="200" xmlns="http://www.w3.org/2000/svg">"#);
 
-    // Add nodes
     for node in graph.node_references() {
         let id = node.id();
         let (coord_x, coord_y) = position_map(id);
@@ -28,7 +28,6 @@ where
         draw_node(&mut svg_buffer, coord_x, coord_y, &node_label);
     }
 
-    // Add edges
     for edge in graph.edge_references() {
         let source = edge.source();
         let target = edge.target();
@@ -110,8 +109,8 @@ fn draw_edge(
     let dir_vec_y = coord_y_target - coord_y_source;
     let distance = (dir_vec_x * dir_vec_x + dir_vec_y * dir_vec_y).sqrt();
 
-    // Avoid division by zero for overlapping nodes
-    if distance < 0.001 {
+    // For very close nodes, we skip drawing the edge to avoid division by zero.
+    if distance < EDGE_CLOSENESS_THRESHOLD {
         return;
     }
 
