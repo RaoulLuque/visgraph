@@ -103,11 +103,32 @@ fn draw_edge(
     coord_x_target: f32,
     coord_y_target: f32,
 ) {
+    // To properly draw the edge from the edge of the source node to the edge of the target node,
+    // we need to multiply the radius of the nodes by the normalized direction vector and use that
+    // as the start and end points of the edge.
+    let dir_vec_x = coord_x_target - coord_x_source;
+    let dir_vec_y = coord_y_target - coord_y_source;
+    let distance = (dir_vec_x * dir_vec_x + dir_vec_y * dir_vec_y).sqrt();
+
+    // Avoid division by zero for overlapping nodes
+    if distance < 0.001 {
+        return;
+    }
+
+    // Normalize the direction vector
+    let unit_dir_vec_x = dir_vec_x / distance;
+    let unit_dir_vec_y = dir_vec_y / distance;
+
+    // Calculate the start point (on the boundary of source circle)
+    let start_x = coord_x_source + RADIUS * unit_dir_vec_x;
+    let start_y = coord_y_source + RADIUS * unit_dir_vec_y;
+
+    // Calculate the end point (on the boundary of target circle)
+    let end_x = coord_x_target - RADIUS * unit_dir_vec_x;
+    let end_y = coord_y_target - RADIUS * unit_dir_vec_y;
+
     svg_buffer.push_str(&format!(
-        "<line x1=\"{}\" y1=\"{}\" x2=\"{}\" y2=\"{}\" stroke=\"black\"/>\n",
-        coord_x_source + RADIUS,
-        coord_y_source,
-        coord_x_target - RADIUS,
-        coord_y_target
+        "   <line x1=\"{}\" y1=\"{}\" x2=\"{}\" y2=\"{}\" stroke=\"black\"/>\n",
+        start_x, start_y, end_x, end_y
     ));
 }
