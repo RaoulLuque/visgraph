@@ -2,16 +2,18 @@ use petgraph::visit::{
     EdgeIndexable, EdgeRef, IntoEdgeReferences, IntoNodeReferences, NodeIndexable, NodeRef,
 };
 
-use crate::layout::{self, Layout};
+use crate::{
+    layout::{self, Layout},
+    Settings,
+};
 
-const RADIUS: f32 = 20.0;
-const FONT_SIZE: f32 = 14.0;
 const EDGE_CLOSENESS_THRESHOLD: f32 = 0.001;
 
 pub fn graph_to_svg_with_positions<G, FnPos, FnLabel>(
     graph: G,
     position_map: FnPos,
     label_map: FnLabel,
+    settings: Settings,
 ) -> String
 where
     G: IntoNodeReferences + IntoEdgeReferences + NodeIndexable + EdgeIndexable,
@@ -25,7 +27,14 @@ where
         let id = node.id();
         let (coord_x, coord_y) = position_map(id);
         let node_label = label_map(id);
-        draw_node(&mut svg_buffer, coord_x, coord_y, &node_label);
+        draw_node(
+            &mut svg_buffer,
+            coord_x,
+            coord_y,
+            &node_label,
+            settings.radius,
+            settings.font_size,
+        );
     }
 
     for edge in graph.edge_references() {
@@ -39,6 +48,7 @@ where
             coord_y_source,
             coord_x_target,
             coord_y_target,
+            settings.radius,
         );
     }
 
@@ -46,7 +56,12 @@ where
     svg_buffer
 }
 
-pub fn graph_to_svg_with_layout<G, FnLabel>(graph: G, layout: Layout, label_map: FnLabel) -> String
+pub fn graph_to_svg_with_layout<G, FnLabel>(
+    graph: G,
+    layout: Layout,
+    label_map: FnLabel,
+    settings: Settings,
+) -> String
 where
     G: IntoNodeReferences + IntoEdgeReferences + NodeIndexable + EdgeIndexable,
     FnLabel: Fn(G::NodeId) -> String,
@@ -54,19 +69,26 @@ where
     match layout {
         Layout::Circular => {
             let position_map = layout::get_circular_position_map(&graph);
-            graph_to_svg_with_positions(graph, position_map, label_map)
+            graph_to_svg_with_positions(graph, position_map, label_map, settings)
         }
         Layout::Hierarchical => {
             let position_map = layout::get_hierarchical_position_map(&graph);
-            graph_to_svg_with_positions(graph, position_map, label_map)
+            graph_to_svg_with_positions(graph, position_map, label_map, settings)
         }
     }
 }
 
-fn draw_node(svg_buffer: &mut String, coord_x: f32, coord_y: f32, node_label: &str) {
+fn draw_node(
+    svg_buffer: &mut String,
+    coord_x: f32,
+    coord_y: f32,
+    node_label: &str,
+    radius: f32,
+    font_size: f32,
+) {
     svg_buffer.push_str(&format!(
-            "   <circle cx=\"{coord_x}\" cy=\"{coord_y}\" r=\"{RADIUS}\" fill=\"white\" stroke=\"black\"/>\n
-    <text x=\"{coord_x}\" y=\"{coord_y}\" font-size=\"{FONT_SIZE}\" font-family='Arial, sans-serif' fill=\"black\" text-anchor=\"middle\" dominant-baseline=\"central\">{node_label}</text>\n",
+            "   <circle cx=\"{coord_x}\" cy=\"{coord_y}\" r=\"{radius}\" fill=\"white\" stroke=\"black\"/>\n
+    <text x=\"{coord_x}\" y=\"{coord_y}\" font-size=\"{font_size}\" font-family='Arial, sans-serif' fill=\"black\" text-anchor=\"middle\" dominant-baseline=\"central\">{node_label}</text>\n",
         ));
 }
 
@@ -76,6 +98,7 @@ fn draw_edge(
     coord_y_source: f32,
     coord_x_target: f32,
     coord_y_target: f32,
+    radius: f32,
 ) {
     // To properly draw the edge from the edge of the source node to the edge of the target node,
     // we need to multiply the radius of the nodes by the normalized direction vector and use that
@@ -94,10 +117,10 @@ fn draw_edge(
     let unit_dir_vec_y = dir_vec_y / distance;
 
     // Calculate the start and end point point (on the boundary of the circles)
-    let start_x = coord_x_source + RADIUS * unit_dir_vec_x;
-    let start_y = coord_y_source + RADIUS * unit_dir_vec_y;
-    let end_x = coord_x_target - RADIUS * unit_dir_vec_x;
-    let end_y = coord_y_target - RADIUS * unit_dir_vec_y;
+    let start_x = coord_x_source + radius * unit_dir_vec_x;
+    let start_y = coord_y_source + radius * unit_dir_vec_y;
+    let end_x = coord_x_target - radius * unit_dir_vec_x;
+    let end_y = coord_y_target - radius * unit_dir_vec_y;
 
     svg_buffer.push_str(&format!(
         "   <line x1=\"{}\" y1=\"{}\" x2=\"{}\" y2=\"{}\" stroke=\"black\"/>\n",
