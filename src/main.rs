@@ -1,3 +1,5 @@
+use visgraph::Settings;
+
 fn main() {
     let mut graph = petgraph::Graph::<&str, &str>::new();
     let node_a = graph.add_node("A");
@@ -9,10 +11,12 @@ fn main() {
     graph.add_edge(node_b, node_c, "edge2");
     graph.add_edge(node_c, node_d, "edge3");
 
-    let svg_data =
-        visgraph::graph_to_svg_with_layout(&graph, visgraph::Layout::Circular, |node_id| {
-            graph.node_weight(node_id).unwrap().to_string()
-        });
+    let svg_data = visgraph::graph_to_svg_with_layout(
+        &graph,
+        visgraph::Layout::Circular,
+        |node_id| graph.node_weight(node_id).unwrap().to_string(),
+        Settings::default(),
+    );
 
-    visgraph::parse_svg_to_img(&svg_data, 1000.0, 1000.0, "graph.png").unwrap();
+    visgraph::parse_svg_to_img(&svg_data, Settings::default(), "graph.png").unwrap();
 }

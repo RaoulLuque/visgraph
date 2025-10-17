@@ -7,6 +7,8 @@ const DEFAULT_RADIUS: f32 = 20.0;
 const DEFAULT_FONT_SIZE: f32 = 14.0;
 
 pub struct Settings {
+    pub width: f32,
+    pub height: f32,
     pub radius: f32,
     pub font_size: f32,
 }
