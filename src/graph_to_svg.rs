@@ -118,11 +118,9 @@ fn draw_edge(
     let unit_dir_vec_x = dir_vec_x / distance;
     let unit_dir_vec_y = dir_vec_y / distance;
 
-    // Calculate the start point (on the boundary of source circle)
+    // Calculate the start and end point point (on the boundary of the circles)
     let start_x = coord_x_source + RADIUS * unit_dir_vec_x;
     let start_y = coord_y_source + RADIUS * unit_dir_vec_y;
-
-    // Calculate the end point (on the boundary of target circle)
     let end_x = coord_x_target - RADIUS * unit_dir_vec_x;
     let end_y = coord_y_target - RADIUS * unit_dir_vec_y;
 
