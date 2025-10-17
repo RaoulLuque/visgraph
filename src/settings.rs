@@ -4,7 +4,7 @@ pub const DEFAULT_WIDTH: f32 = 1000.0;
 pub const DEFAULT_HEIGHT: f32 = 1000.0;
 pub const DEFAULT_RADIUS: f32 = 25.0;
 pub const DEFAULT_FONT_SIZE: f32 = 16.0;
-pub const DEFAULT_STROKE_WIDTH: f32 = 2.0;
+pub const DEFAULT_STROKE_WIDTH: f32 = 5.0;
 pub const DEFAULT_MARGIN: f32 = 0.05;
 
 #[derive(Debug, Copy, Clone, PartialEq)]

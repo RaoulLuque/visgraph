@@ -52,6 +52,7 @@ where
             scaled_x_target,
             scaled_y_target,
             settings.radius(),
+            settings.stroke_width(),
         );
     }
 
@@ -102,6 +103,7 @@ fn draw_edge(
     coord_x_target: f32,
     coord_y_target: f32,
     radius: f32,
+    stroke_width: f32,
 ) {
     // To properly draw the edge from the edge of the source node to the edge of the target node,
     // we need to multiply the radius of the nodes by the normalized direction vector and use that
@@ -126,8 +128,8 @@ fn draw_edge(
     let end_y = coord_y_target - radius * unit_dir_vec_y;
 
     svg_buffer.push_str(&format!(
-        "   <line x1=\"{}\" y1=\"{}\" x2=\"{}\" y2=\"{}\" stroke=\"black\"/>\n",
-        start_x, start_y, end_x, end_y
+        "   <line x1=\"{}\" y1=\"{}\" x2=\"{}\" y2=\"{}\" stroke=\"black\" stroke-width=\"{}\"/>\n",
+        start_x, start_y, end_x, end_y, stroke_width
     ));
 }
 
