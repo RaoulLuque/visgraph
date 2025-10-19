@@ -37,7 +37,6 @@ where
 pub fn graph_to_img_with_position_map<G, FnNodeLabel, FnEdgeLabel, FnPos>(
     graph: G,
     position_map: FnPos,
-    label_map: FnNodeLabel,
     settings: &Settings<FnNodeLabel, FnEdgeLabel>,
     path: impl AsRef<std::path::Path>,
 ) -> Result<(), VisGraphError>
