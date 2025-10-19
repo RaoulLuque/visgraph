@@ -56,17 +56,61 @@ impl Display for SettingsError {
 
 impl Error for SettingsError {}
 
+/// Settings for SVG graph rendering.
+///
+/// For the different settings, see the fields of the [`SettingsBuilder`] struct.
+///
+/// One can either create a `Settings` instance directly using `Settings::default()` or `Settings::new()`,
+/// which will use default values, or use the `SettingsBuilder` to customize specific settings.
+/// The latter will validate the provided values upon calling `build()`.
+///
+/// For default values, see the `DEFAULT_*` constants.
+///
+/// /// Example usage:
+/// ```rust
+/// use visgraph::settings::Settings;
+/// // We overwrite only the width and height and keep other settings as default.
+/// let settings = Settings::new()
+///     .with_width(800.0)
+///     .with_height(600.0);
+/// ```
 pub struct Settings {
-    width: f32,
-    height: f32,
-    radius: f32,
-    font_size: f32,
-    stroke_width: f32,
-    margin_x: f32,
-    margin_y: f32,
+    /// Width of the SVG and output image in pixels.
+    ///
+    /// *Valid values*: strictly positive f32
+    pub width: f32,
+    /// Height of the SVG and output image in pixels.
+    ///
+    /// *Valid values*: strictly positive f32
+    pub height: f32,
+    /// Radius of the nodes in pixels.
+    ///
+    /// *Valid values*: strictly positive f32
+    pub radius: f32,
+    /// Font size for labels in pixels.
+    ///
+    /// *Valid values*: strictly positive f32
+    pub font_size: f32,
+    /// Stroke width for edges in pixels.
+    ///
+    /// *Valid values*: strictly positive f32
+    pub stroke_width: f32,
+    /// Horizontal margin as a fraction of the width.
+    /// That is, 0.1 means 10% margin on left and right, leaving 80% of the width for drawing.
+    ///
+    /// *Valid values*: f32 in range [0.0, 0.5)
+    pub margin_x: f32,
+    /// Vertical margin as a fraction of the height.
+    /// That is, 0.1 means 10% margin on top and bottom, leaving 80% of the height for drawing.
+    ///
+    /// *Valid values*: f32 in range [0.0, 0.5)
+    pub margin_y: f32,
 }
 
 impl Default for Settings {
+    /// Creates a new `Settings` instance with default values.
+    ///
+    /// For default values, see the `DEFAULT_*` constants.
     fn default() -> Self {
         Settings {
             width: DEFAULT_WIDTH,
@@ -81,110 +125,78 @@ impl Default for Settings {
 }
 
 impl Settings {
+    /// Creates a new `Settings` instance with default values.
+    ///
+    /// Default values can be overwritten using the `with_*` methods in a builder pattern. For a
+    /// description of each settings, see the [`Settings`] struct documentation.
+    ///
+    /// For default values, see the `DEFAULT_*` constants.
     pub fn new() -> Self {
         Self::default()
     }
 
-    pub(crate) fn width(&self) -> f32 {
-        self.width
-    }
-
-    pub(crate) fn height(&self) -> f32 {
-        self.height
-    }
-
-    pub(crate) fn radius(&self) -> f32 {
-        self.radius
-    }
-
-    pub(crate) fn font_size(&self) -> f32 {
-        self.font_size
-    }
-
-    pub(crate) fn stroke_width(&self) -> f32 {
-        self.stroke_width
-    }
-
-    pub(crate) fn margin_x(&self) -> f32 {
-        self.margin_x
-    }
-
-    pub(crate) fn margin_y(&self) -> f32 {
-        self.margin_y
-    }
-}
-
-pub struct SettingsBuilder {
-    settings: Settings,
-}
-
-impl SettingsBuilder {
-    pub fn new() -> Self {
-        SettingsBuilder {
-            settings: Settings::default(),
-        }
-    }
-
-    pub fn width(mut self, width: f32) -> Self {
-        self.settings.width = width;
+    /// Sets the width of the SVG canvas and returns the modified `Settings`.
+    pub fn with_width(mut self, width: f32) -> Self {
+        self.width = width;
         self
     }
 
-    pub fn height(mut self, height: f32) -> Self {
-        self.settings.height = height;
+    /// Sets the height of the SVG canvas and returns the modified `Settings`.
+    pub fn with_height(mut self, height: f32) -> Self {
+        self.height = height;
         self
     }
 
-    pub fn radius(mut self, radius: f32) -> Self {
-        self.settings.radius = radius;
+    /// Sets the radius of the nodes in pixels and returns the modified `Settings`.
+    pub fn with_radius(mut self, radius: f32) -> Self {
+        self.radius = radius;
         self
     }
 
-    pub fn font_size(mut self, font_size: f32) -> Self {
-        self.settings.font_size = font_size;
+    /// Sets the font size for labels in pixels and returns the modified `Settings`.
+    pub fn with_font_size(mut self, font_size: f32) -> Self {
+        self.font_size = font_size;
         self
     }
 
-    pub fn stroke_width(mut self, stroke_width: f32) -> Self {
-        self.settings.stroke_width = stroke_width;
+    /// Sets the stroke width for edges in pixels and returns the modified `Settings`.
+    pub fn with_stroke_width(mut self, stroke_width: f32) -> Self {
+        self.stroke_width = stroke_width;
         self
     }
 
-    pub fn margin_x(mut self, margin_x: f32) -> Self {
-        self.settings.margin_x = margin_x;
+    /// Sets the horizontal margin as a fraction of the width and returns the modified `Settings`.
+    pub fn with_margin_x(mut self, margin_x: f32) -> Self {
+        self.margin_x = margin_x;
         self
     }
 
-    pub fn margin_y(mut self, margin_y: f32) -> Self {
-        self.settings.margin_y = margin_y;
+    /// Sets the vertical margin as a fraction of the height and returns the modified `Settings`.
+    pub fn with_margin_y(mut self, margin_y: f32) -> Self {
+        self.margin_y = margin_y;
         self
     }
 
-    pub fn build(self) -> Result<Settings, SettingsError> {
-        if self.settings.width <= 0.0 || self.settings.height <= 0.0 {
-            return Err(SettingsError::InvalidDimensions((
-                self.settings.width,
-                self.settings.height,
-            )));
-        } else if self.settings.radius <= 0.0 {
-            return Err(SettingsError::InvalidRadius(self.settings.radius));
-        } else if self.settings.font_size <= 0.0 {
-            return Err(SettingsError::InvalidFontSize(self.settings.font_size));
-        } else if self.settings.stroke_width <= 0.0 {
-            return Err(SettingsError::InvalidStrokeWidth(
-                self.settings.stroke_width,
-            ));
-        } else if self.settings.margin_x < 0.0
-            || self.settings.margin_x > 0.5
-            || self.settings.margin_y < 0.0
-            || self.settings.margin_y > 0.5
+    /// Validates the settings.
+    ///
+    /// Checks that all settings are within acceptable ranges. If not, returns a corresponding `SettingsError`.
+    fn validate_settings(&self) -> Result<(), SettingsError> {
+        if self.width <= 0.0 || self.height <= 0.0 {
+            return Err(SettingsError::InvalidDimensions((self.width, self.height)));
+        } else if self.radius <= 0.0 {
+            return Err(SettingsError::InvalidRadius(self.radius));
+        } else if self.font_size <= 0.0 {
+            return Err(SettingsError::InvalidFontSize(self.font_size));
+        } else if self.stroke_width <= 0.0 {
+            return Err(SettingsError::InvalidStrokeWidth(self.stroke_width));
+        } else if self.margin_x < 0.0
+            || self.margin_x > 0.5
+            || self.margin_y < 0.0
+            || self.margin_y > 0.5
         {
-            return Err(SettingsError::InvalidMargin((
-                self.settings.margin_x,
-                self.settings.margin_y,
-            )));
+            return Err(SettingsError::InvalidMargin((self.margin_x, self.margin_y)));
         }
 
-        Ok(self.settings)
+        Ok(())
     }
 }
