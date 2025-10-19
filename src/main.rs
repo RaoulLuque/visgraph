@@ -14,7 +14,6 @@ fn main() {
     let svg_data = visgraph::graph_to_svg::graph_to_svg_with_layout(
         &graph,
         visgraph::Layout::Circular,
-        |node_id| graph.node_weight(node_id).unwrap().to_string(),
         &Settings::default(),
     );
 

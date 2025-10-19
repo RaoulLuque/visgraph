@@ -27,7 +27,11 @@ pub const DEFAULT_MARGIN: f32 = 0.05;
 ///     .build()
 ///     .expect("Provided values should be valid.");
 /// ```
-pub struct Settings {
+#[derive(Debug)]
+pub struct Settings<
+    FnNodeLabel = fn(petgraph::prelude::EdgeIndex) -> String,
+    FnEdgeLabel = fn(petgraph::prelude::NodeIndex) -> String,
+> {
     pub(crate) width: f32,
     pub(crate) height: f32,
     pub(crate) radius: f32,
@@ -35,9 +39,16 @@ pub struct Settings {
     pub(crate) stroke_width: f32,
     pub(crate) margin_x: f32,
     pub(crate) margin_y: f32,
+    pub(crate) node_label: Option<FnNodeLabel>,
+    pub(crate) edge_label: Option<FnEdgeLabel>,
 }
 
-impl Default for Settings {
+impl Default
+    for Settings<
+        fn(petgraph::prelude::NodeIndex) -> String,
+        fn(petgraph::prelude::EdgeIndex) -> String,
+    >
+{
     /// Creates a new [`Settings`] instance with default values.
     ///
     /// For default values, see the `DEFAULT_*` constants.
@@ -50,11 +61,15 @@ impl Default for Settings {
             stroke_width: DEFAULT_STROKE_WIDTH,
             margin_x: DEFAULT_MARGIN,
             margin_y: DEFAULT_MARGIN,
+            node_label: None,
+            edge_label: None,
         }
     }
 }
 
-impl Settings {
+impl
+    Settings<fn(petgraph::prelude::NodeIndex) -> String, fn(petgraph::prelude::EdgeIndex) -> String>
+{
     /// Creates a new [`Settings`] instance with default values.
     ///
     /// Use the [`SettingsBuilder`] struct to customize specific settings and for details on the
@@ -65,7 +80,26 @@ impl Settings {
     }
 }
 
-pub struct SettingsBuilder {
+impl<FnNodeLabel, FnEdgeLabel> Settings<FnNodeLabel, FnEdgeLabel> {
+    pub(crate) fn with_node_label<NewFnNodeLabel>(
+        self,
+        node_label: NewFnNodeLabel,
+    ) -> Settings<NewFnNodeLabel, FnEdgeLabel> {
+        Settings {
+            width: self.width,
+            height: self.height,
+            radius: self.radius,
+            font_size: self.font_size,
+            stroke_width: self.stroke_width,
+            margin_x: self.margin_x,
+            margin_y: self.margin_y,
+            node_label: Some(node_label),
+            edge_label: self.edge_label,
+        }
+    }
+}
+
+pub struct SettingsBuilder<FnNodeLabel, FnEdgeLabel> {
     /// Width of the SVG and output image in pixels.
     ///
     /// *Valid values*: strictly positive f32
@@ -96,9 +130,11 @@ pub struct SettingsBuilder {
     ///
     /// *Valid values*: f32 in range [0.0, 0.5)
     pub margin_y: f32,
+    pub node_label: Option<FnNodeLabel>,
+    pub edge_label: Option<FnEdgeLabel>,
 }
 
-impl SettingsBuilder {
+impl<FnNodeLabel, FnEdgeLabel> SettingsBuilder<FnNodeLabel, FnEdgeLabel> {
     /// Creates a new `SettingsBuilder` instance with default values.
     ///
     /// For default values, see the `DEFAULT_*` constants.
@@ -111,6 +147,8 @@ impl SettingsBuilder {
             stroke_width: DEFAULT_STROKE_WIDTH,
             margin_x: DEFAULT_MARGIN,
             margin_y: DEFAULT_MARGIN,
+            node_label: None,
+            edge_label: None,
         }
     }
 
@@ -156,6 +194,40 @@ impl SettingsBuilder {
         self
     }
 
+    pub fn node_label<NewFnNodeLabel>(
+        self,
+        node_label: NewFnNodeLabel,
+    ) -> SettingsBuilder<NewFnNodeLabel, FnEdgeLabel> {
+        SettingsBuilder {
+            width: self.width,
+            height: self.height,
+            radius: self.radius,
+            font_size: self.font_size,
+            stroke_width: self.stroke_width,
+            margin_x: self.margin_x,
+            margin_y: self.margin_y,
+            node_label: Some(node_label),
+            edge_label: self.edge_label,
+        }
+    }
+
+    pub fn edge_label<NewFnEdgeLabel>(
+        self,
+        edge_label: NewFnEdgeLabel,
+    ) -> SettingsBuilder<FnNodeLabel, NewFnEdgeLabel> {
+        SettingsBuilder {
+            width: self.width,
+            height: self.height,
+            radius: self.radius,
+            font_size: self.font_size,
+            stroke_width: self.stroke_width,
+            margin_x: self.margin_x,
+            margin_y: self.margin_y,
+            node_label: self.node_label,
+            edge_label: Some(edge_label),
+        }
+    }
+
     /// Validates the settings.
     ///
     /// Checks that all settings are within acceptable ranges. If not, returns a corresponding [`SettingsError`].
@@ -180,7 +252,7 @@ impl SettingsBuilder {
     }
 
     /// Builds the [`Settings`] instance after validating the provided values.
-    pub fn build(self) -> Result<Settings, SettingsError> {
+    pub fn build(self) -> Result<Settings<FnNodeLabel, FnEdgeLabel>, SettingsError> {
         self.validate()?;
         let settings = Settings {
             width: self.width,
@@ -190,6 +262,8 @@ impl SettingsBuilder {
             stroke_width: self.stroke_width,
             margin_x: self.margin_x,
             margin_y: self.margin_y,
+            node_label: self.node_label,
+            edge_label: self.edge_label,
         };
         Ok(settings)
     }

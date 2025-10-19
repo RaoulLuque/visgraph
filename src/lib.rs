@@ -18,57 +18,36 @@ use crate::{
     settings::Settings,
 };
 
-pub fn graph_to_img_with_layout<G, FnNodeLabel>(
+pub fn graph_to_img_with_layout<G, FnNodeLabel, FnEdgeLabel>(
     graph: G,
     layout: Layout,
-    node_label: Option<FnNodeLabel>,
-    settings: &Settings,
+    settings: &Settings<FnNodeLabel, FnEdgeLabel>,
     path: impl AsRef<std::path::Path>,
 ) -> Result<(), VisGraphError>
 where
     G: IntoNodeReferences + IntoEdgeReferences + NodeIndexable + EdgeIndexable,
     FnNodeLabel: Fn(G::NodeId) -> String,
+    FnEdgeLabel: Fn(G::EdgeId) -> String,
 {
-    if let Some(label_map) = node_label {
-        let svg_data = graph_to_svg_with_layout(graph, layout, label_map, settings);
-        parse_svg_to_img(&svg_data, settings, path)?;
-        Ok(())
-    } else {
-        let svg_data = graph_to_svg_with_layout(
-            graph,
-            layout,
-            |node_id| NodeIndexable::to_index(&graph, node_id).to_string(),
-            settings,
-        );
-        parse_svg_to_img(&svg_data, settings, path)?;
-        Ok(())
-    }
+    let svg_data = graph_to_svg_with_layout(graph, layout, settings);
+    parse_svg_to_img(&svg_data, settings, path)?;
+    Ok(())
 }
 
-pub fn graph_to_img_with_position_map<G, FnNodeLabel, FnPos>(
+pub fn graph_to_img_with_position_map<G, FnNodeLabel, FnEdgeLabel, FnPos>(
     graph: G,
     position_map: FnPos,
     label_map: FnNodeLabel,
-    settings: &Settings,
+    settings: &Settings<FnNodeLabel, FnEdgeLabel>,
     path: impl AsRef<std::path::Path>,
 ) -> Result<(), VisGraphError>
 where
     G: IntoNodeReferences + IntoEdgeReferences + NodeIndexable + EdgeIndexable,
     FnNodeLabel: Fn(G::NodeId) -> String,
+    FnEdgeLabel: Fn(G::EdgeId) -> String,
     FnPos: Fn(G::NodeId) -> (f32, f32),
 {
-    if let Some(label_map) = Some(label_map) {
-        let svg_data = graph_to_svg_with_positions(graph, position_map, label_map, settings);
-        parse_svg_to_img(&svg_data, settings, path)?;
-        Ok(())
-    } else {
-        let svg_data = graph_to_svg_with_positions(
-            graph,
-            position_map,
-            |node_id| NodeIndexable::to_index(&graph, node_id).to_string(),
-            settings,
-        );
-        parse_svg_to_img(&svg_data, settings, path)?;
-        Ok(())
-    }
+    let svg_data = graph_to_svg_with_positions(graph, position_map, settings);
+    parse_svg_to_img(&svg_data, settings, path)?;
+    Ok(())
 }

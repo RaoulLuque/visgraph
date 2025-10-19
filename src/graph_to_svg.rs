@@ -7,16 +7,63 @@ use crate::settings::Settings;
 
 const EDGE_CLOSENESS_THRESHOLD: f32 = 0.001;
 
-pub fn graph_to_svg_with_positions<G, FnPos, FnNodeLabel>(
+pub fn graph_to_svg_with_positions<G, FnPos, FnNodeLabel, FnEdgeLabel>(
     graph: G,
     position_map: FnPos,
-    label_map: FnNodeLabel,
-    settings: &Settings,
+    settings: &Settings<FnNodeLabel, FnEdgeLabel>,
 ) -> String
 where
     G: IntoNodeReferences + IntoEdgeReferences + NodeIndexable + EdgeIndexable,
     FnPos: Fn(G::NodeId) -> (f32, f32),
     FnNodeLabel: Fn(G::NodeId) -> String,
+    FnEdgeLabel: Fn(G::EdgeId) -> String,
+{
+    match (&settings.node_label, &settings.edge_label) {
+        (Some(node_label_map), Some(edge_label_map)) => {
+            internal_graph_to_svg_with_positions_and_labels(
+                graph,
+                position_map,
+                node_label_map,
+                edge_label_map,
+                settings,
+            )
+        }
+        (Some(node_label_map), None) => internal_graph_to_svg_with_positions_and_labels(
+            graph,
+            position_map,
+            node_label_map,
+            |edge_id| EdgeIndexable::to_index(&graph, edge_id).to_string(),
+            settings,
+        ),
+        (None, Some(edge_label_map)) => internal_graph_to_svg_with_positions_and_labels(
+            graph,
+            position_map,
+            |node_id| NodeIndexable::to_index(&graph, node_id).to_string(),
+            edge_label_map,
+            settings,
+        ),
+        (None, None) => internal_graph_to_svg_with_positions_and_labels(
+            graph,
+            position_map,
+            |node_id| NodeIndexable::to_index(&graph, node_id).to_string(),
+            |edge_id| EdgeIndexable::to_index(&graph, edge_id).to_string(),
+            settings,
+        ),
+    }
+}
+
+fn internal_graph_to_svg_with_positions_and_labels<G, FnPos, FnNodeLabel, FnEdgeLabel, S, T>(
+    graph: G,
+    position_map: FnPos,
+    node_label_map: FnNodeLabel,
+    edge_label_map: FnEdgeLabel,
+    settings: &Settings<S, T>,
+) -> String
+where
+    G: IntoNodeReferences + IntoEdgeReferences + NodeIndexable + EdgeIndexable,
+    FnPos: Fn(G::NodeId) -> (f32, f32),
+    FnNodeLabel: Fn(G::NodeId) -> String,
+    FnEdgeLabel: Fn(G::EdgeId) -> String,
 {
     let mut svg_buffer = String::with_capacity(graph.node_bound() * 120 + graph.edge_bound() * 50);
     svg_buffer.push_str(&format!(
@@ -26,8 +73,14 @@ where
 
     for node in graph.node_references() {
         let id = node.id();
-        let (scaled_x, scaled_y) = scale(position_map(id), &settings);
-        let node_label = label_map(id);
+        let (scaled_x, scaled_y) = scale(
+            position_map(id),
+            settings.margin_x,
+            settings.margin_y,
+            settings.width,
+            settings.height,
+        );
+        let node_label = node_label_map(id);
         draw_node(
             &mut svg_buffer,
             scaled_x,
@@ -41,8 +94,20 @@ where
     for edge in graph.edge_references() {
         let source = edge.source();
         let target = edge.target();
-        let (scaled_x_source, scaled_y_source) = scale(position_map(source), &settings);
-        let (scaled_x_target, scaled_y_target) = scale(position_map(target), &settings);
+        let (scaled_x_source, scaled_y_source) = scale(
+            position_map(source),
+            settings.margin_x,
+            settings.margin_y,
+            settings.width,
+            settings.height,
+        );
+        let (scaled_x_target, scaled_y_target) = scale(
+            position_map(target),
+            settings.margin_x,
+            settings.margin_y,
+            settings.width,
+            settings.height,
+        );
 
         draw_edge(
             &mut svg_buffer,
@@ -59,24 +124,24 @@ where
     svg_buffer
 }
 
-pub fn graph_to_svg_with_layout<G, FnNodeLabel>(
+pub fn graph_to_svg_with_layout<G, FnNodeLabel, FnEdgeLabel>(
     graph: G,
     layout: Layout,
-    label_map: FnNodeLabel,
-    settings: &Settings,
+    settings: &Settings<FnNodeLabel, FnEdgeLabel>,
 ) -> String
 where
     G: IntoNodeReferences + IntoEdgeReferences + NodeIndexable + EdgeIndexable,
     FnNodeLabel: Fn(G::NodeId) -> String,
+    FnEdgeLabel: Fn(G::EdgeId) -> String,
 {
     match layout {
         Layout::Circular => {
             let position_map = layout::get_circular_position_map(&graph);
-            graph_to_svg_with_positions(graph, position_map, label_map, settings)
+            graph_to_svg_with_positions(graph, position_map, settings)
         }
         Layout::Hierarchical => {
             let position_map = layout::get_hierarchical_position_map(&graph);
-            graph_to_svg_with_positions(graph, position_map, label_map, settings)
+            graph_to_svg_with_positions(graph, position_map, settings)
         }
     }
 }
@@ -141,15 +206,18 @@ fn draw_edge(
 ///
 /// E.g. if margin_x is 0.1, then 10% of the width is reserved as margin on the left and 10% on the right,
 /// leaving 80% of the width for the actual graph drawing area.
-fn scale((normalized_x, normalized_y): (f32, f32), settings: &Settings) -> (f32, f32) {
-    let margin_x = settings.margin_x;
-    let margin_y = settings.margin_y;
-
+fn scale(
+    (normalized_x, normalized_y): (f32, f32),
+    margin_x: f32,
+    margin_y: f32,
+    width: f32,
+    height: f32,
+) -> (f32, f32) {
     let margin_adjusted_normalized_x = margin_x + normalized_x * (1.0 - 2.0 * margin_x);
     let margin_adjusted_normalized_y = margin_y + normalized_y * (1.0 - 2.0 * margin_y);
 
-    let scaled_x = margin_adjusted_normalized_x * settings.width;
-    let scaled_y = margin_adjusted_normalized_y * settings.height;
+    let scaled_x = margin_adjusted_normalized_x * width;
+    let scaled_y = margin_adjusted_normalized_y * height;
 
     (scaled_x, scaled_y)
 }

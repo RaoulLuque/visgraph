@@ -3,9 +3,9 @@ use resvg::{render, tiny_skia};
 use crate::errors::SvgToImageError;
 use crate::settings::Settings;
 
-pub fn parse_svg_to_img(
+pub fn parse_svg_to_img<FnNodeLabel, FnEdgeLabel>(
     svg_data: &str,
-    settings: &Settings,
+    settings: &Settings<FnNodeLabel, FnEdgeLabel>,
     path: impl AsRef<std::path::Path>,
 ) -> Result<(), SvgToImageError> {
     // Setup usvg options
