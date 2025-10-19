@@ -1,3 +1,6 @@
+#![doc = include_str!("../README.md")]
+#![warn(missing_debug_implementations, missing_docs)]
+
 mod errors;
 pub mod graph_to_svg;
 mod layout;
