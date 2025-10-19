@@ -130,8 +130,8 @@ pub struct SettingsBuilder<FnNodeLabel, FnEdgeLabel> {
     ///
     /// *Valid values*: f32 in range [0.0, 0.5)
     pub margin_y: f32,
-    pub node_label: Option<FnNodeLabel>,
-    pub edge_label: Option<FnEdgeLabel>,
+    pub node_label_fn: Option<FnNodeLabel>,
+    pub edge_label_fn: Option<FnEdgeLabel>,
 }
 
 impl
@@ -152,8 +152,8 @@ impl
             stroke_width: DEFAULT_STROKE_WIDTH,
             margin_x: DEFAULT_MARGIN,
             margin_y: DEFAULT_MARGIN,
-            node_label: None,
-            edge_label: None,
+            node_label_fn: None,
+            edge_label_fn: None,
         }
     }
 }
@@ -215,7 +215,7 @@ impl<FnNodeLabel, FnEdgeLabel> SettingsBuilder<FnNodeLabel, FnEdgeLabel> {
         self
     }
 
-    pub fn node_label<NewFnNodeLabel>(
+    pub fn node_label_fn<NewFnNodeLabel>(
         self,
         node_label: NewFnNodeLabel,
     ) -> SettingsBuilder<NewFnNodeLabel, FnEdgeLabel> {
@@ -227,12 +227,12 @@ impl<FnNodeLabel, FnEdgeLabel> SettingsBuilder<FnNodeLabel, FnEdgeLabel> {
             stroke_width: self.stroke_width,
             margin_x: self.margin_x,
             margin_y: self.margin_y,
-            node_label: Some(node_label),
-            edge_label: self.edge_label,
+            node_label_fn: Some(node_label),
+            edge_label_fn: self.edge_label_fn,
         }
     }
 
-    pub fn edge_label<NewFnEdgeLabel>(
+    pub fn edge_label_fn<NewFnEdgeLabel>(
         self,
         edge_label: NewFnEdgeLabel,
     ) -> SettingsBuilder<FnNodeLabel, NewFnEdgeLabel> {
@@ -244,8 +244,8 @@ impl<FnNodeLabel, FnEdgeLabel> SettingsBuilder<FnNodeLabel, FnEdgeLabel> {
             stroke_width: self.stroke_width,
             margin_x: self.margin_x,
             margin_y: self.margin_y,
-            node_label: self.node_label,
-            edge_label: Some(edge_label),
+            node_label_fn: self.node_label_fn,
+            edge_label_fn: Some(edge_label),
         }
     }
 
@@ -283,8 +283,8 @@ impl<FnNodeLabel, FnEdgeLabel> SettingsBuilder<FnNodeLabel, FnEdgeLabel> {
             stroke_width: self.stroke_width,
             margin_x: self.margin_x,
             margin_y: self.margin_y,
-            node_label: self.node_label,
-            edge_label: self.edge_label,
+            node_label: self.node_label_fn,
+            edge_label: self.edge_label_fn,
         };
         Ok(settings)
     }
