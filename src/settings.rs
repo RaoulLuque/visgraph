@@ -9,10 +9,15 @@ pub const DEFAULT_MARGIN: f32 = 0.05;
 
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub enum SettingsError {
+    /// Invalid dimensions: width or height are not strictly positive values.
     InvalidDimensions((f32, f32)),
+    /// Invalid radius: radius is not a strictly positive value.
     InvalidRadius(f32),
+    /// Invalid font size: font size is not a strictly positive value.
     InvalidFontSize(f32),
+    /// Invalid stroke width: stroke width is not a strictly positive value.
     InvalidStrokeWidth(f32),
+    /// Invalid margins: margins are not in the range [0.0, 0.5).
     InvalidMargin((f32, f32)),
 }
 
@@ -46,7 +51,7 @@ impl Display for SettingsError {
             SettingsError::InvalidMargin((mx, my)) => {
                 write!(
                     f,
-                    "Invalid margins: margin_x={} and margin_y={} must be between 0.0 and 0.5.",
+                    "Invalid margins: margin_x={} and margin_y={} must lie in the range [0.0, 0.5).",
                     mx, my
                 )
             }

@@ -21,8 +21,7 @@ where
     let mut svg_buffer = String::with_capacity(graph.node_bound() * 120 + graph.edge_bound() * 50);
     svg_buffer.push_str(&format!(
         r#"<svg width="{}" height="{}" xmlns="http://www.w3.org/2000/svg">"#,
-        settings.width(),
-        settings.height()
+        settings.width, settings.height
     ));
 
     for node in graph.node_references() {
@@ -34,8 +33,8 @@ where
             scaled_x,
             scaled_y,
             &node_label,
-            settings.radius(),
-            settings.font_size(),
+            settings.radius,
+            settings.font_size,
         );
     }
 
@@ -51,8 +50,8 @@ where
             scaled_y_source,
             scaled_x_target,
             scaled_y_target,
-            settings.radius(),
-            settings.stroke_width(),
+            settings.radius,
+            settings.stroke_width,
         );
     }
 
@@ -82,6 +81,7 @@ where
     }
 }
 
+/// Draws a node as a circle with a text label by writing appropriate <circle> and <text> tags to the provided svg_buffer.
 fn draw_node(
     svg_buffer: &mut String,
     coord_x: f32,
@@ -92,10 +92,12 @@ fn draw_node(
 ) {
     svg_buffer.push_str(&format!(
             "   <circle cx=\"{coord_x}\" cy=\"{coord_y}\" r=\"{radius}\" fill=\"white\" stroke=\"black\"/>\n
-    <text x=\"{coord_x}\" y=\"{coord_y}\" font-size=\"{font_size}\" font-family='Arial, sans-serif' fill=\"black\" text-anchor=\"middle\" dominant-baseline=\"central\">{node_label}</text>\n",
+    <text x=\"{coord_x}\" y=\"{coord_y}\" font-size=\"{font_size}px\" font-family='Arial, sans-serif' fill=\"black\" text-anchor=\"middle\" dominant-baseline=\"central\">{node_label}</text>\n",
         ));
 }
 
+/// Draws an edge as a line between two nodes by writing an appropriate <line> tag to the provided svg_buffer.
+/// Adjusting for the radius of the nodes so that the line starts and ends at the edge of the nodes rather than their centers.
 fn draw_edge(
     svg_buffer: &mut String,
     coord_x_source: f32,
@@ -133,15 +135,21 @@ fn draw_edge(
     ));
 }
 
+/// Scales normalized coordinates (0.0 to 1.0, 0.0 to 1.0) to actual canvas coordinates (0 to width, 0 to height).
+/// Takes into account the margins specified in the settings. Margins are specified as a fraction of the total width/height
+/// and are applied on both sides (left/right and top/bottom).
+///
+/// E.g. if margin_x is 0.1, then 10% of the width is reserved as margin on the left and 10% on the right,
+/// leaving 80% of the width for the actual graph drawing area.
 fn scale((normalized_x, normalized_y): (f32, f32), settings: &Settings) -> (f32, f32) {
-    let margin_x = settings.margin_x();
-    let margin_y = settings.margin_y();
+    let margin_x = settings.margin_x;
+    let margin_y = settings.margin_y;
 
     let margin_adjusted_normalized_x = margin_x + normalized_x * (1.0 - 2.0 * margin_x);
     let margin_adjusted_normalized_y = margin_y + normalized_y * (1.0 - 2.0 * margin_y);
 
-    let scaled_x = margin_adjusted_normalized_x * settings.width();
-    let scaled_y = margin_adjusted_normalized_y * settings.height();
+    let scaled_x = margin_adjusted_normalized_x * settings.width;
+    let scaled_y = margin_adjusted_normalized_y * settings.height;
 
     (scaled_x, scaled_y)
 }

@@ -1,7 +1,11 @@
 use petgraph::visit::NodeRef;
 
+/// Different layout algorithms for graph visualization.
+#[derive(Debug, Clone, Copy)]
 pub enum Layout {
+    /// Nodes are arranged in a [circular layout](https://en.wikipedia.org/wiki/Circular_layout).
     Circular,
+    /// Nodes are arranged in a hierarchical layout.
     Hierarchical,
 }
 
@@ -23,6 +27,7 @@ pub(crate) fn get_hierarchical_position_map<G>(graph: &G) -> impl Fn(G::NodeId) 
 where
     G: petgraph::visit::IntoNodeReferences + petgraph::visit::NodeIndexable,
 {
+    todo!("Implement a proper hierarchical layout algorithm");
     let mut levels: Vec<Vec<G::NodeId>> = Vec::new();
     for node in graph.node_references() {
         let level = graph.to_index(node.id()) / 2;

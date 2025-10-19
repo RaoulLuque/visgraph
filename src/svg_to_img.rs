@@ -17,15 +17,12 @@ where
     let mut opt = resvg::usvg::Options::default();
     opt.fontdb_mut().load_system_fonts();
     opt.default_size =
-        resvg::usvg::Size::from_wh(settings.width(), settings.height()).ok_or_else(|| {
-            SvgToImageError::ProvidedDimensionsAreZero((settings.width(), settings.height()))
-        })?;
+        resvg::usvg::Size::from_wh(settings.width, settings.height).expect("Provided dimensions should be strictly positive, as Settings struct is validated on creation.");
 
     let svg_tree = resvg::usvg::Tree::from_data(svg_data.as_bytes(), &opt)?;
 
     // Render to pixmap
-    let mut pixmap =
-        tiny_skia::Pixmap::new(settings.width() as u32, settings.height() as u32).unwrap();
+    let mut pixmap = tiny_skia::Pixmap::new(settings.width as u32, settings.height as u32).unwrap();
     render(
         &svg_tree,
         tiny_skia::Transform::identity(),
