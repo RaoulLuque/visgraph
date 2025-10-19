@@ -134,7 +134,12 @@ pub struct SettingsBuilder<FnNodeLabel, FnEdgeLabel> {
     pub edge_label: Option<FnEdgeLabel>,
 }
 
-impl<FnNodeLabel, FnEdgeLabel> SettingsBuilder<FnNodeLabel, FnEdgeLabel> {
+impl
+    SettingsBuilder<
+        fn(petgraph::prelude::NodeIndex) -> String,
+        fn(petgraph::prelude::EdgeIndex) -> String,
+    >
+{
     /// Creates a new `SettingsBuilder` instance with default values.
     ///
     /// For default values, see the `DEFAULT_*` constants.
@@ -151,44 +156,60 @@ impl<FnNodeLabel, FnEdgeLabel> SettingsBuilder<FnNodeLabel, FnEdgeLabel> {
             edge_label: None,
         }
     }
+}
 
+impl<FnNodeLabel, FnEdgeLabel> SettingsBuilder<FnNodeLabel, FnEdgeLabel> {
     /// Sets the width of the SVG canvas and returns the modified [`SettingsBuilder`].
+    ///
+    /// The default width is [`DEFAULT_WIDTH`].
     pub fn width(mut self, width: f32) -> Self {
         self.width = width;
         self
     }
 
     /// Sets the height of the SVG canvas and returns the modified [`SettingsBuilder`].
+    ///
+    /// The default height is [`DEFAULT_HEIGHT`].
     pub fn height(mut self, height: f32) -> Self {
         self.height = height;
         self
     }
 
     /// Sets the radius of the nodes in pixels and returns the modified [`SettingsBuilder`].
+    ///
+    /// The default radius is [`DEFAULT_RADIUS`].
     pub fn radius(mut self, radius: f32) -> Self {
         self.radius = radius;
         self
     }
 
     /// Sets the font size for labels in pixels and returns the modified [`SettingsBuilder`].
+    ///
+    /// The default font size is [`DEFAULT_FONT_SIZE`].
     pub fn font_size(mut self, font_size: f32) -> Self {
         self.font_size = font_size;
         self
     }
 
     /// Sets the stroke width for edges in pixels and returns the modified [`SettingsBuilder`].
+    ///
+    /// The default stroke width is [`DEFAULT_STROKE_WIDTH`].
     pub fn stroke_width(mut self, stroke_width: f32) -> Self {
         self.stroke_width = stroke_width;
         self
     }
 
     /// Sets the horizontal margin as a fraction of the width and returns the modified [`SettingsBuilder`].
+    ///
+    /// The default margin is [`DEFAULT_MARGIN`].
     pub fn margin_x(mut self, margin_x: f32) -> Self {
         self.margin_x = margin_x;
         self
     }
 
     /// Sets the vertical margin as a fraction of the height and returns the modified [`SettingsBuilder`].
+    ///
+    /// The default margin is [`DEFAULT_MARGIN`].
     pub fn margin_y(mut self, margin_y: f32) -> Self {
         self.margin_y = margin_y;
         self
