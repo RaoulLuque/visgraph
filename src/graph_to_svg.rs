@@ -7,16 +7,16 @@ use crate::settings::Settings;
 
 const EDGE_CLOSENESS_THRESHOLD: f32 = 0.001;
 
-pub fn graph_to_svg_with_positions<G, FnPos, FnLabel>(
+pub fn graph_to_svg_with_positions<G, FnPos, FnNodeLabel>(
     graph: G,
     position_map: FnPos,
-    label_map: FnLabel,
-    settings: Settings,
+    label_map: FnNodeLabel,
+    settings: &Settings,
 ) -> String
 where
     G: IntoNodeReferences + IntoEdgeReferences + NodeIndexable + EdgeIndexable,
     FnPos: Fn(G::NodeId) -> (f32, f32),
-    FnLabel: Fn(G::NodeId) -> String,
+    FnNodeLabel: Fn(G::NodeId) -> String,
 {
     let mut svg_buffer = String::with_capacity(graph.node_bound() * 120 + graph.edge_bound() * 50);
     svg_buffer.push_str(&format!(
@@ -59,15 +59,15 @@ where
     svg_buffer
 }
 
-pub fn graph_to_svg_with_layout<G, FnLabel>(
+pub fn graph_to_svg_with_layout<G, FnNodeLabel>(
     graph: G,
     layout: Layout,
-    label_map: FnLabel,
-    settings: Settings,
+    label_map: FnNodeLabel,
+    settings: &Settings,
 ) -> String
 where
     G: IntoNodeReferences + IntoEdgeReferences + NodeIndexable + EdgeIndexable,
-    FnLabel: Fn(G::NodeId) -> String,
+    FnNodeLabel: Fn(G::NodeId) -> String,
 {
     match layout {
         Layout::Circular => {

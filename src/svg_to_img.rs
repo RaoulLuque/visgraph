@@ -1,18 +1,13 @@
-use std::path::Path;
-
 use resvg::{render, tiny_skia};
 
 use crate::errors::SvgToImageError;
 use crate::settings::Settings;
 
-pub fn parse_svg_to_img<P>(
+pub fn parse_svg_to_img(
     svg_data: &str,
-    settings: Settings,
-    path: P,
-) -> Result<(), SvgToImageError>
-where
-    P: AsRef<Path>,
-{
+    settings: &Settings,
+    path: impl AsRef<std::path::Path>,
+) -> Result<(), SvgToImageError> {
     // Setup usvg options
     let mut opt = resvg::usvg::Options::default();
     opt.fontdb_mut().load_system_fonts();
