@@ -17,9 +17,9 @@ pub enum SvgToImageError {
     /// Error while parsing SVG data.
     #[error("SVG parsing error: {0}")]
     SVGParserError(#[from] UsvgError),
-    /// Error while encoding PNG image.
-    #[error("PNG encoding error: {0}")]
-    PNGEncodingError(Box<dyn std::error::Error + Send + Sync>),
+    /// IO error occurred during image saving.
+    #[error("IO error: {0}")]
+    IOError(#[from] std::io::Error),
 }
 
 #[derive(Clone, Copy, Debug, Error, PartialEq)]

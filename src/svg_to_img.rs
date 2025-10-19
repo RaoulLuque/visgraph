@@ -3,7 +3,7 @@ use resvg::{render, tiny_skia};
 use crate::errors::SvgToImageError;
 use crate::settings::Settings;
 
-pub fn parse_svg_to_img<FnNodeLabel, FnEdgeLabel>(
+pub fn svg_to_img<FnNodeLabel, FnEdgeLabel>(
     svg_data: &str,
     settings: &Settings<FnNodeLabel, FnEdgeLabel>,
     path: impl AsRef<std::path::Path>,
@@ -23,9 +23,12 @@ pub fn parse_svg_to_img<FnNodeLabel, FnEdgeLabel>(
         tiny_skia::Transform::identity(),
         &mut pixmap.as_mut(),
     );
-    pixmap
-        .save_png(path)
-        .map_err(|e| SvgToImageError::PNGEncodingError(Box::new(e)))?;
+    // Create directory if it doesn't exist
+    if let Some(parent) = path.as_ref().parent() {
+        std::fs::create_dir_all(parent)?;
+    }
+
+    pixmap.save_png(path).map_err(|e| std::io::Error::from(e))?;
 
     Ok(())
 }

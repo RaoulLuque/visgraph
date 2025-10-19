@@ -8,7 +8,7 @@ pub mod settings;
 mod svg_to_img;
 
 use petgraph::visit::{EdgeIndexable, IntoEdgeReferences, IntoNodeReferences, NodeIndexable};
-pub use svg_to_img::parse_svg_to_img;
+pub use svg_to_img::svg_to_img;
 
 pub use layout::Layout;
 
@@ -30,7 +30,7 @@ where
     FnEdgeLabel: Fn(G::EdgeId) -> String,
 {
     let svg_data = graph_to_svg_with_layout(graph, layout, settings);
-    parse_svg_to_img(&svg_data, settings, path)?;
+    svg_to_img(&svg_data, settings, path)?;
     Ok(())
 }
 
@@ -47,6 +47,6 @@ where
     FnPos: Fn(G::NodeId) -> (f32, f32),
 {
     let svg_data = graph_to_svg_with_positions(graph, position_map, settings);
-    parse_svg_to_img(&svg_data, settings, path)?;
+    svg_to_img(&svg_data, settings, path)?;
     Ok(())
 }

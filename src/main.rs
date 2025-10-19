@@ -17,5 +17,5 @@ fn main() {
         &Settings::default(),
     );
 
-    visgraph::parse_svg_to_img(&svg_data, &Settings::default(), "graph.png").unwrap();
+    visgraph::svg_to_img(&svg_data, &Settings::default(), "graph.png").unwrap();
 }
