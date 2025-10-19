@@ -8,12 +8,13 @@ description = "A library to convert graphs to images"
 documentation = "https://docs.rs/visgraph"
 repository = "https://github.com/raoulluque/visgraph"
 
-rust-version = "1.67.1"
+rust-version = "1.68"
 edition = "2021"
 
 [dependencies]
 petgraph = "0.8.3"
 resvg = { version = "0.45.1", features = ["text", "system-fonts"] }
+thiserror = "2.0.17"
 
 [dev-dependencies]
 criterion = { version = "0.7.0", features = ["html_reports"] }

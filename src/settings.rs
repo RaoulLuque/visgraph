@@ -1,65 +1,13 @@
 use std::{error::Error, fmt::Display};
 
+use crate::errors::SettingsError;
+
 pub const DEFAULT_WIDTH: f32 = 1000.0;
 pub const DEFAULT_HEIGHT: f32 = 1000.0;
 pub const DEFAULT_RADIUS: f32 = 25.0;
 pub const DEFAULT_FONT_SIZE: f32 = 16.0;
 pub const DEFAULT_STROKE_WIDTH: f32 = 5.0;
 pub const DEFAULT_MARGIN: f32 = 0.05;
-
-#[derive(Debug, Copy, Clone, PartialEq)]
-pub enum SettingsError {
-    /// Invalid dimensions: width or height are not strictly positive values.
-    InvalidDimensions((f32, f32)),
-    /// Invalid radius: radius is not a strictly positive value.
-    InvalidRadius(f32),
-    /// Invalid font size: font size is not a strictly positive value.
-    InvalidFontSize(f32),
-    /// Invalid stroke width: stroke width is not a strictly positive value.
-    InvalidStrokeWidth(f32),
-    /// Invalid margins: margins are not in the range [0.0, 0.5).
-    InvalidMargin((f32, f32)),
-}
-
-impl Display for SettingsError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            SettingsError::InvalidDimensions((w, h)) => {
-                write!(
-                    f,
-                    "Invalid dimensions: width={} and height={} must be positive values.",
-                    w, h
-                )
-            }
-            SettingsError::InvalidRadius(r) => {
-                write!(f, "Invalid radius: radius={} must be a positive value.", r)
-            }
-            SettingsError::InvalidFontSize(fs) => {
-                write!(
-                    f,
-                    "Invalid font size: font_size={} must be a positive value.",
-                    fs
-                )
-            }
-            SettingsError::InvalidStrokeWidth(sw) => {
-                write!(
-                    f,
-                    "Invalid stroke width: stroke_width={} must be a positive value.",
-                    sw
-                )
-            }
-            SettingsError::InvalidMargin((mx, my)) => {
-                write!(
-                    f,
-                    "Invalid margins: margin_x={} and margin_y={} must lie in the range [0.0, 0.5).",
-                    mx, my
-                )
-            }
-        }
-    }
-}
-
-impl Error for SettingsError {}
 
 /// Settings for SVG graph rendering.
 ///

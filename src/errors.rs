@@ -1,30 +1,42 @@
 use resvg::usvg::Error as UsvgError;
-use std::{error::Error, fmt::Display};
+use thiserror::Error;
 
-#[derive(Debug)]
+#[derive(Debug, Error)]
+pub enum VisGraphError {
+    /// Error related to settings validation.
+    #[error("Settings error: {0}")]
+    SettingsError(#[from] SettingsError),
+    /// Error while converting SVG to image.
+    #[error("SVG to Image conversion error: {0}")]
+    SvgToImageError(#[from] SvgToImageError),
+}
+
+#[derive(Debug, Error)]
 /// Errors that can occur when converting SVG data to an image.
 pub enum SvgToImageError {
     /// Error while parsing SVG data.
-    SVGParserError(UsvgError),
+    #[error("SVG parsing error: {0}")]
+    SVGParserError(#[from] UsvgError),
     /// Error while encoding PNG image.
-    PNGEncodingError(Box<dyn Error + Send + Sync>),
+    #[error("PNG encoding error: {0}")]
+    PNGEncodingError(Box<dyn std::error::Error + Send + Sync>),
 }
 
-impl Display for SvgToImageError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            SvgToImageError::SVGParserError(e) => write!(f, "SVG parsing error: {}", e),
-            SvgToImageError::PNGEncodingError(e) => {
-                write!(f, "PNG encoding error: {}", e)
-            }
-        }
-    }
-}
-
-impl Error for SvgToImageError {}
-
-impl From<UsvgError> for SvgToImageError {
-    fn from(err: UsvgError) -> Self {
-        SvgToImageError::SVGParserError(err)
-    }
+#[derive(Clone, Copy, Debug, Error, PartialEq)]
+pub enum SettingsError {
+    /// Invalid dimensions: width or height are not strictly positive values.
+    #[error("Invalid dimensions: {0:?} must be positive values.")]
+    InvalidDimensions((f32, f32)),
+    /// Invalid radius: radius is not a strictly positive value.
+    #[error("Invalid radius: {0} must be a positive value.")]
+    InvalidRadius(f32),
+    /// Invalid font size: font size is not a strictly positive value.
+    #[error("Invalid font size: {0} must be a positive value.")]
+    InvalidFontSize(f32),
+    /// Invalid stroke width: stroke width is not a strictly positive value.
+    #[error("Invalid stroke width: {0} must be a positive value.")]
+    InvalidStrokeWidth(f32),
+    /// Invalid margins: margins are not in the range [0.0, 0.5).
+    #[error("Invalid margins: {0:?} must lie in the range [0.0, 0.5).")]
+    InvalidMargin((f32, f32)),
 }
