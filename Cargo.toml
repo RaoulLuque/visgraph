@@ -12,7 +12,7 @@ rust-version = "1.68"
 edition = "2021"
 
 [dependencies]
-petgraph = "0.8.3"
+petgraph = { version= "0.8.3", features = [] }
 resvg = { version = "0.45.1", features = ["text", "system-fonts"] }
 thiserror = "2.0.17"
 
