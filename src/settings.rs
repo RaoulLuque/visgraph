@@ -1,5 +1,3 @@
-use std::{error::Error, fmt::Display};
-
 use crate::errors::SettingsError;
 
 pub const DEFAULT_WIDTH: f32 = 1000.0;
@@ -11,23 +9,63 @@ pub const DEFAULT_MARGIN: f32 = 0.05;
 
 /// Settings for SVG graph rendering.
 ///
-/// For the different settings, see the fields of the [`SettingsBuilder`] struct.
+/// For the details on the different settings, see the fields of the [`SettingsBuilder`] struct.
 ///
-/// One can either create a `Settings` instance directly using `Settings::default()` or `Settings::new()`,
-/// which will use default values, or use the `SettingsBuilder` to customize specific settings.
+/// One can either create a [`Settings`] instance directly using [`Settings::default()`] or `Settings::new()`,
+/// which will use default values, or use the [`SettingsBuilder`] struct to customize specific settings.
 /// The latter will validate the provided values upon calling `build()`.
 ///
 /// For default values, see the `DEFAULT_*` constants.
 ///
 /// /// Example usage:
 /// ```rust
-/// use visgraph::settings::Settings;
-/// // We overwrite only the width and height and keep other settings as default.
-/// let settings = Settings::new()
-///     .with_width(800.0)
-///     .with_height(600.0);
+/// use visgraph::settings::SettingsBuilder;
+/// // All values we don't explicitly set will use their default values.
+/// let settings = SettingsBuilder::new()
+///     .width(800.0)
+///     .height(600.0)
+///     .build()
+///     .expect("Provided values should be valid.");
 /// ```
 pub struct Settings {
+    pub(crate) width: f32,
+    pub(crate) height: f32,
+    pub(crate) radius: f32,
+    pub(crate) font_size: f32,
+    pub(crate) stroke_width: f32,
+    pub(crate) margin_x: f32,
+    pub(crate) margin_y: f32,
+}
+
+impl Default for Settings {
+    /// Creates a new [`Settings`] instance with default values.
+    ///
+    /// For default values, see the `DEFAULT_*` constants.
+    fn default() -> Self {
+        Settings {
+            width: DEFAULT_WIDTH,
+            height: DEFAULT_HEIGHT,
+            radius: DEFAULT_RADIUS,
+            font_size: DEFAULT_FONT_SIZE,
+            stroke_width: DEFAULT_STROKE_WIDTH,
+            margin_x: DEFAULT_MARGIN,
+            margin_y: DEFAULT_MARGIN,
+        }
+    }
+}
+
+impl Settings {
+    /// Creates a new [`Settings`] instance with default values.
+    ///
+    /// Use the [`SettingsBuilder`] struct to customize specific settings and for details on the
+    /// different settings.
+    /// For default values, see the `DEFAULT_*` constants.
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+
+pub struct SettingsBuilder {
     /// Width of the SVG and output image in pixels.
     ///
     /// *Valid values*: strictly positive f32
@@ -60,12 +98,12 @@ pub struct Settings {
     pub margin_y: f32,
 }
 
-impl Default for Settings {
-    /// Creates a new `Settings` instance with default values.
+impl SettingsBuilder {
+    /// Creates a new `SettingsBuilder` instance with default values.
     ///
     /// For default values, see the `DEFAULT_*` constants.
-    fn default() -> Self {
-        Settings {
+    pub fn new() -> Self {
+        SettingsBuilder {
             width: DEFAULT_WIDTH,
             height: DEFAULT_HEIGHT,
             radius: DEFAULT_RADIUS,
@@ -75,65 +113,53 @@ impl Default for Settings {
             margin_y: DEFAULT_MARGIN,
         }
     }
-}
 
-impl Settings {
-    /// Creates a new `Settings` instance with default values.
-    ///
-    /// Default values can be overwritten using the `with_*` methods in a builder pattern. For a
-    /// description of each settings, see the [`Settings`] struct documentation.
-    ///
-    /// For default values, see the `DEFAULT_*` constants.
-    pub fn new() -> Self {
-        Self::default()
-    }
-
-    /// Sets the width of the SVG canvas and returns the modified `Settings`.
-    pub fn with_width(mut self, width: f32) -> Self {
+    /// Sets the width of the SVG canvas and returns the modified [`SettingsBuilder`].
+    pub fn width(mut self, width: f32) -> Self {
         self.width = width;
         self
     }
 
-    /// Sets the height of the SVG canvas and returns the modified `Settings`.
-    pub fn with_height(mut self, height: f32) -> Self {
+    /// Sets the height of the SVG canvas and returns the modified [`SettingsBuilder`].
+    pub fn height(mut self, height: f32) -> Self {
         self.height = height;
         self
     }
 
-    /// Sets the radius of the nodes in pixels and returns the modified `Settings`.
-    pub fn with_radius(mut self, radius: f32) -> Self {
+    /// Sets the radius of the nodes in pixels and returns the modified [`SettingsBuilder`].
+    pub fn radius(mut self, radius: f32) -> Self {
         self.radius = radius;
         self
     }
 
-    /// Sets the font size for labels in pixels and returns the modified `Settings`.
-    pub fn with_font_size(mut self, font_size: f32) -> Self {
+    /// Sets the font size for labels in pixels and returns the modified [`SettingsBuilder`].
+    pub fn font_size(mut self, font_size: f32) -> Self {
         self.font_size = font_size;
         self
     }
 
-    /// Sets the stroke width for edges in pixels and returns the modified `Settings`.
-    pub fn with_stroke_width(mut self, stroke_width: f32) -> Self {
+    /// Sets the stroke width for edges in pixels and returns the modified [`SettingsBuilder`].
+    pub fn stroke_width(mut self, stroke_width: f32) -> Self {
         self.stroke_width = stroke_width;
         self
     }
 
-    /// Sets the horizontal margin as a fraction of the width and returns the modified `Settings`.
-    pub fn with_margin_x(mut self, margin_x: f32) -> Self {
+    /// Sets the horizontal margin as a fraction of the width and returns the modified [`SettingsBuilder`].
+    pub fn margin_x(mut self, margin_x: f32) -> Self {
         self.margin_x = margin_x;
         self
     }
 
-    /// Sets the vertical margin as a fraction of the height and returns the modified `Settings`.
-    pub fn with_margin_y(mut self, margin_y: f32) -> Self {
+    /// Sets the vertical margin as a fraction of the height and returns the modified [`SettingsBuilder`].
+    pub fn margin_y(mut self, margin_y: f32) -> Self {
         self.margin_y = margin_y;
         self
     }
 
     /// Validates the settings.
     ///
-    /// Checks that all settings are within acceptable ranges. If not, returns a corresponding `SettingsError`.
-    fn validate_settings(&self) -> Result<(), SettingsError> {
+    /// Checks that all settings are within acceptable ranges. If not, returns a corresponding [`SettingsError`].
+    fn validate(&self) -> Result<(), SettingsError> {
         if self.width <= 0.0 || self.height <= 0.0 {
             return Err(SettingsError::InvalidDimensions((self.width, self.height)));
         } else if self.radius <= 0.0 {
@@ -151,5 +177,20 @@ impl Settings {
         }
 
         Ok(())
+    }
+
+    /// Builds the [`Settings`] instance after validating the provided values.
+    pub fn build(self) -> Result<Settings, SettingsError> {
+        self.validate()?;
+        let settings = Settings {
+            width: self.width,
+            height: self.height,
+            radius: self.radius,
+            font_size: self.font_size,
+            stroke_width: self.stroke_width,
+            margin_x: self.margin_x,
+            margin_y: self.margin_y,
+        };
+        Ok(settings)
     }
 }
