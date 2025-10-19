@@ -1,0 +1,87 @@
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ '*' ]
+  merge_group:
+    types: [ checks_requested ]
+  workflow_dispatch: { }
+
+name: Continuous integration
+
+env:
+  CARGO_TERM_COLOR: always
+  CARGO_INCREMENTAL: 0
+  SCCACHE_GHA_ENABLED: "true"
+  RUSTC_WRAPPER: "sccache"
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - rust: 1.68.0  # MSRV
+          - rust: stable
+            test_all: --all
+          - rust: beta
+            test_all: --all
+          - rust: nightly
+            test_all: --all
+            bench: true
+    name: Tests (Rust ${{ matrix.rust }})
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: mozilla-actions/sccache-action@v0.0.8
+      - id: toolchain
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ matrix.rust }}
+
+      - name: Build
+        run: cargo build --verbose
+      - name: Test
+        run: cargo test ${{ matrix.test_all }} --verbose
+
+      - name: Build benchmarks
+        if: ${{ matrix.bench }}
+        run: |
+          cargo bench --verbose --no-run
+          cargo bench --verbose --no-run --all-features
+
+  examples:
+    name: Examples
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: mozilla-actions/sccache-action@v0.0.8
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Build examples
+        run: |
+            cargo run --release --example complete_graph_with_circular_layout
+            cargo run --release --example graph_with_custom_labels
+            cargo run --release --example square_graph_with_position_map
+
+  check:
+    name: Lints
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: mozilla-actions/sccache-action@v0.0.8
+      - uses: extractions/setup-just@v3
+      - name: Install stable toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Check formatting
+        run: cargo fmt --all -- --check
+
+      - name: Run clippy
+        run: cargo clippy --all-targets --all-features --lib --bins --examples --tests -- -D warnings
+
+      - name: Build docs
+        run: cargo doc --no-deps --all-features
+        env:
+          RUSTDOCFLAGS: "-Dwarnings"

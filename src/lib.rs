@@ -47,11 +47,11 @@ use crate::{
 ///     }
 /// }
 ///
-/// // Customize settings using the SettingsBuilder.
+/// // Customize settings using the SettingsBuilder. Values which are not set will use defaults.
 /// let settings = SettingsBuilder::new()
-///     .width(1000.0)
-///     .height(1000.0)
-///     .radius(7.5)
+///     .width(500.0)
+///     .height(500.0)
+///     .node_radius(7.5)
 ///     .stroke_width(0.1)
 ///     .font_size(7.5)
 ///     .build()
@@ -124,10 +124,10 @@ where
 ///     _ => (0.5, 0.5),
 /// };
 ///
-/// // Customize settings using the SettingsBuilder.
+/// // Customize settings using the SettingsBuilder. Values which are not set will use defaults.
 /// let settings = SettingsBuilder::new()
-///     .width(3000.0)
-///     .height(3000.0)
+///     .width(500.0)
+///     .height(500.0)
 ///     .build()
 ///     .expect("Values should be valid.");
 ///
