@@ -5,9 +5,11 @@ mod errors;
 pub mod graph_to_svg;
 mod layout;
 pub mod settings;
+#[cfg(feature = "svg_to_img")]
 mod svg_to_img;
 
 use petgraph::visit::{EdgeIndexable, IntoEdgeReferences, IntoNodeReferences, NodeIndexable};
+#[cfg(feature = "svg_to_img")]
 pub use svg_to_img::svg_to_img;
 
 pub use layout::Layout;
@@ -64,6 +66,7 @@ use crate::{
 /// )
 /// .unwrap();
 /// ```
+#[cfg(feature = "svg_to_img")]
 pub fn graph_to_img_with_layout<G, FnNodeLabel, FnEdgeLabel>(
     graph: G,
     layout: Layout,
@@ -137,6 +140,7 @@ where
 /// )
 /// .unwrap();
 /// ```
+#[cfg(feature = "svg_to_img")]
 pub fn graph_to_img_with_position_map<G, FnNodeLabel, FnEdgeLabel, FnPos>(
     graph: G,
     position_map: FnPos,

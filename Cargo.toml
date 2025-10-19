@@ -13,11 +13,15 @@ edition = "2021"
 
 [dependencies]
 petgraph = { version= "0.8.3", features = [] }
-resvg = { version = "0.45.1", features = ["text", "system-fonts"] }
+resvg = { version = "0.45.1", features = ["text", "system-fonts"], optional = true}
 thiserror = "2.0.17"
 
 [dev-dependencies]
 criterion = { version = "0.7.0", features = ["html_reports"] }
+
+[features]
+default = ["svg_to_img"]
+svg_to_img = ["resvg"]
 
 [[bench]]
 name = "graph_to_svg"
