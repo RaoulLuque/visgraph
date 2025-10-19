@@ -21,19 +21,17 @@ fn main() {
 
     // Positions should be between (0.0) and (1.0)
     let position_map = |node_id| match node_id {
-        node_a => (0.0, 0.0),
-        node_b => (1.0, 0.0),
-        node_c => (1.0, 1.0),
-        node_d => (0.0, 1.0),
-        _ => unreachable!(),
+        id if id == node_a => (0.25, 0.25),
+        id if id == node_b => (0.75, 0.25),
+        id if id == node_c => (0.75, 0.75),
+        id if id == node_d => (0.25, 0.75),
+        _ => (0.5, 0.5),
     };
 
     // Customize settings using the SettingsBuilder.
     let settings = SettingsBuilder::new()
-        .width(1000.0)
-        .height(1000.0)
-        .radius(5.0)
-        .stroke_width(2.0)
+        .width(3000.0)
+        .height(3000.0)
         .build()
         .expect("Values should be valid.");
 
@@ -42,7 +40,7 @@ fn main() {
         &complete_graph,
         position_map,
         &settings,
-        "target/visualizations/graph.png",
+        "examples/results/square_graph_with_position_map.png",
     )
     .unwrap();
 }

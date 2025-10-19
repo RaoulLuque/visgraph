@@ -20,8 +20,9 @@ fn main() {
     let settings = SettingsBuilder::new()
         .width(1000.0)
         .height(1000.0)
-        .radius(5.0)
-        .stroke_width(2.0)
+        .radius(7.5)
+        .stroke_width(0.1)
+        .font_size(7.5)
         .build()
         .expect("Values should be valid.");
 
@@ -30,7 +31,7 @@ fn main() {
         &complete_graph,
         visgraph::Layout::Circular,
         &settings,
-        "target/visualizations/graph.png",
+        "examples/results/complete_graph_with_circular_layout.png",
     )
     .unwrap();
 }
