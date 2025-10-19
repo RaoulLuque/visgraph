@@ -20,7 +20,7 @@ fn main() {
     let settings = SettingsBuilder::new()
         .width(1000.0)
         .height(1000.0)
-        .radius(7.5)
+        .node_radius(7.5)
         .stroke_width(0.1)
         .font_size(7.5)
         .build()

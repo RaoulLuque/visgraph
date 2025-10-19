@@ -23,7 +23,7 @@ fn main() {
     let settings = SettingsBuilder::new()
         .width(1000.0)
         .height(1000.0)
-        .radius(50.0)
+        .node_radius(50.0)
         .margin_x(0.1)
         .margin_y(0.1)
         .node_label_fn(node_labels)

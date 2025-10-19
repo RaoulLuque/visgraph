@@ -40,13 +40,13 @@ use crate::{
 /// let nodes: Vec<_> = (0..num_nodes)
 ///     .map(|_| complete_graph.add_node(()))
 ///     .collect();
-
+///
 /// for i in 0..num_nodes {
 ///     for j in (i + 1)..num_nodes {
 ///         complete_graph.add_edge(nodes[i], nodes[j], ());
 ///     }
 /// }
-
+///
 /// // Customize settings using the SettingsBuilder.
 /// let settings = SettingsBuilder::new()
 ///     .width(1000.0)
@@ -56,7 +56,7 @@ use crate::{
 ///     .font_size(7.5)
 ///     .build()
 ///     .expect("Values should be valid.");
-
+///
 /// // Generate and save the graph image using a circular layout.
 /// graph_to_img_with_layout(
 ///     &complete_graph,
@@ -79,7 +79,7 @@ where
     FnEdgeLabel: Fn(G::EdgeId) -> String,
 {
     let svg_data = graph_to_svg_with_layout(graph, layout, settings);
-    svg_to_img(&svg_data, settings, path)?;
+    svg_to_img(&svg_data, settings.width, settings.height, path)?;
     Ok(())
 }
 
@@ -154,6 +154,6 @@ where
     FnPos: Fn(G::NodeId) -> (f32, f32),
 {
     let svg_data = graph_to_svg_with_positions(graph, position_map, settings);
-    svg_to_img(&svg_data, settings, path)?;
+    svg_to_img(&svg_data, settings.width, settings.height, path)?;
     Ok(())
 }
