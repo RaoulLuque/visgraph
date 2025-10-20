@@ -67,7 +67,7 @@ where
 {
     let mut svg_buffer = String::with_capacity(graph.node_bound() * 120 + graph.edge_bound() * 50);
     svg_buffer.push_str(&format!(
-        r#"<svg width="{}" height="{}" xmlns="http://www.w3.org/2000/svg">"#,
+        "<svg width=\"{}\" height=\"{}\" xmlns=\"http://www.w3.org/2000/svg\">\n",
         settings.width, settings.height
     ));
 
@@ -155,8 +155,8 @@ fn draw_node(
     radius: f32,
     font_size: f32,
 ) {
-    svg_buffer.push_str(&format!(
-            "   <circle cx=\"{coord_x}\" cy=\"{coord_y}\" r=\"{radius}\" fill=\"white\" stroke=\"black\"/>\n
+    svg_buffer.push_str(&format!("
+    <circle cx=\"{coord_x}\" cy=\"{coord_y}\" r=\"{radius}\" fill=\"white\" stroke=\"black\"/>
     <text x=\"{coord_x}\" y=\"{coord_y}\" font-size=\"{font_size}px\" font-family='Arial, sans-serif' fill=\"black\" text-anchor=\"middle\" dominant-baseline=\"central\">{node_label}</text>\n",
         ));
 }
@@ -195,7 +195,8 @@ fn draw_edge(
     let end_y = coord_y_target - radius * unit_dir_vec_y;
 
     svg_buffer.push_str(&format!(
-        "   <line x1=\"{}\" y1=\"{}\" x2=\"{}\" y2=\"{}\" stroke=\"black\" stroke-width=\"{}\"/>\n",
+        "
+    <line x1=\"{}\" y1=\"{}\" x2=\"{}\" y2=\"{}\" stroke=\"black\" stroke-width=\"{}\"/>\n",
         start_x, start_y, end_x, end_y, stroke_width
     ));
 }
@@ -222,4 +223,85 @@ fn scale(
     (margin_adjusted_upscaled_x, margin_adjusted_upscaled_y)
 }
 
+#[cfg(test)]
+mod tests {
+    use crate::graph_to_svg::graph_to_svg_with_positions;
+    use crate::settings::SettingsBuilder;
+    use petgraph::graph::UnGraph;
+
+    #[test]
+    fn test_scale() {
+        let (scaled_x, scaled_y) = super::scale((0.5, 0.5), 0.1, 0.1, 1000.0, 1000.0);
+        assert!((scaled_x - 500.0).abs() < f32::EPSILON);
+        assert!((scaled_y - 500.0).abs() < f32::EPSILON);
+
+        let (scaled_x, scaled_y) = super::scale((0.0, 0.0), 0.1, 0.1, 1000.0, 1000.0);
+        assert!((scaled_x - 100.0).abs() < f32::EPSILON);
+        assert!((scaled_y - 100.0).abs() < f32::EPSILON);
+
+        let (scaled_x, scaled_y) = super::scale((1.0, 1.0), 0.1, 0.1, 1000.0, 1000.0);
+        assert!((scaled_x - 900.0).abs() < f32::EPSILON);
+        assert!((scaled_y - 900.0).abs() < f32::EPSILON);
+    }
+
+    #[test]
+    fn test_graph_to_svg_with_position_map() {
+        // Create a square graph with four nodes
+        // It should look like this:
+        // A --- B
+        // |     |
+        // D --- C
+        let mut graph = UnGraph::new_undirected();
+        let node_a = graph.add_node(());
+        let node_b = graph.add_node(());
+        let node_c = graph.add_node(());
+        let node_d = graph.add_node(());
+
+        graph.add_edge(node_a, node_b, ());
+        graph.add_edge(node_b, node_c, ());
+        graph.add_edge(node_c, node_d, ());
+        graph.add_edge(node_d, node_a, ());
+
+        // Positions should be between (0.0) and (1.0)
+        let position_map = |node_id| match node_id {
+            id if id == node_a => (0.25, 0.25),
+            id if id == node_b => (0.75, 0.25),
+            id if id == node_c => (0.75, 0.75),
+            id if id == node_d => (0.25, 0.75),
+            _ => (0.5, 0.5),
+        };
+
+        // Customize settings using the SettingsBuilder.
+        let settings = SettingsBuilder::new()
+            .width(3000.0)
+            .height(3000.0)
+            .build()
+            .expect("Values should be valid.");
+        let svg_output = graph_to_svg_with_positions(&graph, position_map, &settings);
+
+        let expected_output = "<svg width=\"3000\" height=\"3000\" xmlns=\"http://www.w3.org/2000/svg\">
+
+    <circle cx=\"825\" cy=\"825\" r=\"25\" fill=\"white\" stroke=\"black\"/>
+    <text x=\"825\" y=\"825\" font-size=\"16px\" font-family='Arial, sans-serif' fill=\"black\" text-anchor=\"middle\" dominant-baseline=\"central\">0</text>
+
+    <circle cx=\"2175\" cy=\"825\" r=\"25\" fill=\"white\" stroke=\"black\"/>
+    <text x=\"2175\" y=\"825\" font-size=\"16px\" font-family='Arial, sans-serif' fill=\"black\" text-anchor=\"middle\" dominant-baseline=\"central\">1</text>
+
+    <circle cx=\"2175\" cy=\"2175\" r=\"25\" fill=\"white\" stroke=\"black\"/>
+    <text x=\"2175\" y=\"2175\" font-size=\"16px\" font-family='Arial, sans-serif' fill=\"black\" text-anchor=\"middle\" dominant-baseline=\"central\">2</text>
+
+    <circle cx=\"825\" cy=\"2175\" r=\"25\" fill=\"white\" stroke=\"black\"/>
+    <text x=\"825\" y=\"2175\" font-size=\"16px\" font-family='Arial, sans-serif' fill=\"black\" text-anchor=\"middle\" dominant-baseline=\"central\">3</text>
+
+    <line x1=\"850\" y1=\"825\" x2=\"2150\" y2=\"825\" stroke=\"black\" stroke-width=\"5\"/>
+
+    <line x1=\"2175\" y1=\"850\" x2=\"2175\" y2=\"2150\" stroke=\"black\" stroke-width=\"5\"/>
+
+    <line x1=\"2150\" y1=\"2175\" x2=\"850\" y2=\"2175\" stroke=\"black\" stroke-width=\"5\"/>
+
+    <line x1=\"825\" y1=\"2150\" x2=\"825\" y2=\"850\" stroke=\"black\" stroke-width=\"5\"/>
+</svg>".to_owned();
+
+        assert_eq!(svg_output, expected_output);
+    }
 }

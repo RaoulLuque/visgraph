@@ -34,9 +34,9 @@ use crate::{
 /// use visgraph::graph_to_img_with_layout;
 /// use visgraph::settings::SettingsBuilder;
 ///
-/// // Create a complete graph with 100 nodes.
+/// // Create a complete graph with 4 nodes.
 /// let mut complete_graph = UnGraph::new_undirected();
-/// let num_nodes = 100;
+/// let num_nodes = 4;
 /// let nodes: Vec<_> = (0..num_nodes)
 ///     .map(|_| complete_graph.add_node(()))
 ///     .collect();
