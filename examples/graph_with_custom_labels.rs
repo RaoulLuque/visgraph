@@ -19,7 +19,7 @@ fn main() {
     let node_labels = |node_id| graph.node_weight(node_id).unwrap().to_owned();
     let edge_labels = |_| "An edge".to_string();
 
-    // Customize settings using the SettingsBuilder.
+    // Customize settings using the SettingsBuilder. Values which are not set will use defaults.
     let settings = SettingsBuilder::new()
         .width(1000.0)
         .height(1000.0)

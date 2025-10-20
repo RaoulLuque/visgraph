@@ -7,6 +7,56 @@ use crate::settings::Settings;
 
 const EDGE_CLOSENESS_THRESHOLD: f32 = 0.001;
 
+/// Generates an SVG representation of the graph using the provided position map and settings.
+///
+/// The position_map parameter should implement Fn(G::NodeId) -> (f32, f32) and return a tuple of
+/// normalized (x, y) coordinates in the range [0.0, 1.0].
+///
+/// Example:
+/// ```
+/// use petgraph::graph::UnGraph;
+/// use visgraph::graph_to_svg::graph_to_svg_with_positions;
+/// use visgraph::settings::SettingsBuilder;
+///
+/// // Create a square graph with four nodes
+/// // It should look like this:
+/// // A --- B
+/// // |     |
+/// // D --- C
+/// let mut square_graph = UnGraph::new_undirected();
+/// let node_a = square_graph.add_node(());
+/// let node_b = square_graph.add_node(());
+/// let node_c = square_graph.add_node(());
+/// let node_d = square_graph.add_node(());
+///
+/// square_graph.add_edge(node_a, node_b, ());
+/// square_graph.add_edge(node_b, node_c, ());
+/// square_graph.add_edge(node_c, node_d, ());
+/// square_graph.add_edge(node_d, node_a, ());
+///
+/// // Positions should be between (0.0) and (1.0)
+/// let position_map = |node_id| match node_id {
+///     id if id == node_a => (0.25, 0.25),
+///     id if id == node_b => (0.75, 0.25),
+///     id if id == node_c => (0.75, 0.75),
+///     id if id == node_d => (0.25, 0.75),
+///     _ => (0.5, 0.5),
+/// };
+///
+/// // Customize settings using the SettingsBuilder. Values which are not set will use defaults.
+/// let settings = SettingsBuilder::new()
+///     .width(500.0)
+///     .height(500.0)
+///     .build()
+///     .expect("Values should be valid.");
+///
+/// // Generate svg output using the custom position map.
+/// let svg_data = graph_to_svg_with_positions(
+///     &square_graph,
+///     position_map,
+///     &settings,
+/// );
+/// ```
 pub fn graph_to_svg_with_positions<G, FnPos, FnNodeLabel, FnEdgeLabel>(
     graph: G,
     position_map: FnPos,
@@ -124,6 +174,44 @@ where
     svg_buffer
 }
 
+/// Generates an SVG representation of the graph using the specified layout algorithm and settings.
+///
+/// Example:
+/// ```
+/// use petgraph::graph::UnGraph;
+/// use visgraph::graph_to_svg::graph_to_svg_with_layout;
+/// use visgraph::settings::SettingsBuilder;
+///
+/// // Create a complete graph with 8 nodes.
+/// let mut complete_graph = UnGraph::new_undirected();
+/// let num_nodes = 8;
+/// let nodes: Vec<_> = (0..num_nodes)
+///     .map(|_| complete_graph.add_node(()))
+///     .collect();
+///
+/// for i in 0..num_nodes {
+///     for j in (i + 1)..num_nodes {
+///         complete_graph.add_edge(nodes[i], nodes[j], ());
+///     }
+/// }
+///
+/// // Customize settings using the SettingsBuilder. Values which are not set will use defaults.
+/// let settings = SettingsBuilder::new()
+///     .width(1000.0)
+///     .height(1000.0)
+///     .node_radius(7.5)
+///     .stroke_width(0.1)
+///     .font_size(7.5)
+///     .build()
+///     .expect("Values should be valid.");
+///
+/// // Generate svg output using a circular layout.
+/// let svg_data = graph_to_svg_with_layout(
+///     &complete_graph,
+///     visgraph::Layout::Circular,
+///     &settings,
+/// );
+/// ```
 pub fn graph_to_svg_with_layout<G, FnNodeLabel, FnEdgeLabel>(
     graph: G,
     layout: Layout,
@@ -226,9 +314,7 @@ fn scale(
 #[cfg(test)]
 mod tests {
     use crate::graph_to_svg::graph_to_svg_with_positions;
-    use crate::settings::SettingsBuilder;
     use crate::tests::test_square_graph_with_position_map;
-    use petgraph::graph::UnGraph;
 
     #[test]
     fn test_scale() {

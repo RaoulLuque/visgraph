@@ -28,7 +28,7 @@ fn main() {
         _ => (0.5, 0.5),
     };
 
-    // Customize settings using the SettingsBuilder.
+    // Customize settings using the SettingsBuilder. Values which are not set will use defaults.
     let settings = SettingsBuilder::new()
         .width(500.0)
         .height(500.0)

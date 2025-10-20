@@ -62,7 +62,7 @@ use crate::{
 ///     &complete_graph,
 ///     visgraph::Layout::Circular,
 ///     &settings,
-///     "examples/results/complete_graph_with_circular_layout.png",
+///     "target/visualizations/complete_graph_with_circular_layout.png",
 /// )
 /// .unwrap();
 /// ```
@@ -136,7 +136,7 @@ where
 ///     &square_graph,
 ///     position_map,
 ///     &settings,
-///     "examples/results/square_graph_with_position_map.png",
+///     "target/visualizations/square_graph_with_position_map.png",
 /// )
 /// .unwrap();
 /// ```
