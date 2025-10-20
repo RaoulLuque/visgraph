@@ -16,6 +16,9 @@ petgraph = { version= "0.8.3", features = [] }
 resvg = { version = "0.45.1", features = ["text", "system-fonts"], optional = true}
 thiserror = "2.0.17"
 
+[profile.dev.package.resvg]
+opt-level = 3
+
 [dev-dependencies]
 criterion = { version = "0.7.0", features = ["html_reports"] }
 image = "0.25.4"
