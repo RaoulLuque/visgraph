@@ -227,6 +227,7 @@ fn scale(
 mod tests {
     use crate::graph_to_svg::graph_to_svg_with_positions;
     use crate::settings::SettingsBuilder;
+    use crate::tests::test_square_graph_with_position_map;
     use petgraph::graph::UnGraph;
 
     #[test]
@@ -246,60 +247,32 @@ mod tests {
 
     #[test]
     fn test_graph_to_svg_with_position_map() {
-        // Create a square graph with four nodes
-        // It should look like this:
-        // A --- B
-        // |     |
-        // D --- C
-        let mut graph = UnGraph::new_undirected();
-        let node_a = graph.add_node(());
-        let node_b = graph.add_node(());
-        let node_c = graph.add_node(());
-        let node_d = graph.add_node(());
-
-        graph.add_edge(node_a, node_b, ());
-        graph.add_edge(node_b, node_c, ());
-        graph.add_edge(node_c, node_d, ());
-        graph.add_edge(node_d, node_a, ());
-
-        // Positions should be between (0.0) and (1.0)
-        let position_map = |node_id| match node_id {
-            id if id == node_a => (0.25, 0.25),
-            id if id == node_b => (0.75, 0.25),
-            id if id == node_c => (0.75, 0.75),
-            id if id == node_d => (0.25, 0.75),
-            _ => (0.5, 0.5),
-        };
-
-        // Customize settings using the SettingsBuilder.
-        let settings = SettingsBuilder::new()
-            .width(3000.0)
-            .height(3000.0)
-            .build()
-            .expect("Values should be valid.");
+        let (graph, settings, position_map) = test_square_graph_with_position_map();
         let svg_output = graph_to_svg_with_positions(&graph, position_map, &settings);
 
-        let expected_output = "<svg width=\"3000\" height=\"3000\" xmlns=\"http://www.w3.org/2000/svg\">
+        println!("{}", svg_output);
 
-    <circle cx=\"825\" cy=\"825\" r=\"25\" fill=\"white\" stroke=\"black\"/>
-    <text x=\"825\" y=\"825\" font-size=\"16px\" font-family='Arial, sans-serif' fill=\"black\" text-anchor=\"middle\" dominant-baseline=\"central\">0</text>
+        let expected_output = "<svg width=\"500\" height=\"500\" xmlns=\"http://www.w3.org/2000/svg\">
 
-    <circle cx=\"2175\" cy=\"825\" r=\"25\" fill=\"white\" stroke=\"black\"/>
-    <text x=\"2175\" y=\"825\" font-size=\"16px\" font-family='Arial, sans-serif' fill=\"black\" text-anchor=\"middle\" dominant-baseline=\"central\">1</text>
+    <circle cx=\"137.5\" cy=\"137.5\" r=\"25\" fill=\"white\" stroke=\"black\"/>
+    <text x=\"137.5\" y=\"137.5\" font-size=\"16px\" font-family='Arial, sans-serif' fill=\"black\" text-anchor=\"middle\" dominant-baseline=\"central\">0</text>
 
-    <circle cx=\"2175\" cy=\"2175\" r=\"25\" fill=\"white\" stroke=\"black\"/>
-    <text x=\"2175\" y=\"2175\" font-size=\"16px\" font-family='Arial, sans-serif' fill=\"black\" text-anchor=\"middle\" dominant-baseline=\"central\">2</text>
+    <circle cx=\"362.5\" cy=\"137.5\" r=\"25\" fill=\"white\" stroke=\"black\"/>
+    <text x=\"362.5\" y=\"137.5\" font-size=\"16px\" font-family='Arial, sans-serif' fill=\"black\" text-anchor=\"middle\" dominant-baseline=\"central\">1</text>
 
-    <circle cx=\"825\" cy=\"2175\" r=\"25\" fill=\"white\" stroke=\"black\"/>
-    <text x=\"825\" y=\"2175\" font-size=\"16px\" font-family='Arial, sans-serif' fill=\"black\" text-anchor=\"middle\" dominant-baseline=\"central\">3</text>
+    <circle cx=\"362.5\" cy=\"362.5\" r=\"25\" fill=\"white\" stroke=\"black\"/>
+    <text x=\"362.5\" y=\"362.5\" font-size=\"16px\" font-family='Arial, sans-serif' fill=\"black\" text-anchor=\"middle\" dominant-baseline=\"central\">2</text>
 
-    <line x1=\"850\" y1=\"825\" x2=\"2150\" y2=\"825\" stroke=\"black\" stroke-width=\"5\"/>
+    <circle cx=\"137.5\" cy=\"362.5\" r=\"25\" fill=\"white\" stroke=\"black\"/>
+    <text x=\"137.5\" y=\"362.5\" font-size=\"16px\" font-family='Arial, sans-serif' fill=\"black\" text-anchor=\"middle\" dominant-baseline=\"central\">3</text>
 
-    <line x1=\"2175\" y1=\"850\" x2=\"2175\" y2=\"2150\" stroke=\"black\" stroke-width=\"5\"/>
+    <line x1=\"162.5\" y1=\"137.5\" x2=\"337.5\" y2=\"137.5\" stroke=\"black\" stroke-width=\"5\"/>
 
-    <line x1=\"2150\" y1=\"2175\" x2=\"850\" y2=\"2175\" stroke=\"black\" stroke-width=\"5\"/>
+    <line x1=\"362.5\" y1=\"162.5\" x2=\"362.5\" y2=\"337.5\" stroke=\"black\" stroke-width=\"5\"/>
 
-    <line x1=\"825\" y1=\"2150\" x2=\"825\" y2=\"850\" stroke=\"black\" stroke-width=\"5\"/>
+    <line x1=\"337.5\" y1=\"362.5\" x2=\"162.5\" y2=\"362.5\" stroke=\"black\" stroke-width=\"5\"/>
+
+    <line x1=\"137.5\" y1=\"337.5\" x2=\"137.5\" y2=\"162.5\" stroke=\"black\" stroke-width=\"5\"/>
 </svg>".to_owned();
 
         assert_eq!(svg_output, expected_output);

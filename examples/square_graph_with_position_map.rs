@@ -30,8 +30,8 @@ fn main() {
 
     // Customize settings using the SettingsBuilder.
     let settings = SettingsBuilder::new()
-        .width(3000.0)
-        .height(3000.0)
+        .width(500.0)
+        .height(500.0)
         .build()
         .expect("Values should be valid.");
 
