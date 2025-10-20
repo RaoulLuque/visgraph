@@ -213,11 +213,13 @@ fn scale(
     width: f32,
     height: f32,
 ) -> (f32, f32) {
-    let margin_adjusted_normalized_x = margin_x + normalized_x * (1.0 - 2.0 * margin_x);
-    let margin_adjusted_normalized_y = margin_y + normalized_y * (1.0 - 2.0 * margin_y);
+    let upscaled_x = normalized_x * width;
+    let upscaled_y = normalized_y * height;
 
-    let scaled_x = margin_adjusted_normalized_x * width;
-    let scaled_y = margin_adjusted_normalized_y * height;
+    let margin_adjusted_upscaled_x = margin_x * width + upscaled_x * (1.0 - 2.0 * margin_x);
+    let margin_adjusted_upscaled_y = margin_y * height + upscaled_y * (1.0 - 2.0 * margin_y);
 
-    (scaled_x, scaled_y)
+    (margin_adjusted_upscaled_x, margin_adjusted_upscaled_y)
+}
+
 }
