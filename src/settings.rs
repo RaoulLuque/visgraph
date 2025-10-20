@@ -249,6 +249,9 @@ impl<FnNodeLabel, FnEdgeLabel> SettingsBuilder<FnNodeLabel, FnEdgeLabel> {
         self
     }
 
+    /// Sets the node label function and returns the modified [`SettingsBuilder`].
+    ///
+    /// The node label function should implement `impl Fn(G::NodeId) -> String`.
     pub fn node_label_fn<NewFnNodeLabel>(
         self,
         node_label: NewFnNodeLabel,
@@ -266,6 +269,9 @@ impl<FnNodeLabel, FnEdgeLabel> SettingsBuilder<FnNodeLabel, FnEdgeLabel> {
         }
     }
 
+    /// Sets the edge label function and returns the modified [`SettingsBuilder`].
+    ///
+    /// The edge label function should implement `impl Fn(G::EdgeId) -> String`.
     pub fn edge_label_fn<NewFnEdgeLabel>(
         self,
         edge_label: NewFnEdgeLabel,
