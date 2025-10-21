@@ -93,7 +93,7 @@ where
             graph,
             position_map,
             node_label_map,
-            |edge_id| EdgeIndexable::to_index(&graph, edge_id).to_string(),
+            |_| "".to_string(),
             settings,
         ),
         (None, Some(edge_label_map)) => internal_graph_to_svg_with_positions_and_labels(
@@ -107,7 +107,7 @@ where
             graph,
             position_map,
             |node_id| NodeIndexable::to_index(&graph, node_id).to_string(),
-            |edge_id| EdgeIndexable::to_index(&graph, edge_id).to_string(),
+            |_| "".to_string(),
             settings,
         ),
     }
@@ -169,6 +169,7 @@ where
             settings.width,
             settings.height,
         );
+        let edge_label = edge_label_map(edge.id());
 
         draw_edge(
             &mut svg_buffer,
@@ -176,8 +177,10 @@ where
             scaled_y_source,
             scaled_x_target,
             scaled_y_target,
+            &edge_label,
             settings.radius,
             settings.stroke_width,
+            settings.font_size,
         );
     }
 
@@ -268,8 +271,10 @@ fn draw_edge(
     coord_y_source: f32,
     coord_x_target: f32,
     coord_y_target: f32,
+    edge_label: &str,
     radius: f32,
     stroke_width: f32,
+    font_size: f32,
 ) {
     // To properly draw the edge from the edge of the source node to the edge of the target node,
     // we need to multiply the radius of the nodes by the normalized direction vector and use that
@@ -295,8 +300,9 @@ fn draw_edge(
 
     svg_buffer.push_str(&format!(
         "
-    <line x1=\"{}\" y1=\"{}\" x2=\"{}\" y2=\"{}\" stroke=\"black\" stroke-width=\"{}\"/>\n",
-        start_x, start_y, end_x, end_y, stroke_width
+    <line x1=\"{start_x}\" y1=\"{start_y}\" x2=\"{end_x}\" y2=\"{end_y}\" stroke=\"black\" stroke-width=\"{stroke_width}\"/>
+    <text x= \"{}\" y=\"{}\" font-size=\"{font_size}px\" font-family='Arial, sans-serif' fill=\"blue\" text-anchor=\"middle\" dominant-baseline=\"central\">{edge_label}</text>\n",
+    (start_x + end_x) / 2.0, (start_y + end_y) / 2.0
     ));
 }
 

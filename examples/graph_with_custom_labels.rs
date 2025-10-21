@@ -1,6 +1,6 @@
 use petgraph::graph::UnGraph;
+use visgraph::graph_to_img_with_layout;
 use visgraph::settings::SettingsBuilder;
-use visgraph::{graph_to_img_with_layout, graph_to_img_with_position_map};
 
 fn main() {
     let mut graph = UnGraph::new_undirected();
