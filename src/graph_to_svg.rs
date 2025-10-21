@@ -173,10 +173,8 @@ where
 
         draw_edge(
             &mut svg_buffer,
-            scaled_x_source,
-            scaled_y_source,
-            scaled_x_target,
-            scaled_y_target,
+            (scaled_x_source, scaled_y_source),
+            (scaled_x_target, scaled_y_target),
             &edge_label,
             settings.radius,
             settings.stroke_width,
@@ -265,17 +263,19 @@ fn draw_node(
 
 /// Draws an edge as a line between two nodes by writing an appropriate <line> tag to the provided svg_buffer.
 /// Adjusting for the radius of the nodes so that the line starts and ends at the edge of the nodes rather than their centers.
+#[allow(clippy::too_many_arguments)]
 fn draw_edge(
     svg_buffer: &mut String,
-    coord_x_source: f32,
-    coord_y_source: f32,
-    coord_x_target: f32,
-    coord_y_target: f32,
+    coord_source: (f32, f32),
+    coord_target: (f32, f32),
     edge_label: &str,
     radius: f32,
     stroke_width: f32,
     font_size: f32,
 ) {
+    let (coord_x_source, coord_y_source) = coord_source;
+    let (coord_x_target, coord_y_target) = coord_target;
+
     // To properly draw the edge from the edge of the source node to the edge of the target node,
     // we need to multiply the radius of the nodes by the normalized direction vector and use that
     // as the start and end points of the edge.
