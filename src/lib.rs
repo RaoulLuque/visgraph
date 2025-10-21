@@ -167,6 +167,7 @@ pub mod tests {
     /// Create a test graph with custom node and edge labels, along with the corresponding settings.
     ///
     /// The same as in examples/graph_with_custom_labels.rs
+    #[allow(clippy::type_complexity)]
     pub fn test_graph_with_custom_labels() -> (
         UnGraph<String, ()>,
         Settings<
@@ -207,6 +208,7 @@ pub mod tests {
     /// Create a test square graph with a custom position map, along with the corresponding settings.
     ///
     /// The same as in examples/square_graph_with_position_map.rs
+    #[allow(clippy::type_complexity)]
     pub fn test_square_graph_with_position_map() -> (
         UnGraph<(), ()>,
         Settings<DefaultNodeLabelFn, DefaultEdgeLabelFn>,

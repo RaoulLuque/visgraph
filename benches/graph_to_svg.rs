@@ -2,7 +2,6 @@ mod common;
 use common::build_2d_grid;
 
 use criterion::{criterion_group, criterion_main, Criterion};
-use visgraph;
 
 fn graph_to_svg_benchmark(c: &mut Criterion) {
     let graph = build_2d_grid(100, 100);
