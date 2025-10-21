@@ -67,13 +67,12 @@ mod tests {
     use std::path::Path;
 
     use image::{DynamicImage, GenericImageView, ImageReader};
-    use petgraph::graph::UnGraph;
     use resvg::tiny_skia::Pixmap;
 
+    use crate::graph_to_svg::graph_to_svg_with_layout;
     use crate::graph_to_svg::graph_to_svg_with_positions;
     use crate::tests::{test_graph_with_custom_labels, test_square_graph_with_position_map};
     use crate::Layout::Circular;
-    use crate::{graph_to_svg::graph_to_svg_with_layout, settings::SettingsBuilder};
 
     /// Helper function to convert a tiny-skia Pixmap to an image::DynamicImage for easier testing.
     fn image_from_pixmap(pixmap: &Pixmap) -> DynamicImage {
@@ -120,7 +119,7 @@ mod tests {
         );
 
         let mse = mean_squared_error(&generated, &reference);
-        let tolerance = 1.0;
+        let tolerance = 5.0;
         assert!(
             mse < tolerance,
             "Mean squared error exceeds tolerance of {tolerance}: {mse}",

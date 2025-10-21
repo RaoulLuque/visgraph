@@ -370,12 +370,16 @@ mod tests {
     <text x=\"137.5\" y=\"362.5\" font-size=\"16px\" font-family='Arial, sans-serif' fill=\"black\" text-anchor=\"middle\" dominant-baseline=\"central\">3</text>
 
     <line x1=\"162.5\" y1=\"137.5\" x2=\"337.5\" y2=\"137.5\" stroke=\"black\" stroke-width=\"5\"/>
+    <text x= \"250\" y=\"137.5\" font-size=\"16px\" font-family='Arial, sans-serif' fill=\"blue\" text-anchor=\"middle\" dominant-baseline=\"central\"></text>
 
     <line x1=\"362.5\" y1=\"162.5\" x2=\"362.5\" y2=\"337.5\" stroke=\"black\" stroke-width=\"5\"/>
+    <text x= \"362.5\" y=\"250\" font-size=\"16px\" font-family='Arial, sans-serif' fill=\"blue\" text-anchor=\"middle\" dominant-baseline=\"central\"></text>
 
     <line x1=\"337.5\" y1=\"362.5\" x2=\"162.5\" y2=\"362.5\" stroke=\"black\" stroke-width=\"5\"/>
+    <text x= \"250\" y=\"362.5\" font-size=\"16px\" font-family='Arial, sans-serif' fill=\"blue\" text-anchor=\"middle\" dominant-baseline=\"central\"></text>
 
     <line x1=\"137.5\" y1=\"337.5\" x2=\"137.5\" y2=\"162.5\" stroke=\"black\" stroke-width=\"5\"/>
+    <text x= \"137.5\" y=\"250\" font-size=\"16px\" font-family='Arial, sans-serif' fill=\"blue\" text-anchor=\"middle\" dominant-baseline=\"central\"></text>
 </svg>".to_owned();
 
         assert_eq!(svg_output, expected_output);
