@@ -39,7 +39,9 @@ jobs:
         env:
           CARGO_RESOLVER_INCOMPATIBLE_RUST_VERSIONS: fallback
         # Note that this uses the runner's pre-installed stable cargo
-        run: cargo generate-lockfile
+        run: |
+          cargo generate-lockfile
+          cargo update -p zune-jpeg --precise 0.4.14
       - id: toolchain
         uses: dtolnay/rust-toolchain@master
         with:
