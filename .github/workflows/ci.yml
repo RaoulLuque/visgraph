@@ -62,6 +62,7 @@ jobs:
             cargo run --release --example complete_graph_with_circular_layout
             cargo run --release --example graph_with_custom_labels
             cargo run --release --example square_graph_with_position_map
+            cargo run --release --example graph_with_default_settings
 
   check:
     name: Lints
