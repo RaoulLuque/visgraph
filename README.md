@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="examples/results/complete_graph_with_circular_layout.png" width="400" alt="Visualization of complete graph with 100 nodes in circular layout."/>
+  <img src="examples/results/complete_graph_with_circular_layout.png" width="400" alt="Visualization of complete graph with 100 nodes in circular layout."/>¹
 </p>
 
 visgraph
@@ -93,6 +93,8 @@ Licensed under the [Apache License, Version 2.0][apache-license] or
 the [MIT license][mit-license], at your option. This file may
 not be copied, modified, or distributed except according to those
 terms.
+
+¹Image generated using visgraph, although coloring edges and nodes is not part of the public API yet.
 
 [apache-license]: http://www.apache.org/licenses/LICENSE-2.0
 
