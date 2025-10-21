@@ -162,7 +162,7 @@ where
 pub mod tests {
     use petgraph::graph::{NodeIndex, UnGraph};
 
-    use crate::settings::{Settings, SettingsBuilder};
+    use crate::settings::{DefaultEdgeLabelFn, DefaultNodeLabelFn, Settings, SettingsBuilder};
 
     /// Create a test graph with custom node and edge labels, along with the corresponding settings.
     ///
@@ -209,7 +209,7 @@ pub mod tests {
     /// The same as in examples/square_graph_with_position_map.rs
     pub fn test_square_graph_with_position_map() -> (
         UnGraph<(), ()>,
-        Settings<fn(NodeIndex) -> String, fn(petgraph::prelude::EdgeIndex) -> String>,
+        Settings<DefaultNodeLabelFn, DefaultEdgeLabelFn>,
         impl Fn(NodeIndex) -> (f32, f32),
     ) {
         let mut square_graph = UnGraph::new_undirected();

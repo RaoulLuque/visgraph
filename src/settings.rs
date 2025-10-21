@@ -21,6 +21,9 @@ pub const DEFAULT_STROKE_WIDTH: f32 = 5.0;
 /// This leaves 90% of the width/height for drawing.
 pub const DEFAULT_MARGIN: f32 = 0.05;
 
+pub(crate) type DefaultNodeLabelFn = fn(petgraph::prelude::NodeIndex) -> String;
+pub(crate) type DefaultEdgeLabelFn = fn(petgraph::prelude::EdgeIndex) -> String;
+
 /// Settings for SVG graph rendering.
 ///
 /// For the details on the different settings, see the fields of the [`SettingsBuilder`] struct.
@@ -42,10 +45,7 @@ pub const DEFAULT_MARGIN: f32 = 0.05;
 ///     .expect("Provided values should be valid.");
 /// ```
 #[derive(Debug)]
-pub struct Settings<
-    FnNodeLabel = fn(petgraph::prelude::EdgeIndex) -> String,
-    FnEdgeLabel = fn(petgraph::prelude::NodeIndex) -> String,
-> {
+pub struct Settings<FnNodeLabel = DefaultNodeLabelFn, FnEdgeLabel = DefaultEdgeLabelFn> {
     pub(crate) width: f32,
     pub(crate) height: f32,
     pub(crate) radius: f32,
@@ -57,12 +57,7 @@ pub struct Settings<
     pub(crate) edge_label: Option<FnEdgeLabel>,
 }
 
-impl Default
-    for Settings<
-        fn(petgraph::prelude::NodeIndex) -> String,
-        fn(petgraph::prelude::EdgeIndex) -> String,
-    >
-{
+impl Default for Settings<DefaultNodeLabelFn, DefaultEdgeLabelFn> {
     /// Creates a new [`Settings`] instance with default values.
     ///
     /// For default values, see the `DEFAULT_*` constants.
@@ -81,9 +76,7 @@ impl Default
     }
 }
 
-impl
-    Settings<fn(petgraph::prelude::NodeIndex) -> String, fn(petgraph::prelude::EdgeIndex) -> String>
-{
+impl Settings<DefaultNodeLabelFn, DefaultEdgeLabelFn> {
     /// Creates a new [`Settings`] instance with default values.
     ///
     /// Use the [`SettingsBuilder`] struct to customize specific settings and for details on the
@@ -161,12 +154,7 @@ pub struct SettingsBuilder<FnNodeLabel, FnEdgeLabel> {
     pub edge_label_fn: Option<FnEdgeLabel>,
 }
 
-impl Default
-    for SettingsBuilder<
-        fn(petgraph::prelude::NodeIndex) -> String,
-        fn(petgraph::prelude::EdgeIndex) -> String,
-    >
-{
+impl Default for SettingsBuilder<DefaultNodeLabelFn, DefaultEdgeLabelFn> {
     /// Creates a new `SettingsBuilder` instance with default values.
     ///
     /// For default values, see the `DEFAULT_*` constants.
@@ -185,12 +173,7 @@ impl Default
     }
 }
 
-impl
-    SettingsBuilder<
-        fn(petgraph::prelude::NodeIndex) -> String,
-        fn(petgraph::prelude::EdgeIndex) -> String,
-    >
-{
+impl SettingsBuilder<DefaultNodeLabelFn, DefaultEdgeLabelFn> {
     /// Creates a new `SettingsBuilder` instance with default values.
     ///
     /// For default values, see the `DEFAULT_*` constants.
