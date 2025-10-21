@@ -1,4 +1,7 @@
-use petgraph::{Undirected, graph::{Graph, NodeIndex}};
+use petgraph::{
+    graph::{Graph, NodeIndex},
+    Undirected,
+};
 
 pub fn build_2d_grid(width: usize, height: usize) -> Graph<(usize, usize), usize, Undirected> {
     let mut g = Graph::new_undirected();
