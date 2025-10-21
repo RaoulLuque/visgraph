@@ -1,3 +1,14 @@
+//! Functions to convert graphs to SVG representations.
+//!
+//! The main functions are [`graph_to_svg_with_positions`] and
+//! [`graph_to_svg_with_layout`], which generate SVG data from a graph using either a
+//! custom position map or a predefined layout algorithm, respectively.
+//!
+//! Note that the position map used in [`graph_to_svg_with_positions`] should return
+//! normalized coordinates between 0.0 and 1.0.
+//!
+//! For examples, see the `examples/` directory.
+
 use petgraph::visit::{
     EdgeIndexable, EdgeRef, IntoEdgeReferences, IntoNodeReferences, NodeIndexable, NodeRef,
 };

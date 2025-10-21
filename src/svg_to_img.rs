@@ -1,3 +1,13 @@
+//! SVG to image conversion utilities.
+//!
+//! This module provides functions to convert SVG data into image formats (currently PNG only)
+//! using the `resvg` crate.
+//!
+//! The main functions are [`svg_to_pixmap`], which converts SVG data to a [`tiny_skia::Pixmap`],
+//! and [`svg_to_img`], which saves the SVG data as a PNG image to a specified path.
+//!
+//! For more information on usage, see the function documentation.
+
 use resvg::{
     render,
     tiny_skia::{self, Pixmap},

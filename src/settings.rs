@@ -1,3 +1,10 @@
+//! Settings for graph visualization.
+//!
+//! For the details on the different settings, see the fields of the [`SettingsBuilder`] struct.
+//! One can either create a [`Settings`] instance directly using [`Settings::default()`] or
+//! [`Settings::new()`], which will use default values, or use the [`SettingsBuilder`] struct to
+//! customize specific settings. The latter will validate the provided values upon calling `build()`.
+
 use crate::errors::InvalidSettingsError;
 
 /// Default width of the SVG canvas and output image in pixels.

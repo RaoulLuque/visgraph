@@ -6,13 +6,12 @@ pub mod graph_to_svg;
 mod layout;
 pub mod settings;
 #[cfg(feature = "svg_to_img")]
-mod svg_to_img;
-
-use petgraph::visit::{EdgeIndexable, IntoEdgeReferences, IntoNodeReferences, NodeIndexable};
-#[cfg(feature = "svg_to_img")]
-pub use svg_to_img::svg_to_img;
+pub mod svg_to_img;
 
 pub use layout::Layout;
+use petgraph::visit::{EdgeIndexable, IntoEdgeReferences, IntoNodeReferences, NodeIndexable};
+#[cfg(feature = "svg_to_img")]
+use svg_to_img::svg_to_img;
 
 use crate::{
     errors::VisGraphError,
@@ -28,7 +27,7 @@ use crate::{
 /// [`Settings::default()`](settings/struct.Settings.html#method.default) for default settings or
 /// create custom settings using the [`SettingsBuilder`](settings/struct.SettingsBuilder.html).
 ///
-/// Example:
+/// Usage:
 /// ```rust
 /// use petgraph::graph::UnGraph;
 /// use visgraph::graph_to_img_with_layout;
@@ -93,7 +92,7 @@ where
 /// [`Settings::default()`](settings/struct.Settings.html#method.default) for default settings or
 /// create custom settings using the [`SettingsBuilder`](settings/struct.SettingsBuilder.html).
 ///
-/// Example:
+/// Usage:
 /// ```rust
 /// use petgraph::graph::UnGraph;
 /// use visgraph::graph_to_img_with_position_map;
