@@ -13,6 +13,9 @@ visgraph
 visgraph is an easy-to-use Rust library for visualizing graphs
 using various layout algorithms and exporting them to simple image formats like PNG or even SVG.
 
+The current implementation uses SVG as an intermediate format, allowing for high-quality
+rendering and scalability, in order to be able to use [resvg][resvg-url].
+
 Supports Rust 1.68 and later. This will only change on major releases.
 
 [![Crates.io][crates-badge]][crates-url]
@@ -123,3 +126,5 @@ terms.
 [mit-license]: http://opensource.org/licenses/MIT
 
 [msrv-badge]: https://img.shields.io/badge/rustc-1.68+-blue.svg
+
+[resvg-url]: https://github.com/linebender/resvg
