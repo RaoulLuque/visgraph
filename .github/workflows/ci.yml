@@ -39,6 +39,10 @@ jobs:
         with:
           toolchain: ${{ matrix.rust }}
 
+      - name: Regenerate lockfile
+        if: matrix.rust == '1.68.0'
+        run: cargo generate-lockfile
+
       - name: Build
         run: cargo build --verbose
       - name: Test
