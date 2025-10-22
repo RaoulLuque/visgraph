@@ -13,7 +13,7 @@ fn graph_to_svg_benchmark(c: &mut Criterion) {
                 (x as f32, y as f32)
             };
             let settings = visgraph::settings::SettingsBuilder::new()
-                .layout(visgraph::Layout::PositionMap(position_map))
+                .position_map(position_map)
                 .build()
                 .unwrap();
             visgraph::graph_to_svg::graph_to_svg(&graph, &settings)
