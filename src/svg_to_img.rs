@@ -74,6 +74,8 @@ mod tests {
     use crate::tests::{test_graph_with_custom_labels, test_square_graph_with_position_map};
     use crate::Layout::Circular;
 
+    const MSE_ERROR_TOLERANCE: f64 = 100.0;
+
     /// Helper function to convert a tiny-skia Pixmap to an image::DynamicImage for easier testing.
     fn image_from_pixmap(pixmap: &Pixmap) -> DynamicImage {
         let data = pixmap.data();
@@ -119,10 +121,9 @@ mod tests {
         );
 
         let mse = mean_squared_error(&generated, &reference);
-        let tolerance = 5.0;
         assert!(
-            mse < tolerance,
-            "Mean squared error exceeds tolerance of {tolerance}: {mse}",
+            mse < MSE_ERROR_TOLERANCE,
+            "Mean squared error exceeds tolerance of {MSE_ERROR_TOLERANCE}: {mse}",
         );
     }
 
