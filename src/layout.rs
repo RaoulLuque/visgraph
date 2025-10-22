@@ -2,7 +2,7 @@ use petgraph::visit::NodeRef;
 
 /// Different layout algorithms for graph visualization.
 ///
-/// For examples, see the `examples/` directory.
+/// For examples, see the [`examples`](https://github.com/RaoulLuque/visgraph/tree/main/examples) directory.
 #[derive(Debug, Clone, Copy)]
 pub enum Layout {
     /// Nodes are arranged in a [circular layout](https://en.wikipedia.org/wiki/Circular_layout).
