@@ -50,6 +50,7 @@ jobs:
       - name: Build
         run: cargo build --verbose
       - name: Test
+        if: matrix.rust != '1.68.0'
         run: cargo test ${{ matrix.test_all }} --verbose
 
       - name: Build benchmarks
