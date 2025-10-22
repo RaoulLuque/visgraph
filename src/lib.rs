@@ -21,49 +21,19 @@ use crate::{
 
 /// Generate and save an image of a graph to the specified path.
 ///
+/// # Parameters
+///
 /// The layout parameter determines how the nodes are positioned in the image.
 ///
 /// The settings parameter allows customization of various visual aspects of the graph. Either use
 /// [`Settings::default()`](settings/struct.Settings.html#method.default) for default settings or
 /// create custom settings using the [`SettingsBuilder`](settings/struct.SettingsBuilder.html).
 ///
-/// Usage:
-/// ```rust
-/// use petgraph::graph::UnGraph;
-/// use visgraph::graph_to_img_with_layout;
-/// use visgraph::settings::SettingsBuilder;
-///
-/// // Create a complete graph with 4 nodes.
-/// let mut complete_graph = UnGraph::new_undirected();
-/// let num_nodes = 4;
-/// let nodes: Vec<_> = (0..num_nodes)
-///     .map(|_| complete_graph.add_node(()))
-///     .collect();
-///
-/// for i in 0..num_nodes {
-///     for j in (i + 1)..num_nodes {
-///         complete_graph.add_edge(nodes[i], nodes[j], ());
-///     }
-/// }
-///
-/// // Customize settings using the SettingsBuilder. Values which are not set will use defaults.
-/// let settings = SettingsBuilder::new()
-///     .width(500.0)
-///     .height(500.0)
-///     .node_radius(7.5)
-///     .stroke_width(0.1)
-///     .font_size(7.5)
-///     .build()
-///     .expect("Values should be valid.");
-///
-/// // Generate and save the graph image using a circular layout.
-/// graph_to_img_with_layout(
-///     &complete_graph,
-///     visgraph::Layout::Circular,
-///     &settings,
-///     "target/visualizations/complete_graph_with_circular_layout.png",
-/// )
-/// .unwrap();
+/// # Usage
+/// The following is an example taken from
+/// [`examples/complete_graph_with_circular_layout.rs`](https://github.com/RaoulLuque/visgraph/blob/main/examples/complete_graph_with_circular_layout.rs):
+/// ```
+#[doc = include_str!("../examples/complete_graph_with_circular_layout.rs")]
 /// ```
 #[cfg(feature = "svg_to_img")]
 pub fn graph_to_img_with_layout<G, FnNodeLabel, FnEdgeLabel>(
@@ -84,6 +54,8 @@ where
 
 /// Generate and save an image of a graph to the specified path using a custom position map.
 ///
+/// # Parameters
+///
 /// The position_map parameter is a function that takes a node ID and returns its (x, y)
 /// coordinates, which **should be normalized between 0.0 and 1.0**.
 ///
@@ -92,52 +64,12 @@ where
 /// [`Settings::default()`](settings/struct.Settings.html#method.default) for default settings or
 /// create custom settings using the [`SettingsBuilder`](settings/struct.SettingsBuilder.html).
 ///
-/// Usage:
-/// ```rust
-/// use petgraph::graph::UnGraph;
-/// use visgraph::graph_to_img_with_position_map;
-/// use visgraph::settings::SettingsBuilder;
+/// # Usage
 ///
-/// // Create a square graph with four nodes
-/// // It should look like this:
-/// // A --- B
-/// // |     |
-/// // D --- C
-/// let mut square_graph = UnGraph::new_undirected();
-/// let node_a = square_graph.add_node(());
-/// let node_b = square_graph.add_node(());
-/// let node_c = square_graph.add_node(());
-/// let node_d = square_graph.add_node(());
-///
-/// square_graph.add_edge(node_a, node_b, ());
-/// square_graph.add_edge(node_b, node_c, ());
-/// square_graph.add_edge(node_c, node_d, ());
-/// square_graph.add_edge(node_d, node_a, ());
-///
-/// // Positions should be between (0.0) and (1.0)
-/// let position_map = |node_id| match node_id {
-///     id if id == node_a => (0.25, 0.25),
-///     id if id == node_b => (0.75, 0.25),
-///     id if id == node_c => (0.75, 0.75),
-///     id if id == node_d => (0.25, 0.75),
-///     _ => (0.5, 0.5),
-/// };
-///
-/// // Customize settings using the SettingsBuilder. Values which are not set will use defaults.
-/// let settings = SettingsBuilder::new()
-///     .width(500.0)
-///     .height(500.0)
-///     .build()
-///     .expect("Values should be valid.");
-///
-/// // Generate and save the graph image the custom position map.
-/// graph_to_img_with_position_map(
-///     &square_graph,
-///     position_map,
-///     &settings,
-///     "target/visualizations/square_graph_with_position_map.png",
-/// )
-/// .unwrap();
+/// The following is an example taken from
+/// [`examples/square_graph_with_position_map.rs`](https://github.com/RaoulLuque/visgraph/blob/main/examples/square_graph_with_position_map.rs):
+/// ```
+#[doc = include_str!("../examples/square_graph_with_position_map.rs")]
 /// ```
 #[cfg(feature = "svg_to_img")]
 pub fn graph_to_img_with_position_map<G, FnNodeLabel, FnEdgeLabel, FnPos>(
