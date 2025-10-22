@@ -68,16 +68,16 @@ const EDGE_CLOSENESS_THRESHOLD: f32 = 0.001;
 ///     &settings,
 /// );
 /// ```
-pub fn graph_to_svg_with_positions<G, FnPos, FnNodeLabel, FnEdgeLabel>(
+pub fn graph_to_svg_with_positions<G, FnPos, NodeLabelFn, EdgeLabelFn>(
     graph: G,
     position_map: FnPos,
-    settings: &Settings<FnNodeLabel, FnEdgeLabel>,
+    settings: &Settings<NodeLabelFn, EdgeLabelFn>,
 ) -> String
 where
     G: IntoNodeReferences + IntoEdgeReferences + NodeIndexable + EdgeIndexable,
     FnPos: Fn(G::NodeId) -> (f32, f32),
-    FnNodeLabel: Fn(G::NodeId) -> String,
-    FnEdgeLabel: Fn(G::EdgeId) -> String,
+    NodeLabelFn: Fn(G::NodeId) -> String,
+    EdgeLabelFn: Fn(G::EdgeId) -> String,
 {
     match (&settings.node_label, &settings.edge_label) {
         (Some(node_label_map), Some(edge_label_map)) => {
@@ -113,18 +113,18 @@ where
     }
 }
 
-fn internal_graph_to_svg_with_positions_and_labels<G, FnPos, FnNodeLabel, FnEdgeLabel, S, T>(
+fn internal_graph_to_svg_with_positions_and_labels<G, FnPos, NodeLabelFn, EdgeLabelFn, S, T>(
     graph: G,
     position_map: FnPos,
-    node_label_map: FnNodeLabel,
-    edge_label_map: FnEdgeLabel,
+    node_label_map: NodeLabelFn,
+    edge_label_map: EdgeLabelFn,
     settings: &Settings<S, T>,
 ) -> String
 where
     G: IntoNodeReferences + IntoEdgeReferences + NodeIndexable + EdgeIndexable,
     FnPos: Fn(G::NodeId) -> (f32, f32),
-    FnNodeLabel: Fn(G::NodeId) -> String,
-    FnEdgeLabel: Fn(G::EdgeId) -> String,
+    NodeLabelFn: Fn(G::NodeId) -> String,
+    EdgeLabelFn: Fn(G::EdgeId) -> String,
 {
     let mut svg_buffer = String::with_capacity(graph.node_bound() * 120 + graph.edge_bound() * 50);
     svg_buffer.push_str(&format!(
@@ -224,15 +224,15 @@ where
 ///     &settings,
 /// );
 /// ```
-pub fn graph_to_svg_with_layout<G, FnNodeLabel, FnEdgeLabel>(
+pub fn graph_to_svg_with_layout<G, NodeLabelFn, EdgeLabelFn>(
     graph: G,
     layout: Layout,
-    settings: &Settings<FnNodeLabel, FnEdgeLabel>,
+    settings: &Settings<NodeLabelFn, EdgeLabelFn>,
 ) -> String
 where
     G: IntoNodeReferences + IntoEdgeReferences + NodeIndexable + EdgeIndexable,
-    FnNodeLabel: Fn(G::NodeId) -> String,
-    FnEdgeLabel: Fn(G::EdgeId) -> String,
+    NodeLabelFn: Fn(G::NodeId) -> String,
+    EdgeLabelFn: Fn(G::EdgeId) -> String,
 {
     match layout {
         Layout::Circular => {

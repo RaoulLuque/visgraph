@@ -36,16 +36,16 @@ use crate::{
 #[doc = include_str!("../examples/complete_graph_with_circular_layout.rs")]
 /// ```
 #[cfg(feature = "svg_to_img")]
-pub fn graph_to_img_with_layout<G, FnNodeLabel, FnEdgeLabel>(
+pub fn graph_to_img_with_layout<G, NodeLabelFn, EdgeLabelFn>(
     graph: G,
     layout: Layout,
-    settings: &Settings<FnNodeLabel, FnEdgeLabel>,
+    settings: &Settings<NodeLabelFn, EdgeLabelFn>,
     path: impl AsRef<std::path::Path>,
 ) -> Result<(), VisGraphError>
 where
     G: IntoNodeReferences + IntoEdgeReferences + NodeIndexable + EdgeIndexable,
-    FnNodeLabel: Fn(G::NodeId) -> String,
-    FnEdgeLabel: Fn(G::EdgeId) -> String,
+    NodeLabelFn: Fn(G::NodeId) -> String,
+    EdgeLabelFn: Fn(G::EdgeId) -> String,
 {
     let svg_data = graph_to_svg_with_layout(graph, layout, settings);
     svg_to_img(&svg_data, settings.width, settings.height, path)?;
@@ -72,16 +72,16 @@ where
 #[doc = include_str!("../examples/square_graph_with_position_map.rs")]
 /// ```
 #[cfg(feature = "svg_to_img")]
-pub fn graph_to_img_with_position_map<G, FnNodeLabel, FnEdgeLabel, FnPos>(
+pub fn graph_to_img_with_position_map<G, NodeLabelFn, EdgeLabelFn, FnPos>(
     graph: G,
     position_map: FnPos,
-    settings: &Settings<FnNodeLabel, FnEdgeLabel>,
+    settings: &Settings<NodeLabelFn, EdgeLabelFn>,
     path: impl AsRef<std::path::Path>,
 ) -> Result<(), VisGraphError>
 where
     G: IntoNodeReferences + IntoEdgeReferences + NodeIndexable + EdgeIndexable,
-    FnNodeLabel: Fn(G::NodeId) -> String,
-    FnEdgeLabel: Fn(G::EdgeId) -> String,
+    NodeLabelFn: Fn(G::NodeId) -> String,
+    EdgeLabelFn: Fn(G::EdgeId) -> String,
     FnPos: Fn(G::NodeId) -> (f32, f32),
 {
     let svg_data = graph_to_svg_with_positions(graph, position_map, settings);

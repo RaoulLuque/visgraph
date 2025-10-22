@@ -5,7 +5,7 @@
 //! [`Settings::new()`], which will use default values, or use the [`SettingsBuilder`] struct to
 //! customize specific settings. The latter will validate the provided values upon calling `build()`.
 
-use crate::errors::InvalidSettingsError;
+use crate::{errors::InvalidSettingsError, Layout};
 
 /// Default width of the SVG canvas and output image in pixels.
 pub const DEFAULT_WIDTH: f32 = 1000.0;
@@ -45,7 +45,7 @@ pub(crate) type DefaultEdgeLabelFn = fn(petgraph::prelude::EdgeIndex) -> String;
 ///     .expect("Provided values should be valid.");
 /// ```
 #[derive(Debug)]
-pub struct Settings<FnNodeLabel = DefaultNodeLabelFn, FnEdgeLabel = DefaultEdgeLabelFn> {
+pub struct Settings<NodeLabelFn = DefaultNodeLabelFn, EdgeLabelFn = DefaultEdgeLabelFn> {
     pub(crate) width: f32,
     pub(crate) height: f32,
     pub(crate) radius: f32,
@@ -53,8 +53,9 @@ pub struct Settings<FnNodeLabel = DefaultNodeLabelFn, FnEdgeLabel = DefaultEdgeL
     pub(crate) stroke_width: f32,
     pub(crate) margin_x: f32,
     pub(crate) margin_y: f32,
-    pub(crate) node_label: Option<FnNodeLabel>,
-    pub(crate) edge_label: Option<FnEdgeLabel>,
+    pub(crate) layout: Layout,
+    pub(crate) node_label: Option<NodeLabelFn>,
+    pub(crate) edge_label: Option<EdgeLabelFn>,
 }
 
 impl Default for Settings<DefaultNodeLabelFn, DefaultEdgeLabelFn> {
@@ -103,7 +104,7 @@ impl Settings<DefaultNodeLabelFn, DefaultEdgeLabelFn> {
 ///     .expect("Provided values should be valid.");
 /// ```
 #[derive(Debug)]
-pub struct SettingsBuilder<FnNodeLabel, FnEdgeLabel> {
+pub struct SettingsBuilder<NodeLabelFn, EdgeLabelFn> {
     /// Width of the SVG and output image in pixels.
     ///
     /// *Valid values*: strictly positive f32
@@ -145,13 +146,13 @@ pub struct SettingsBuilder<FnNodeLabel, FnEdgeLabel> {
     ///
     /// *Valid values*: Functions that implement `impl Fn(G::NodeId) -> String`. This is validated
     /// statically by the compiler when the settings are used as an argument.
-    pub node_label_fn: Option<FnNodeLabel>,
+    pub node_label_fn: Option<NodeLabelFn>,
 
     /// Function to generate edge labels. If none is provided, no edge labels will be drawn.
     ///
     /// *Valid values*: Functions that implement `impl Fn(G::EdgeId) -> String`. This is validated
     /// statically by the compiler when the settings are used as an argument.
-    pub edge_label_fn: Option<FnEdgeLabel>,
+    pub edge_label_fn: Option<EdgeLabelFn>,
 }
 
 impl Default for SettingsBuilder<DefaultNodeLabelFn, DefaultEdgeLabelFn> {
@@ -182,7 +183,7 @@ impl SettingsBuilder<DefaultNodeLabelFn, DefaultEdgeLabelFn> {
     }
 }
 
-impl<FnNodeLabel, FnEdgeLabel> SettingsBuilder<FnNodeLabel, FnEdgeLabel> {
+impl<NodeLabelFn, EdgeLabelFn> SettingsBuilder<NodeLabelFn, EdgeLabelFn> {
     /// Sets the width of the SVG canvas and returns the modified [`SettingsBuilder`].
     ///
     /// The default width is [`DEFAULT_WIDTH`].
@@ -242,10 +243,10 @@ impl<FnNodeLabel, FnEdgeLabel> SettingsBuilder<FnNodeLabel, FnEdgeLabel> {
     /// Sets the node label function and returns the modified [`SettingsBuilder`].
     ///
     /// The node label function should implement `impl Fn(G::NodeId) -> String`.
-    pub fn node_label_fn<NewFnNodeLabel>(
+    pub fn node_label_fn<NewNodeLabelFn>(
         self,
-        node_label: NewFnNodeLabel,
-    ) -> SettingsBuilder<NewFnNodeLabel, FnEdgeLabel> {
+        node_label: NewNodeLabelFn,
+    ) -> SettingsBuilder<NewNodeLabelFn, EdgeLabelFn> {
         SettingsBuilder {
             width: self.width,
             height: self.height,
@@ -262,10 +263,10 @@ impl<FnNodeLabel, FnEdgeLabel> SettingsBuilder<FnNodeLabel, FnEdgeLabel> {
     /// Sets the edge label function and returns the modified [`SettingsBuilder`].
     ///
     /// The edge label function should implement `impl Fn(G::EdgeId) -> String`.
-    pub fn edge_label_fn<NewFnEdgeLabel>(
+    pub fn edge_label_fn<NewEdgeLabelFn>(
         self,
-        edge_label: NewFnEdgeLabel,
-    ) -> SettingsBuilder<FnNodeLabel, NewFnEdgeLabel> {
+        edge_label: NewEdgeLabelFn,
+    ) -> SettingsBuilder<NodeLabelFn, NewEdgeLabelFn> {
         SettingsBuilder {
             width: self.width,
             height: self.height,
@@ -303,7 +304,7 @@ impl<FnNodeLabel, FnEdgeLabel> SettingsBuilder<FnNodeLabel, FnEdgeLabel> {
     }
 
     /// Builds the [`Settings`] instance after validating the provided values.
-    pub fn build(self) -> Result<Settings<FnNodeLabel, FnEdgeLabel>, InvalidSettingsError> {
+    pub fn build(self) -> Result<Settings<NodeLabelFn, EdgeLabelFn>, InvalidSettingsError> {
         self.validate()?;
         let settings = Settings {
             width: self.width,
