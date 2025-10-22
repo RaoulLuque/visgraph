@@ -25,7 +25,7 @@ Supports Rust 1.68 and later. This will only change on major releases.
 
 ## Usage
 
-For more examples, see the [examples directory](examples).
+For more examples, see the [examples directory][examples-dir].
 
 ```rust
 // This example is taken from examples/graph_with_default_settings.rs
@@ -70,7 +70,7 @@ opt-level = 3
 ## Documentation
 
 * [API documentation on docs.rs][docsrs]
-* [Examples in the examples directory](examples)
+* [Examples in the examples directory][examples-dir]
 
 ### Crate features
 
@@ -118,6 +118,8 @@ terms.
 [docsrs]: https://docs.rs/visgraph/latest/visgraph/
 
 [docsrs-badge]: https://img.shields.io/docsrs/visgraph
+
+[examples-dir]: https://github.com/RaoulLuque/visgraph/tree/main/examples
 
 [github-discussions]: https://github.com/visgraph/visgraph/discussions
 
