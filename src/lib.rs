@@ -19,9 +19,10 @@ use crate::{errors::VisGraphError, graph_to_svg::graph_to_svg, settings::Setting
 ///
 /// # Usage
 /// The following is an example taken from
-/// [`examples/complete_graph_with_circular_layout.rs`](https://github.com/RaoulLuque/visgraph/blob/main/examples/complete_graph_with_circular_layout.rs):
+/// [`examples/graph_with_default_settings.rs`](https://github.com/RaoulLuque/visgraph/blob/main/examples/graph_with_default_settings.rs):
 /// ```
-#[doc = include_str!("../examples/complete_graph_with_circular_layout.rs")]
+#[allow(clippy::needless_doctest_main)]
+#[doc = include_str!("../examples/graph_with_default_settings.rs")]
 /// ```
 /// More examples can be found in the [`examples`](https://github.com/RaoulLuque/visgraph/tree/main/examples)
 /// directory.
@@ -99,6 +100,7 @@ pub mod tests {
     /// Create a test square graph with a custom position map, along with the corresponding settings.
     ///
     /// The same as in examples/square_graph_with_position_map.rs
+    #[allow(clippy::type_complexity)]
     pub fn test_square_graph_with_position_map() -> (
         UnGraph<(), ()>,
         Settings<impl Fn(NodeIndex) -> (f32, f32), DefaultNodeLabelFn, DefaultEdgeLabelFn>,
