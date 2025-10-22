@@ -13,21 +13,9 @@ use petgraph::visit::{EdgeIndexable, IntoEdgeReferences, IntoNodeReferences, Nod
 #[cfg(feature = "svg_to_img")]
 use svg_to_img::svg_to_img;
 
-use crate::{
-    errors::VisGraphError,
-    graph_to_svg::{graph_to_svg_with_layout, graph_to_svg_with_positions},
-    settings::Settings,
-};
+use crate::{errors::VisGraphError, graph_to_svg::graph_to_svg, settings::Settings};
 
 /// Generate and save an image of a graph to the specified path.
-///
-/// # Parameters
-///
-/// The layout parameter determines how the nodes are positioned in the image.
-///
-/// The settings parameter allows customization of various visual aspects of the graph. Either use
-/// [`Settings::default()`](settings/struct.Settings.html#method.default) for default settings or
-/// create custom settings using the [`SettingsBuilder`](settings/struct.SettingsBuilder.html).
 ///
 /// # Usage
 /// The following is an example taken from
@@ -35,56 +23,21 @@ use crate::{
 /// ```
 #[doc = include_str!("../examples/complete_graph_with_circular_layout.rs")]
 /// ```
+/// More examples can be found in the [`examples`](https://github.com/RaoulLuque/visgraph/tree/main/examples)
+/// directory.
 #[cfg(feature = "svg_to_img")]
-pub fn graph_to_img_with_layout<G, NodeLabelFn, EdgeLabelFn>(
+pub fn graph_to_img<G, PositionMapFn, NodeLabelFn, EdgeLabelFn>(
     graph: G,
-    layout: Layout,
-    settings: &Settings<NodeLabelFn, EdgeLabelFn>,
+    settings: &Settings<PositionMapFn, NodeLabelFn, EdgeLabelFn>,
     path: impl AsRef<std::path::Path>,
 ) -> Result<(), VisGraphError>
 where
     G: IntoNodeReferences + IntoEdgeReferences + NodeIndexable + EdgeIndexable,
+    PositionMapFn: Fn(G::NodeId) -> (f32, f32),
     NodeLabelFn: Fn(G::NodeId) -> String,
     EdgeLabelFn: Fn(G::EdgeId) -> String,
 {
-    let svg_data = graph_to_svg_with_layout(graph, layout, settings);
-    svg_to_img(&svg_data, settings.width, settings.height, path)?;
-    Ok(())
-}
-
-/// Generate and save an image of a graph to the specified path using a custom position map.
-///
-/// # Parameters
-///
-/// The position_map parameter is a function that takes a node ID and returns its (x, y)
-/// coordinates, which **should be normalized between 0.0 and 1.0**.
-///
-/// The settings parameter allows
-/// customization of various visual aspects of the graph. Either use
-/// [`Settings::default()`](settings/struct.Settings.html#method.default) for default settings or
-/// create custom settings using the [`SettingsBuilder`](settings/struct.SettingsBuilder.html).
-///
-/// # Usage
-///
-/// The following is an example taken from
-/// [`examples/square_graph_with_position_map.rs`](https://github.com/RaoulLuque/visgraph/blob/main/examples/square_graph_with_position_map.rs):
-/// ```
-#[doc = include_str!("../examples/square_graph_with_position_map.rs")]
-/// ```
-#[cfg(feature = "svg_to_img")]
-pub fn graph_to_img_with_position_map<G, NodeLabelFn, EdgeLabelFn, FnPos>(
-    graph: G,
-    position_map: FnPos,
-    settings: &Settings<NodeLabelFn, EdgeLabelFn>,
-    path: impl AsRef<std::path::Path>,
-) -> Result<(), VisGraphError>
-where
-    G: IntoNodeReferences + IntoEdgeReferences + NodeIndexable + EdgeIndexable,
-    NodeLabelFn: Fn(G::NodeId) -> String,
-    EdgeLabelFn: Fn(G::EdgeId) -> String,
-    FnPos: Fn(G::NodeId) -> (f32, f32),
-{
-    let svg_data = graph_to_svg_with_positions(graph, position_map, settings);
+    let svg_data = graph_to_svg(graph, settings);
     svg_to_img(&svg_data, settings.width, settings.height, path)?;
     Ok(())
 }
@@ -94,7 +47,11 @@ where
 pub mod tests {
     use petgraph::graph::{NodeIndex, UnGraph};
 
-    use crate::settings::{DefaultEdgeLabelFn, DefaultNodeLabelFn, Settings, SettingsBuilder};
+    use crate::{
+        layout::DefaultPositionMapFn,
+        settings::{DefaultEdgeLabelFn, DefaultNodeLabelFn, Settings, SettingsBuilder},
+        Layout,
+    };
 
     /// Create a test graph with custom node and edge labels, along with the corresponding settings.
     ///
@@ -103,6 +60,7 @@ pub mod tests {
     pub fn test_graph_with_custom_labels() -> (
         UnGraph<String, ()>,
         Settings<
+            DefaultPositionMapFn,
             impl Fn(petgraph::prelude::NodeIndex) -> String,
             impl Fn(petgraph::prelude::EdgeIndex) -> String,
         >,
@@ -129,6 +87,7 @@ pub mod tests {
             .node_radius(50.0)
             .margin_x(0.1)
             .margin_y(0.1)
+            .layout(Layout::Circular)
             .node_label_fn(node_labels)
             .edge_label_fn(edge_labels)
             .build()
@@ -140,11 +99,9 @@ pub mod tests {
     /// Create a test square graph with a custom position map, along with the corresponding settings.
     ///
     /// The same as in examples/square_graph_with_position_map.rs
-    #[allow(clippy::type_complexity)]
     pub fn test_square_graph_with_position_map() -> (
         UnGraph<(), ()>,
-        Settings<DefaultNodeLabelFn, DefaultEdgeLabelFn>,
-        impl Fn(NodeIndex) -> (f32, f32),
+        Settings<impl Fn(NodeIndex) -> (f32, f32), DefaultNodeLabelFn, DefaultEdgeLabelFn>,
     ) {
         let mut square_graph = UnGraph::new_undirected();
         let node_a = square_graph.add_node(());
@@ -170,8 +127,9 @@ pub mod tests {
         let settings = SettingsBuilder::new()
             .width(500.0)
             .height(500.0)
+            .position_map(position_map)
             .build()
             .expect("Values should be valid.");
-        (square_graph, settings, position_map)
+        (square_graph, settings)
     }
 }

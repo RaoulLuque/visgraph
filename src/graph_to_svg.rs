@@ -13,7 +13,7 @@ use petgraph::visit::{
     EdgeIndexable, EdgeRef, IntoEdgeReferences, IntoNodeReferences, NodeIndexable, NodeRef,
 };
 
-use crate::layout::{self, Layout};
+use crate::layout::{self, Layout, LayoutOrPositionMap};
 use crate::settings::Settings;
 
 const EDGE_CLOSENESS_THRESHOLD: f32 = 0.001;
@@ -26,8 +26,9 @@ const EDGE_CLOSENESS_THRESHOLD: f32 = 0.001;
 /// Example:
 /// ```
 /// use petgraph::graph::UnGraph;
-/// use visgraph::graph_to_svg::graph_to_svg_with_positions;
+/// use visgraph::graph_to_svg::graph_to_svg;
 /// use visgraph::settings::SettingsBuilder;
+/// use visgraph::Layout;
 ///
 /// // Create a square graph with four nodes
 /// // It should look like this:
@@ -58,24 +59,49 @@ const EDGE_CLOSENESS_THRESHOLD: f32 = 0.001;
 /// let settings = SettingsBuilder::new()
 ///     .width(500.0)
 ///     .height(500.0)
+///     .position_map(position_map)
 ///     .build()
 ///     .expect("Values should be valid.");
 ///
 /// // Generate svg output using the custom position map.
-/// let svg_data = graph_to_svg_with_positions(
+/// let svg_data = graph_to_svg(
 ///     &square_graph,
-///     position_map,
 ///     &settings,
 /// );
 /// ```
-pub fn graph_to_svg_with_positions<G, FnPos, NodeLabelFn, EdgeLabelFn>(
+pub fn graph_to_svg<G, PositionMapFn, NodeLabelFn, EdgeLabelFn>(
     graph: G,
-    position_map: FnPos,
-    settings: &Settings<NodeLabelFn, EdgeLabelFn>,
+    settings: &Settings<PositionMapFn, NodeLabelFn, EdgeLabelFn>,
 ) -> String
 where
     G: IntoNodeReferences + IntoEdgeReferences + NodeIndexable + EdgeIndexable,
-    FnPos: Fn(G::NodeId) -> (f32, f32),
+    PositionMapFn: Fn(G::NodeId) -> (f32, f32),
+    NodeLabelFn: Fn(G::NodeId) -> String,
+    EdgeLabelFn: Fn(G::EdgeId) -> String,
+{
+    match &settings.layout {
+        LayoutOrPositionMap::Layout(Layout::Circular) => {
+            let position_map = layout::get_circular_position_map(&graph);
+            internal_graph_to_svg_with_positions(graph, position_map, settings)
+        }
+        LayoutOrPositionMap::Layout(Layout::Hierarchical) => {
+            let position_map = layout::get_hierarchical_position_map(&graph);
+            internal_graph_to_svg_with_positions(graph, position_map, settings)
+        }
+        LayoutOrPositionMap::PositionMap(position_map) => {
+            internal_graph_to_svg_with_positions(graph, position_map, settings)
+        }
+    }
+}
+
+fn internal_graph_to_svg_with_positions<G, PositionMapFn, NodeLabelFn, EdgeLabelFn, S>(
+    graph: G,
+    position_map: PositionMapFn,
+    settings: &Settings<S, NodeLabelFn, EdgeLabelFn>,
+) -> String
+where
+    G: IntoNodeReferences + IntoEdgeReferences + NodeIndexable + EdgeIndexable,
+    PositionMapFn: Fn(G::NodeId) -> (f32, f32),
     NodeLabelFn: Fn(G::NodeId) -> String,
     EdgeLabelFn: Fn(G::EdgeId) -> String,
 {
@@ -113,16 +139,24 @@ where
     }
 }
 
-fn internal_graph_to_svg_with_positions_and_labels<G, FnPos, NodeLabelFn, EdgeLabelFn, S, T>(
+fn internal_graph_to_svg_with_positions_and_labels<
+    G,
+    PositionMapFn,
+    NodeLabelFn,
+    EdgeLabelFn,
+    S,
+    T,
+    U,
+>(
     graph: G,
-    position_map: FnPos,
+    position_map: PositionMapFn,
     node_label_map: NodeLabelFn,
     edge_label_map: EdgeLabelFn,
-    settings: &Settings<S, T>,
+    settings: &Settings<S, T, U>,
 ) -> String
 where
     G: IntoNodeReferences + IntoEdgeReferences + NodeIndexable + EdgeIndexable,
-    FnPos: Fn(G::NodeId) -> (f32, f32),
+    PositionMapFn: Fn(G::NodeId) -> (f32, f32),
     NodeLabelFn: Fn(G::NodeId) -> String,
     EdgeLabelFn: Fn(G::EdgeId) -> String,
 {
@@ -184,66 +218,6 @@ where
 
     svg_buffer.push_str("</svg>");
     svg_buffer
-}
-
-/// Generates an SVG representation of the graph using the specified layout algorithm and settings.
-///
-/// Example:
-/// ```
-/// use petgraph::graph::UnGraph;
-/// use visgraph::graph_to_svg::graph_to_svg_with_layout;
-/// use visgraph::settings::SettingsBuilder;
-///
-/// // Create a complete graph with 8 nodes.
-/// let mut complete_graph = UnGraph::new_undirected();
-/// let num_nodes = 8;
-/// let nodes: Vec<_> = (0..num_nodes)
-///     .map(|_| complete_graph.add_node(()))
-///     .collect();
-///
-/// for i in 0..num_nodes {
-///     for j in (i + 1)..num_nodes {
-///         complete_graph.add_edge(nodes[i], nodes[j], ());
-///     }
-/// }
-///
-/// // Customize settings using the SettingsBuilder. Values which are not set will use defaults.
-/// let settings = SettingsBuilder::new()
-///     .width(1000.0)
-///     .height(1000.0)
-///     .node_radius(7.5)
-///     .stroke_width(0.1)
-///     .font_size(7.5)
-///     .build()
-///     .expect("Values should be valid.");
-///
-/// // Generate svg output using a circular layout.
-/// let svg_data = graph_to_svg_with_layout(
-///     &complete_graph,
-///     visgraph::Layout::Circular,
-///     &settings,
-/// );
-/// ```
-pub fn graph_to_svg_with_layout<G, NodeLabelFn, EdgeLabelFn>(
-    graph: G,
-    layout: Layout,
-    settings: &Settings<NodeLabelFn, EdgeLabelFn>,
-) -> String
-where
-    G: IntoNodeReferences + IntoEdgeReferences + NodeIndexable + EdgeIndexable,
-    NodeLabelFn: Fn(G::NodeId) -> String,
-    EdgeLabelFn: Fn(G::EdgeId) -> String,
-{
-    match layout {
-        Layout::Circular => {
-            let position_map = layout::get_circular_position_map(&graph);
-            graph_to_svg_with_positions(graph, position_map, settings)
-        }
-        Layout::Hierarchical => {
-            let position_map = layout::get_hierarchical_position_map(&graph);
-            graph_to_svg_with_positions(graph, position_map, settings)
-        }
-    }
 }
 
 /// Draws a node as a circle with a text label by writing appropriate <circle> and <text> tags to the provided svg_buffer.
@@ -330,8 +304,7 @@ fn scale(
 
 #[cfg(test)]
 mod tests {
-    use crate::graph_to_svg::graph_to_svg_with_positions;
-    use crate::tests::test_square_graph_with_position_map;
+    use crate::{graph_to_svg::graph_to_svg, tests::test_square_graph_with_position_map};
 
     #[test]
     fn test_scale() {
@@ -350,8 +323,8 @@ mod tests {
 
     #[test]
     fn test_graph_to_svg_with_position_map() {
-        let (graph, settings, position_map) = test_square_graph_with_position_map();
-        let svg_output = graph_to_svg_with_positions(&graph, position_map, &settings);
+        let (graph, settings) = test_square_graph_with_position_map();
+        let svg_output = graph_to_svg(&graph, &settings);
 
         println!("{}", svg_output);
 

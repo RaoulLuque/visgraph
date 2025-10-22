@@ -5,7 +5,11 @@
 //! [`Settings::new()`], which will use default values, or use the [`SettingsBuilder`] struct to
 //! customize specific settings. The latter will validate the provided values upon calling `build()`.
 
-use crate::{errors::InvalidSettingsError, Layout};
+use crate::{
+    errors::InvalidSettingsError,
+    layout::{DefaultPositionMapFn, LayoutOrPositionMap},
+    Layout,
+};
 
 /// Default width of the SVG canvas and output image in pixels.
 pub const DEFAULT_WIDTH: f32 = 1000.0;
@@ -20,6 +24,9 @@ pub const DEFAULT_STROKE_WIDTH: f32 = 5.0;
 /// Default margin as a fraction of the width/height. That is, 0.05 means 5% margin on each side.
 /// This leaves 90% of the width/height for drawing.
 pub const DEFAULT_MARGIN: f32 = 0.05;
+/// Default layout algorithm for graph visualization.
+pub const DEFAULT_LAYOUT: LayoutOrPositionMap<DefaultPositionMapFn> =
+    LayoutOrPositionMap::Layout(Layout::Circular);
 
 pub(crate) type DefaultNodeLabelFn = fn(petgraph::prelude::NodeIndex) -> String;
 pub(crate) type DefaultEdgeLabelFn = fn(petgraph::prelude::EdgeIndex) -> String;
@@ -45,7 +52,11 @@ pub(crate) type DefaultEdgeLabelFn = fn(petgraph::prelude::EdgeIndex) -> String;
 ///     .expect("Provided values should be valid.");
 /// ```
 #[derive(Debug)]
-pub struct Settings<NodeLabelFn = DefaultNodeLabelFn, EdgeLabelFn = DefaultEdgeLabelFn> {
+pub struct Settings<
+    PositionMapFn = DefaultPositionMapFn,
+    NodeLabelFn = DefaultNodeLabelFn,
+    EdgeLabelFn = DefaultEdgeLabelFn,
+> {
     pub(crate) width: f32,
     pub(crate) height: f32,
     pub(crate) radius: f32,
@@ -53,12 +64,12 @@ pub struct Settings<NodeLabelFn = DefaultNodeLabelFn, EdgeLabelFn = DefaultEdgeL
     pub(crate) stroke_width: f32,
     pub(crate) margin_x: f32,
     pub(crate) margin_y: f32,
-    pub(crate) layout: Layout,
+    pub(crate) layout: LayoutOrPositionMap<PositionMapFn>,
     pub(crate) node_label: Option<NodeLabelFn>,
     pub(crate) edge_label: Option<EdgeLabelFn>,
 }
 
-impl Default for Settings<DefaultNodeLabelFn, DefaultEdgeLabelFn> {
+impl Default for Settings<DefaultPositionMapFn, DefaultNodeLabelFn, DefaultEdgeLabelFn> {
     /// Creates a new [`Settings`] instance with default values.
     ///
     /// For default values, see the `DEFAULT_*` constants.
@@ -71,13 +82,14 @@ impl Default for Settings<DefaultNodeLabelFn, DefaultEdgeLabelFn> {
             stroke_width: DEFAULT_STROKE_WIDTH,
             margin_x: DEFAULT_MARGIN,
             margin_y: DEFAULT_MARGIN,
+            layout: DEFAULT_LAYOUT,
             node_label: None,
             edge_label: None,
         }
     }
 }
 
-impl Settings<DefaultNodeLabelFn, DefaultEdgeLabelFn> {
+impl Settings<DefaultPositionMapFn, DefaultNodeLabelFn, DefaultEdgeLabelFn> {
     /// Creates a new [`Settings`] instance with default values.
     ///
     /// Use the [`SettingsBuilder`] struct to customize specific settings and for details on the
@@ -104,58 +116,63 @@ impl Settings<DefaultNodeLabelFn, DefaultEdgeLabelFn> {
 ///     .expect("Provided values should be valid.");
 /// ```
 #[derive(Debug)]
-pub struct SettingsBuilder<NodeLabelFn, EdgeLabelFn> {
+pub struct SettingsBuilder<PositionMapFn, NodeLabelFn, EdgeLabelFn> {
     /// Width of the SVG and output image in pixels.
     ///
-    /// *Valid values*: strictly positive f32
+    /// **Valid values**: strictly positive f32
     pub width: f32,
 
     /// Height of the SVG and output image in pixels.
     ///
-    /// *Valid values*: strictly positive f32
+    /// **Valid values**: strictly positive f32
     pub height: f32,
 
     /// Radius of the nodes in pixels.
     ///
-    /// *Valid values*: strictly positive f32
+    /// **Valid values**: strictly positive f32
     pub node_radius: f32,
 
     /// Font size for labels in pixels.
     ///
-    /// *Valid values*: strictly positive f32
+    /// **Valid values**: strictly positive f32
     pub font_size: f32,
 
     /// Stroke width for edges in pixels.
     ///
-    /// *Valid values*: strictly positive f32
+    /// **Valid values**: strictly positive f32
     pub stroke_width: f32,
 
     /// Horizontal margin as a fraction of the width.
     /// That is, 0.1 means 10% margin on left and right, leaving 80% of the width for drawing.
     ///
-    /// *Valid values*: f32 in range [0.0, 0.5)
+    /// **Valid values**: f32 in range [0.0, 0.5)
     pub margin_x: f32,
 
     /// Vertical margin as a fraction of the height.
     /// That is, 0.1 means 10% margin on top and bottom, leaving 80% of the height for drawing.
     ///
-    /// *Valid values*: f32 in range [0.0, 0.5)
+    /// **Valid values**: f32 in range [0.0, 0.5)
     pub margin_y: f32,
 
     /// Function to generate node labels. If none is provided, node indexes will be used as labels.
     ///
-    /// *Valid values*: Functions that implement `impl Fn(G::NodeId) -> String`. This is validated
-    /// statically by the compiler when the settings are used as an argument.
+    /// **Valid values**: Functions that implement `impl Fn(G::NodeId) -> String`.
     pub node_label_fn: Option<NodeLabelFn>,
 
     /// Function to generate edge labels. If none is provided, no edge labels will be drawn.
     ///
-    /// *Valid values*: Functions that implement `impl Fn(G::EdgeId) -> String`. This is validated
-    /// statically by the compiler when the settings are used as an argument.
+    /// **Valid values**: Functions that implement `impl Fn(G::EdgeId) -> String`.
     pub edge_label_fn: Option<EdgeLabelFn>,
+
+    /// Layout algorithm for graph visualization. If none is provided, the [`DEFAULT_LAYOUT`] will be used.
+    ///
+    /// **Valid values**: If a `PositionMap` is used, the provided function must implement
+    /// `impl Fn(G::NodeId) -> (f32, f32)`. Furthermore, the position map should return normalized
+    /// positions in the range [0.0, 1.0].
+    pub layout: LayoutOrPositionMap<PositionMapFn>,
 }
 
-impl Default for SettingsBuilder<DefaultNodeLabelFn, DefaultEdgeLabelFn> {
+impl Default for SettingsBuilder<DefaultPositionMapFn, DefaultNodeLabelFn, DefaultEdgeLabelFn> {
     /// Creates a new `SettingsBuilder` instance with default values.
     ///
     /// For default values, see the `DEFAULT_*` constants.
@@ -168,13 +185,14 @@ impl Default for SettingsBuilder<DefaultNodeLabelFn, DefaultEdgeLabelFn> {
             stroke_width: DEFAULT_STROKE_WIDTH,
             margin_x: DEFAULT_MARGIN,
             margin_y: DEFAULT_MARGIN,
+            layout: DEFAULT_LAYOUT,
             node_label_fn: None,
             edge_label_fn: None,
         }
     }
 }
 
-impl SettingsBuilder<DefaultNodeLabelFn, DefaultEdgeLabelFn> {
+impl SettingsBuilder<DefaultPositionMapFn, DefaultNodeLabelFn, DefaultEdgeLabelFn> {
     /// Creates a new `SettingsBuilder` instance with default values.
     ///
     /// For default values, see the `DEFAULT_*` constants.
@@ -183,7 +201,9 @@ impl SettingsBuilder<DefaultNodeLabelFn, DefaultEdgeLabelFn> {
     }
 }
 
-impl<NodeLabelFn, EdgeLabelFn> SettingsBuilder<NodeLabelFn, EdgeLabelFn> {
+impl<PositionMapFn, NodeLabelFn, EdgeLabelFn>
+    SettingsBuilder<PositionMapFn, NodeLabelFn, EdgeLabelFn>
+{
     /// Sets the width of the SVG canvas and returns the modified [`SettingsBuilder`].
     ///
     /// The default width is [`DEFAULT_WIDTH`].
@@ -246,7 +266,10 @@ impl<NodeLabelFn, EdgeLabelFn> SettingsBuilder<NodeLabelFn, EdgeLabelFn> {
     pub fn node_label_fn<NewNodeLabelFn>(
         self,
         node_label: NewNodeLabelFn,
-    ) -> SettingsBuilder<NewNodeLabelFn, EdgeLabelFn> {
+    ) -> SettingsBuilder<PositionMapFn, NewNodeLabelFn, EdgeLabelFn>
+    where
+        NewNodeLabelFn: Fn(petgraph::prelude::NodeIndex) -> String,
+    {
         SettingsBuilder {
             width: self.width,
             height: self.height,
@@ -255,6 +278,7 @@ impl<NodeLabelFn, EdgeLabelFn> SettingsBuilder<NodeLabelFn, EdgeLabelFn> {
             stroke_width: self.stroke_width,
             margin_x: self.margin_x,
             margin_y: self.margin_y,
+            layout: self.layout,
             node_label_fn: Some(node_label),
             edge_label_fn: self.edge_label_fn,
         }
@@ -266,7 +290,10 @@ impl<NodeLabelFn, EdgeLabelFn> SettingsBuilder<NodeLabelFn, EdgeLabelFn> {
     pub fn edge_label_fn<NewEdgeLabelFn>(
         self,
         edge_label: NewEdgeLabelFn,
-    ) -> SettingsBuilder<NodeLabelFn, NewEdgeLabelFn> {
+    ) -> SettingsBuilder<PositionMapFn, NodeLabelFn, NewEdgeLabelFn>
+    where
+        NewEdgeLabelFn: Fn(petgraph::prelude::EdgeIndex) -> String,
+    {
         SettingsBuilder {
             width: self.width,
             height: self.height,
@@ -275,8 +302,57 @@ impl<NodeLabelFn, EdgeLabelFn> SettingsBuilder<NodeLabelFn, EdgeLabelFn> {
             stroke_width: self.stroke_width,
             margin_x: self.margin_x,
             margin_y: self.margin_y,
+            layout: self.layout,
             node_label_fn: self.node_label_fn,
             edge_label_fn: Some(edge_label),
+        }
+    }
+
+    /// Sets the layout algorithm and returns the modified [`SettingsBuilder`].
+    ///
+    /// To provide a custom position map function, use the [`position_map`] method instead.
+    pub fn layout(
+        self,
+        layout: Layout,
+    ) -> SettingsBuilder<DefaultPositionMapFn, NodeLabelFn, EdgeLabelFn> {
+        SettingsBuilder {
+            width: self.width,
+            height: self.height,
+            node_radius: self.node_radius,
+            font_size: self.font_size,
+            stroke_width: self.stroke_width,
+            margin_x: self.margin_x,
+            margin_y: self.margin_y,
+            layout: LayoutOrPositionMap::Layout(layout),
+            node_label_fn: self.node_label_fn,
+            edge_label_fn: self.edge_label_fn,
+        }
+    }
+
+    /// Sets the custom position map function and returns the modified [`SettingsBuilder`].
+    ///
+    /// The function should implement `impl Fn(G::NodeId) -> (f32, f32)`. Furthermore, the
+    /// positions should be normalized in the range [0.0, 1.0].
+    ///
+    /// To use a predefined layout algorithm, use the [`layout`] method instead.
+    pub fn position_map<NewPositionMapFn>(
+        self,
+        position_map: NewPositionMapFn,
+    ) -> SettingsBuilder<NewPositionMapFn, NodeLabelFn, EdgeLabelFn>
+    where
+        NewPositionMapFn: Fn(petgraph::prelude::NodeIndex) -> (f32, f32),
+    {
+        SettingsBuilder {
+            width: self.width,
+            height: self.height,
+            node_radius: self.node_radius,
+            font_size: self.font_size,
+            stroke_width: self.stroke_width,
+            margin_x: self.margin_x,
+            margin_y: self.margin_y,
+            layout: LayoutOrPositionMap::PositionMap(position_map),
+            node_label_fn: self.node_label_fn,
+            edge_label_fn: self.edge_label_fn,
         }
     }
 
@@ -304,7 +380,14 @@ impl<NodeLabelFn, EdgeLabelFn> SettingsBuilder<NodeLabelFn, EdgeLabelFn> {
     }
 
     /// Builds the [`Settings`] instance after validating the provided values.
-    pub fn build(self) -> Result<Settings<NodeLabelFn, EdgeLabelFn>, InvalidSettingsError> {
+    pub fn build(
+        self,
+    ) -> Result<Settings<PositionMapFn, NodeLabelFn, EdgeLabelFn>, InvalidSettingsError>
+    where
+        PositionMapFn: Fn(petgraph::prelude::NodeIndex) -> (f32, f32),
+        NodeLabelFn: Fn(petgraph::prelude::NodeIndex) -> String,
+        EdgeLabelFn: Fn(petgraph::prelude::EdgeIndex) -> String,
+    {
         self.validate()?;
         let settings = Settings {
             width: self.width,
@@ -314,6 +397,7 @@ impl<NodeLabelFn, EdgeLabelFn> SettingsBuilder<NodeLabelFn, EdgeLabelFn> {
             stroke_width: self.stroke_width,
             margin_x: self.margin_x,
             margin_y: self.margin_y,
+            layout: self.layout,
             node_label: self.node_label_fn,
             edge_label: self.edge_label_fn,
         };

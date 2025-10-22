@@ -1,5 +1,5 @@
 use petgraph::graph::UnGraph;
-use visgraph::graph_to_img_with_position_map;
+use visgraph::graph_to_img;
 use visgraph::settings::SettingsBuilder;
 
 fn main() {
@@ -32,13 +32,13 @@ fn main() {
     let settings = SettingsBuilder::new()
         .width(500.0)
         .height(500.0)
+        .position_map(position_map)
         .build()
         .expect("Values should be valid.");
 
     // Generate and save the graph image the custom position map.
-    graph_to_img_with_position_map(
+    graph_to_img(
         &square_graph,
-        position_map,
         &settings,
         "examples/results/square_graph_with_position_map.png",
     )

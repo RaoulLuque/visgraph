@@ -69,10 +69,8 @@ mod tests {
     use image::{DynamicImage, GenericImageView, ImageReader};
     use resvg::tiny_skia::Pixmap;
 
-    use crate::graph_to_svg::graph_to_svg_with_layout;
-    use crate::graph_to_svg::graph_to_svg_with_positions;
+    use crate::graph_to_svg::graph_to_svg;
     use crate::tests::{test_graph_with_custom_labels, test_square_graph_with_position_map};
-    use crate::Layout::Circular;
 
     const MSE_ERROR_TOLERANCE: f64 = 100.0;
 
@@ -131,7 +129,7 @@ mod tests {
     fn test_svg_to_image_on_graph_with_custom_labels() {
         let (graph, settings) = test_graph_with_custom_labels();
 
-        let svg_data = graph_to_svg_with_layout(&graph, Circular, &settings);
+        let svg_data = graph_to_svg(&graph, &settings);
         let pixmap = super::svg_to_pixmap(&svg_data, settings.width, settings.height)
             .expect("SVG to pixmap conversion should succeed.");
 
@@ -143,9 +141,9 @@ mod tests {
 
     #[test]
     fn test_svg_to_image_on_square_graph_with_position_map() {
-        let (graph, settings, position_map) = test_square_graph_with_position_map();
+        let (graph, settings) = test_square_graph_with_position_map();
 
-        let svg_data = graph_to_svg_with_positions(&graph, position_map, &settings);
+        let svg_data = graph_to_svg(&graph, &settings);
         let pixmap = super::svg_to_pixmap(&svg_data, settings.width, settings.height)
             .expect("SVG to pixmap conversion should succeed.");
 

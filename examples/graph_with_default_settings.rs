@@ -1,5 +1,5 @@
 use petgraph::graph::UnGraph;
-use visgraph::{graph_to_img_with_layout, settings::Settings};
+use visgraph::{graph_to_img, settings::Settings};
 
 fn main() {
     // Create a complete graph with 4 nodes.
@@ -16,9 +16,8 @@ fn main() {
     }
 
     // Generate and save the graph image using a circular layout and default settings.
-    graph_to_img_with_layout(
+    graph_to_img(
         &complete_graph,
-        visgraph::Layout::Circular,
         &Settings::default(),
         "examples/results/graph_with_default_settings.png",
     )

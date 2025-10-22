@@ -1,5 +1,7 @@
 use petgraph::visit::NodeRef;
 
+pub(crate) type DefaultPositionMapFn = fn(petgraph::prelude::NodeIndex) -> (f32, f32);
+
 /// Different layout algorithms for graph visualization.
 ///
 /// For examples, see the [`examples`](https://github.com/RaoulLuque/visgraph/tree/main/examples) directory.
@@ -9,6 +11,14 @@ pub enum Layout {
     Circular,
     /// Nodes are arranged in a hierarchical layout.
     Hierarchical,
+}
+
+/// Enum to represent either a layout algorithm or a custom position map function. Only used for
+/// [`SettingsBuilder`][crate::settings::SettingsBuilder].
+#[derive(Debug, Clone, Copy)]
+pub enum LayoutOrPositionMap<PositionMapFn = DefaultPositionMapFn> {
+    Layout(Layout),
+    PositionMap(PositionMapFn),
 }
 
 pub(crate) fn get_circular_position_map<G>(graph: &G) -> impl Fn(G::NodeId) -> (f32, f32) + '_

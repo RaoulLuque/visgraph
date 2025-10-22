@@ -1,5 +1,5 @@
 use petgraph::graph::UnGraph;
-use visgraph::graph_to_img_with_layout;
+use visgraph::graph_to_img;
 use visgraph::settings::SettingsBuilder;
 
 fn main() {
@@ -33,9 +33,8 @@ fn main() {
 
     // Generate and save the graph image using a circular layout and the settings with the custom
     // node and edge labels.
-    graph_to_img_with_layout(
+    graph_to_img(
         &graph,
-        visgraph::Layout::Circular,
         &settings,
         "examples/results/graph_with_custom_labels.png",
     )

@@ -1,6 +1,6 @@
 use petgraph::graph::UnGraph;
-use visgraph::graph_to_img_with_layout;
 use visgraph::settings::SettingsBuilder;
+use visgraph::{graph_to_img, Layout};
 
 fn main() {
     // Create a complete graph with 100 nodes.
@@ -23,13 +23,13 @@ fn main() {
         .node_radius(7.5)
         .stroke_width(0.1)
         .font_size(7.5)
+        .layout(Layout::Circular)
         .build()
         .expect("Values should be valid.");
 
     // Generate and save the graph image using a circular layout.
-    graph_to_img_with_layout(
+    graph_to_img(
         &complete_graph,
-        visgraph::Layout::Circular,
         &settings,
         "examples/results/complete_graph_with_circular_layout.png",
     )
