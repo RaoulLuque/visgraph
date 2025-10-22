@@ -4,12 +4,15 @@ version = "0.1.0"
 readme = "README.md"
 license = "MIT OR Apache-2.0"
 
-description = "A library to convert graphs to images"
+description = "A library to visualize graphs as images in Rust."
 documentation = "https://docs.rs/visgraph"
 repository = "https://github.com/raoulluque/visgraph"
 
 rust-version = "1.68"
 edition = "2021"
+
+[lib]
+name = "visgraph"
 
 [dependencies]
 petgraph = { version= "0.8.3", features = [] }
