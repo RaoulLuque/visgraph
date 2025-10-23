@@ -25,8 +25,11 @@ pub const DEFAULT_STROKE_WIDTH: f32 = 5.0;
 /// This leaves 90% of the width/height for drawing.
 pub const DEFAULT_MARGIN: f32 = 0.05;
 /// Default layout algorithm for graph visualization.
-pub const DEFAULT_LAYOUT: LayoutOrPositionMap<DefaultPositionMapFn> =
+pub const DEFAULT_LAYOUT_OR_POS_MAP: LayoutOrPositionMap<DefaultPositionMapFn> =
     LayoutOrPositionMap::Layout(Layout::Circular);
+
+pub const DEFAULT_NODE_LABEL_FN: DefaultNodeLabelFn = |node_id| format!("Node {}", node_id.index());
+pub const DEFAULT_EDGE_LABEL_FN: DefaultEdgeLabelFn = |_| "".to_string();
 
 pub(crate) type DefaultNodeLabelFn = fn(petgraph::prelude::NodeIndex) -> String;
 pub(crate) type DefaultEdgeLabelFn = fn(petgraph::prelude::EdgeIndex) -> String;
@@ -64,9 +67,9 @@ pub struct Settings<
     pub(crate) stroke_width: f32,
     pub(crate) margin_x: f32,
     pub(crate) margin_y: f32,
-    pub(crate) layout: LayoutOrPositionMap<PositionMapFn>,
-    pub(crate) node_label: Option<NodeLabelFn>,
-    pub(crate) edge_label: Option<EdgeLabelFn>,
+    pub(crate) layout_or_pos_map: LayoutOrPositionMap<PositionMapFn>,
+    pub(crate) node_label: NodeLabelFn,
+    pub(crate) edge_label: EdgeLabelFn,
 }
 
 impl Default for Settings<DefaultPositionMapFn, DefaultNodeLabelFn, DefaultEdgeLabelFn> {
@@ -82,9 +85,9 @@ impl Default for Settings<DefaultPositionMapFn, DefaultNodeLabelFn, DefaultEdgeL
             stroke_width: DEFAULT_STROKE_WIDTH,
             margin_x: DEFAULT_MARGIN,
             margin_y: DEFAULT_MARGIN,
-            layout: DEFAULT_LAYOUT,
-            node_label: None,
-            edge_label: None,
+            layout_or_pos_map: DEFAULT_LAYOUT_OR_POS_MAP,
+            node_label: DEFAULT_NODE_LABEL_FN,
+            edge_label: DEFAULT_EDGE_LABEL_FN,
         }
     }
 }
@@ -157,19 +160,19 @@ pub struct SettingsBuilder<PositionMapFn, NodeLabelFn, EdgeLabelFn> {
     /// Function to generate node labels. If none is provided, node indexes will be used as labels.
     ///
     /// **Valid values**: Functions that implement `impl Fn(G::NodeId) -> String`.
-    pub node_label_fn: Option<NodeLabelFn>,
+    pub node_label_fn: NodeLabelFn,
 
     /// Function to generate edge labels. If none is provided, no edge labels will be drawn.
     ///
     /// **Valid values**: Functions that implement `impl Fn(G::EdgeId) -> String`.
-    pub edge_label_fn: Option<EdgeLabelFn>,
+    pub edge_label_fn: EdgeLabelFn,
 
     /// Layout algorithm for graph visualization. If none is provided, the [`DEFAULT_LAYOUT`] will be used.
     ///
     /// **Valid values**: If a `PositionMap` is used, the provided function must implement
     /// `impl Fn(G::NodeId) -> (f32, f32)`. Furthermore, the position map should return normalized
     /// positions in the range [0.0, 1.0].
-    pub layout: LayoutOrPositionMap<PositionMapFn>,
+    pub layout_or_pos_map: LayoutOrPositionMap<PositionMapFn>,
 }
 
 impl Default for SettingsBuilder<DefaultPositionMapFn, DefaultNodeLabelFn, DefaultEdgeLabelFn> {
@@ -185,9 +188,9 @@ impl Default for SettingsBuilder<DefaultPositionMapFn, DefaultNodeLabelFn, Defau
             stroke_width: DEFAULT_STROKE_WIDTH,
             margin_x: DEFAULT_MARGIN,
             margin_y: DEFAULT_MARGIN,
-            layout: DEFAULT_LAYOUT,
-            node_label_fn: None,
-            edge_label_fn: None,
+            layout_or_pos_map: DEFAULT_LAYOUT_OR_POS_MAP,
+            node_label_fn: DEFAULT_NODE_LABEL_FN,
+            edge_label_fn: DEFAULT_EDGE_LABEL_FN,
         }
     }
 }
@@ -278,8 +281,8 @@ impl<PositionMapFn, NodeLabelFn, EdgeLabelFn>
             stroke_width: self.stroke_width,
             margin_x: self.margin_x,
             margin_y: self.margin_y,
-            layout: self.layout,
-            node_label_fn: Some(node_label),
+            layout_or_pos_map: self.layout_or_pos_map,
+            node_label_fn: node_label,
             edge_label_fn: self.edge_label_fn,
         }
     }
@@ -302,9 +305,9 @@ impl<PositionMapFn, NodeLabelFn, EdgeLabelFn>
             stroke_width: self.stroke_width,
             margin_x: self.margin_x,
             margin_y: self.margin_y,
-            layout: self.layout,
+            layout_or_pos_map: self.layout_or_pos_map,
             node_label_fn: self.node_label_fn,
-            edge_label_fn: Some(edge_label),
+            edge_label_fn: edge_label,
         }
     }
 
@@ -326,7 +329,7 @@ impl<PositionMapFn, NodeLabelFn, EdgeLabelFn>
             stroke_width: self.stroke_width,
             margin_x: self.margin_x,
             margin_y: self.margin_y,
-            layout: LayoutOrPositionMap::Layout(layout),
+            layout_or_pos_map: LayoutOrPositionMap::Layout(layout),
             node_label_fn: self.node_label_fn,
             edge_label_fn: self.edge_label_fn,
         }
@@ -356,7 +359,7 @@ impl<PositionMapFn, NodeLabelFn, EdgeLabelFn>
             stroke_width: self.stroke_width,
             margin_x: self.margin_x,
             margin_y: self.margin_y,
-            layout: LayoutOrPositionMap::PositionMap(position_map),
+            layout_or_pos_map: LayoutOrPositionMap::PositionMap(position_map),
             node_label_fn: self.node_label_fn,
             edge_label_fn: self.edge_label_fn,
         }
@@ -403,7 +406,7 @@ impl<PositionMapFn, NodeLabelFn, EdgeLabelFn>
             stroke_width: self.stroke_width,
             margin_x: self.margin_x,
             margin_y: self.margin_y,
-            layout: self.layout,
+            layout_or_pos_map: self.layout_or_pos_map,
             node_label: self.node_label_fn,
             edge_label: self.edge_label_fn,
         };

@@ -77,63 +77,36 @@ where
     NodeLabelFn: Fn(G::NodeId) -> String,
     EdgeLabelFn: Fn(G::EdgeId) -> String,
 {
-    match &settings.layout {
+    match &settings.layout_or_pos_map {
         LayoutOrPositionMap::Layout(Layout::Circular) => {
             let position_map = layout::get_circular_position_map(&graph);
-            internal_graph_to_svg_with_positions(graph, position_map, settings)
-        }
-        LayoutOrPositionMap::Layout(Layout::Hierarchical) => {
-            let position_map = layout::get_hierarchical_position_map(&graph);
-            internal_graph_to_svg_with_positions(graph, position_map, settings)
-        }
-        LayoutOrPositionMap::PositionMap(position_map) => {
-            internal_graph_to_svg_with_positions(graph, position_map, settings)
-        }
-    }
-}
-
-fn internal_graph_to_svg_with_positions<G, PositionMapFn, NodeLabelFn, EdgeLabelFn, S>(
-    graph: G,
-    position_map: PositionMapFn,
-    settings: &Settings<S, NodeLabelFn, EdgeLabelFn>,
-) -> String
-where
-    G: IntoNodeReferences + IntoEdgeReferences + NodeIndexable + EdgeIndexable,
-    PositionMapFn: Fn(G::NodeId) -> (f32, f32),
-    NodeLabelFn: Fn(G::NodeId) -> String,
-    EdgeLabelFn: Fn(G::EdgeId) -> String,
-{
-    match (&settings.node_label, &settings.edge_label) {
-        (Some(node_label_map), Some(edge_label_map)) => {
             internal_graph_to_svg_with_positions_and_labels(
                 graph,
                 position_map,
-                node_label_map,
-                edge_label_map,
+                &settings.node_label,
+                &settings.edge_label,
                 settings,
             )
         }
-        (Some(node_label_map), None) => internal_graph_to_svg_with_positions_and_labels(
-            graph,
-            position_map,
-            node_label_map,
-            |_| "".to_string(),
-            settings,
-        ),
-        (None, Some(edge_label_map)) => internal_graph_to_svg_with_positions_and_labels(
-            graph,
-            position_map,
-            |node_id| NodeIndexable::to_index(&graph, node_id).to_string(),
-            edge_label_map,
-            settings,
-        ),
-        (None, None) => internal_graph_to_svg_with_positions_and_labels(
-            graph,
-            position_map,
-            |node_id| NodeIndexable::to_index(&graph, node_id).to_string(),
-            |_| "".to_string(),
-            settings,
-        ),
+        LayoutOrPositionMap::Layout(Layout::Hierarchical) => {
+            let position_map = layout::get_hierarchical_position_map(&graph);
+            internal_graph_to_svg_with_positions_and_labels(
+                graph,
+                position_map,
+                &settings.node_label,
+                &settings.edge_label,
+                settings,
+            )
+        }
+        LayoutOrPositionMap::PositionMap(position_map) => {
+            internal_graph_to_svg_with_positions_and_labels(
+                graph,
+                position_map,
+                &settings.node_label,
+                &settings.edge_label,
+                settings,
+            )
+        }
     }
 }
 
