@@ -120,8 +120,11 @@ impl Settings<DefaultPositionMapFn, DefaultNodeLabelFn, DefaultEdgeLabelFn> {
 ///
 /// For details on the different settings, see the fields of this struct.
 ///
-/// Example usage:
-/// /// Example usage:
+/// All values that are not specified will use their respective default values which can be found
+/// in the `DEFAULT_*` constants in this module.
+///
+/// # Usage
+///
 /// ```rust
 /// use visgraph::settings::SettingsBuilder;
 /// // All values we don't explicitly set will use their default values.
@@ -171,7 +174,7 @@ pub struct SettingsBuilder<PositionMapFn, NodeLabelFn, EdgeLabelFn, NodeColoring
     /// **Valid values**: f32 in range [0.0, 0.5)
     pub margin_y: f32,
 
-    /// Layout algorithm for graph visualization. If none is provided, the [`DEFAULT_LAYOUT`] will be used.
+    /// Layout algorithm for graph visualization. If none is provided, the [`DEFAULT_LAYOUT_OR_POS_MAP`] will be used.
     ///
     /// **Valid values**: If a `PositionMap` is used, the provided function must implement
     /// `impl Fn(G::NodeId) -> (f32, f32)`. Furthermore, the position map should return normalized
