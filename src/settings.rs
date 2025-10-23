@@ -27,8 +27,9 @@ pub const DEFAULT_MARGIN: f32 = 0.05;
 /// Default layout algorithm for graph visualization.
 pub const DEFAULT_LAYOUT_OR_POS_MAP: LayoutOrPositionMap<DefaultPositionMapFn> =
     LayoutOrPositionMap::Layout(Layout::Circular);
-
+/// Default function to generate node labels. Uses node indexes as labels.
 pub const DEFAULT_NODE_LABEL_FN: DefaultNodeLabelFn = |node_id| format!("Node {}", node_id.index());
+/// Default function to generate edge labels. No (empty) edge labels are drawn.
 pub const DEFAULT_EDGE_LABEL_FN: DefaultEdgeLabelFn = |_| "".to_string();
 
 pub(crate) type DefaultNodeLabelFn = fn(petgraph::prelude::NodeIndex) -> String;
