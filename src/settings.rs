@@ -31,9 +31,15 @@ pub const DEFAULT_LAYOUT_OR_POS_MAP: LayoutOrPositionMap<DefaultPositionMapFn> =
 pub const DEFAULT_NODE_LABEL_FN: DefaultNodeLabelFn = |node_id| format!("Node {}", node_id.index());
 /// Default function to generate edge labels. No (empty) edge labels are drawn.
 pub const DEFAULT_EDGE_LABEL_FN: DefaultEdgeLabelFn = |_| "".to_string();
+/// Default function to generate node colors. All nodes are colored black.
+pub const DEFAULT_NODE_COLORING_FN: DefaultNodeColoringFn = |_| "black".to_string();
+/// Default function to generate edge colors. All edges are colored black.
+pub const DEFAULT_EDGE_COLORING_FN: DefaultEdgeColoringFn = |_| "black".to_string();
 
 pub(crate) type DefaultNodeLabelFn = fn(petgraph::prelude::NodeIndex) -> String;
 pub(crate) type DefaultEdgeLabelFn = fn(petgraph::prelude::EdgeIndex) -> String;
+pub(crate) type DefaultNodeColoringFn = fn(petgraph::prelude::NodeIndex) -> String;
+pub(crate) type DefaultEdgeColoringFn = fn(petgraph::prelude::EdgeIndex) -> String;
 
 /// Settings for SVG graph rendering.
 ///
@@ -60,6 +66,8 @@ pub struct Settings<
     PositionMapFn = DefaultPositionMapFn,
     NodeLabelFn = DefaultNodeLabelFn,
     EdgeLabelFn = DefaultEdgeLabelFn,
+    NodeColoringFn = DefaultNodeColoringFn,
+    EdgeColoringFn = DefaultEdgeColoringFn,
 > {
     pub(crate) width: f32,
     pub(crate) height: f32,
@@ -71,6 +79,8 @@ pub struct Settings<
     pub(crate) layout_or_pos_map: LayoutOrPositionMap<PositionMapFn>,
     pub(crate) node_label_fn: NodeLabelFn,
     pub(crate) edge_label_fn: EdgeLabelFn,
+    pub(crate) node_coloring_fn: NodeColoringFn,
+    pub(crate) edge_coloring_fn: EdgeColoringFn,
 }
 
 impl Default for Settings<DefaultPositionMapFn, DefaultNodeLabelFn, DefaultEdgeLabelFn> {
@@ -89,6 +99,8 @@ impl Default for Settings<DefaultPositionMapFn, DefaultNodeLabelFn, DefaultEdgeL
             layout_or_pos_map: DEFAULT_LAYOUT_OR_POS_MAP,
             node_label_fn: DEFAULT_NODE_LABEL_FN,
             edge_label_fn: DEFAULT_EDGE_LABEL_FN,
+            node_coloring_fn: DEFAULT_NODE_COLORING_FN,
+            edge_coloring_fn: DEFAULT_EDGE_COLORING_FN,
         }
     }
 }
@@ -120,7 +132,8 @@ impl Settings<DefaultPositionMapFn, DefaultNodeLabelFn, DefaultEdgeLabelFn> {
 ///     .expect("Provided values should be valid.");
 /// ```
 #[derive(Debug)]
-pub struct SettingsBuilder<PositionMapFn, NodeLabelFn, EdgeLabelFn> {
+pub struct SettingsBuilder<PositionMapFn, NodeLabelFn, EdgeLabelFn, NodeColoringFn, EdgeColoringFn>
+{
     /// Width of the SVG and output image in pixels.
     ///
     /// **Valid values**: strictly positive f32
@@ -174,9 +187,33 @@ pub struct SettingsBuilder<PositionMapFn, NodeLabelFn, EdgeLabelFn> {
     ///
     /// **Valid values**: Functions that implement `impl Fn(G::EdgeId) -> String`.
     pub edge_label_fn: EdgeLabelFn,
+
+    /// Function to generate node colors. If none is provided, all nodes will be colored black.
+    ///
+    /// **Valid values**: Functions that implement `impl Fn(G::NodeId) -> String`.
+    /// The returned string should be a valid SVG color (e.g., "red", "#ff0000", "rgb(255,0,0)").
+    /// See [https://graphviz.org/doc/info/colors.html#svg](https://graphviz.org/doc/info/colors.html#svg)
+    /// for a list of valid SVG color names.
+    pub node_coloring_fn: NodeColoringFn,
+
+    /// Function to generate edge colors. If none is provided, all edges will be colored black.
+    ///
+    /// **Valid values**: Functions that implement `impl Fn(G::EdgeId) -> String`.
+    /// The returned string should be a valid SVG color (e.g., "red", "#ff0000", "rgb(255,0,0)").
+    /// See [https://graphviz.org/doc/info/colors.html#svg](https://graphviz.org/doc/info/colors.html#svg)
+    /// for a list of valid SVG color names.
+    pub edge_coloring_fn: EdgeColoringFn,
 }
 
-impl Default for SettingsBuilder<DefaultPositionMapFn, DefaultNodeLabelFn, DefaultEdgeLabelFn> {
+impl Default
+    for SettingsBuilder<
+        DefaultPositionMapFn,
+        DefaultNodeLabelFn,
+        DefaultEdgeLabelFn,
+        DefaultNodeColoringFn,
+        DefaultEdgeColoringFn,
+    >
+{
     /// Creates a new `SettingsBuilder` instance with default values.
     ///
     /// For default values, see the `DEFAULT_*` constants.
@@ -192,11 +229,21 @@ impl Default for SettingsBuilder<DefaultPositionMapFn, DefaultNodeLabelFn, Defau
             layout_or_pos_map: DEFAULT_LAYOUT_OR_POS_MAP,
             node_label_fn: DEFAULT_NODE_LABEL_FN,
             edge_label_fn: DEFAULT_EDGE_LABEL_FN,
+            node_coloring_fn: DEFAULT_NODE_COLORING_FN,
+            edge_coloring_fn: DEFAULT_EDGE_COLORING_FN,
         }
     }
 }
 
-impl SettingsBuilder<DefaultPositionMapFn, DefaultNodeLabelFn, DefaultEdgeLabelFn> {
+impl
+    SettingsBuilder<
+        DefaultPositionMapFn,
+        DefaultNodeLabelFn,
+        DefaultEdgeLabelFn,
+        DefaultNodeColoringFn,
+        DefaultEdgeColoringFn,
+    >
+{
     /// Creates a new `SettingsBuilder` instance with default values.
     ///
     /// For default values, see the `DEFAULT_*` constants.
@@ -205,10 +252,12 @@ impl SettingsBuilder<DefaultPositionMapFn, DefaultNodeLabelFn, DefaultEdgeLabelF
     }
 }
 
-impl<PositionMapFn, NodeLabelFn, EdgeLabelFn>
-    SettingsBuilder<PositionMapFn, NodeLabelFn, EdgeLabelFn>
+impl<PositionMapFn, NodeLabelFn, EdgeLabelFn, NodeColoringFn, EdgeColoringFn>
+    SettingsBuilder<PositionMapFn, NodeLabelFn, EdgeLabelFn, NodeColoringFn, EdgeColoringFn>
 {
     /// Sets the width of the SVG canvas and returns the modified [`SettingsBuilder`].
+    ///
+    /// For valid values, see the field documentation.
     ///
     /// The default width is [`DEFAULT_WIDTH`].
     pub fn width(mut self, width: f32) -> Self {
@@ -218,6 +267,8 @@ impl<PositionMapFn, NodeLabelFn, EdgeLabelFn>
 
     /// Sets the height of the SVG canvas and returns the modified [`SettingsBuilder`].
     ///
+    /// For valid values, see the field documentation.
+    ///
     /// The default height is [`DEFAULT_HEIGHT`].
     pub fn height(mut self, height: f32) -> Self {
         self.height = height;
@@ -225,6 +276,8 @@ impl<PositionMapFn, NodeLabelFn, EdgeLabelFn>
     }
 
     /// Sets the radius of the nodes in pixels and returns the modified [`SettingsBuilder`].
+    ///
+    /// For valid values, see the field documentation.
     ///
     /// The default radius is [`DEFAULT_RADIUS`].
     pub fn node_radius(mut self, radius: f32) -> Self {
@@ -234,6 +287,8 @@ impl<PositionMapFn, NodeLabelFn, EdgeLabelFn>
 
     /// Sets the font size for labels in pixels and returns the modified [`SettingsBuilder`].
     ///
+    /// For valid values, see the field documentation.
+    ///
     /// The default font size is [`DEFAULT_FONT_SIZE`].
     pub fn font_size(mut self, font_size: f32) -> Self {
         self.font_size = font_size;
@@ -241,6 +296,8 @@ impl<PositionMapFn, NodeLabelFn, EdgeLabelFn>
     }
 
     /// Sets the stroke width for edges in pixels and returns the modified [`SettingsBuilder`].
+    ///
+    /// For valid values, see the field documentation.
     ///
     /// The default stroke width is [`DEFAULT_STROKE_WIDTH`].
     pub fn stroke_width(mut self, stroke_width: f32) -> Self {
@@ -250,6 +307,8 @@ impl<PositionMapFn, NodeLabelFn, EdgeLabelFn>
 
     /// Sets the horizontal margin as a fraction of the width and returns the modified [`SettingsBuilder`].
     ///
+    /// For valid values, see the field documentation.
+    ///
     /// The default margin is [`DEFAULT_MARGIN`].
     pub fn margin_x(mut self, margin_x: f32) -> Self {
         self.margin_x = margin_x;
@@ -257,6 +316,8 @@ impl<PositionMapFn, NodeLabelFn, EdgeLabelFn>
     }
 
     /// Sets the vertical margin as a fraction of the height and returns the modified [`SettingsBuilder`].
+    ///
+    /// For valid values, see the field documentation.
     ///
     /// The default margin is [`DEFAULT_MARGIN`].
     pub fn margin_y(mut self, margin_y: f32) -> Self {
@@ -273,7 +334,13 @@ impl<PositionMapFn, NodeLabelFn, EdgeLabelFn>
     pub fn layout(
         self,
         layout: Layout,
-    ) -> SettingsBuilder<DefaultPositionMapFn, NodeLabelFn, EdgeLabelFn> {
+    ) -> SettingsBuilder<
+        DefaultPositionMapFn,
+        NodeLabelFn,
+        EdgeLabelFn,
+        NodeColoringFn,
+        EdgeColoringFn,
+    > {
         SettingsBuilder {
             width: self.width,
             height: self.height,
@@ -285,13 +352,14 @@ impl<PositionMapFn, NodeLabelFn, EdgeLabelFn>
             layout_or_pos_map: LayoutOrPositionMap::Layout(layout),
             node_label_fn: self.node_label_fn,
             edge_label_fn: self.edge_label_fn,
+            node_coloring_fn: self.node_coloring_fn,
+            edge_coloring_fn: self.edge_coloring_fn,
         }
     }
 
     /// Sets the custom position map function and returns the modified [`SettingsBuilder`].
     ///
-    /// The function should implement `impl Fn(G::NodeId) -> (f32, f32)`. Furthermore, the
-    /// positions should be normalized in the range [0.0, 1.0].
+    /// For valid position map functions, see the field documentation.
     ///
     /// Note that this overrides any layout algorithm previously set using the
     /// [`SettingsBuilder::layout`] method.
@@ -300,7 +368,7 @@ impl<PositionMapFn, NodeLabelFn, EdgeLabelFn>
     pub fn position_map<NewPositionMapFn>(
         self,
         position_map: NewPositionMapFn,
-    ) -> SettingsBuilder<NewPositionMapFn, NodeLabelFn, EdgeLabelFn>
+    ) -> SettingsBuilder<NewPositionMapFn, NodeLabelFn, EdgeLabelFn, NodeColoringFn, EdgeColoringFn>
     where
         NewPositionMapFn: Fn(petgraph::prelude::NodeIndex) -> (f32, f32),
     {
@@ -315,16 +383,18 @@ impl<PositionMapFn, NodeLabelFn, EdgeLabelFn>
             layout_or_pos_map: LayoutOrPositionMap::PositionMap(position_map),
             node_label_fn: self.node_label_fn,
             edge_label_fn: self.edge_label_fn,
+            node_coloring_fn: self.node_coloring_fn,
+            edge_coloring_fn: self.edge_coloring_fn,
         }
     }
 
     /// Sets the node label function and returns the modified [`SettingsBuilder`].
     ///
-    /// The node label function should implement `impl Fn(G::NodeId) -> String`.
+    /// For valid node label functions, see the field documentation.
     pub fn node_label_fn<NewNodeLabelFn>(
         self,
         node_label: NewNodeLabelFn,
-    ) -> SettingsBuilder<PositionMapFn, NewNodeLabelFn, EdgeLabelFn>
+    ) -> SettingsBuilder<PositionMapFn, NewNodeLabelFn, EdgeLabelFn, NodeColoringFn, EdgeColoringFn>
     where
         NewNodeLabelFn: Fn(petgraph::prelude::NodeIndex) -> String,
     {
@@ -339,16 +409,18 @@ impl<PositionMapFn, NodeLabelFn, EdgeLabelFn>
             layout_or_pos_map: self.layout_or_pos_map,
             node_label_fn: node_label,
             edge_label_fn: self.edge_label_fn,
+            node_coloring_fn: self.node_coloring_fn,
+            edge_coloring_fn: self.edge_coloring_fn,
         }
     }
 
     /// Sets the edge label function and returns the modified [`SettingsBuilder`].
     ///
-    /// The edge label function should implement `impl Fn(G::EdgeId) -> String`.
+    /// For valid edge label functions, see the field documentation.
     pub fn edge_label_fn<NewEdgeLabelFn>(
         self,
         edge_label: NewEdgeLabelFn,
-    ) -> SettingsBuilder<PositionMapFn, NodeLabelFn, NewEdgeLabelFn>
+    ) -> SettingsBuilder<PositionMapFn, NodeLabelFn, NewEdgeLabelFn, NodeColoringFn, EdgeColoringFn>
     where
         NewEdgeLabelFn: Fn(petgraph::prelude::EdgeIndex) -> String,
     {
@@ -363,6 +435,60 @@ impl<PositionMapFn, NodeLabelFn, EdgeLabelFn>
             layout_or_pos_map: self.layout_or_pos_map,
             node_label_fn: self.node_label_fn,
             edge_label_fn: edge_label,
+            node_coloring_fn: self.node_coloring_fn,
+            edge_coloring_fn: self.edge_coloring_fn,
+        }
+    }
+
+    /// Sets the node coloring function and returns the modified [`SettingsBuilder`].
+    ///
+    /// For valid node coloring functions, see the field documentation.
+    pub fn node_coloring_fn<NewNodeColoringFn>(
+        self,
+        node_coloring: NewNodeColoringFn,
+    ) -> SettingsBuilder<PositionMapFn, NodeLabelFn, EdgeLabelFn, NewNodeColoringFn, EdgeColoringFn>
+    where
+        NewNodeColoringFn: Fn(petgraph::prelude::NodeIndex) -> String,
+    {
+        SettingsBuilder {
+            width: self.width,
+            height: self.height,
+            node_radius: self.node_radius,
+            font_size: self.font_size,
+            stroke_width: self.stroke_width,
+            margin_x: self.margin_x,
+            margin_y: self.margin_y,
+            layout_or_pos_map: self.layout_or_pos_map,
+            node_label_fn: self.node_label_fn,
+            edge_label_fn: self.edge_label_fn,
+            node_coloring_fn: node_coloring,
+            edge_coloring_fn: self.edge_coloring_fn,
+        }
+    }
+
+    /// Sets the edge coloring function and returns the modified [`SettingsBuilder`].
+    ///
+    /// For valid edge coloring functions, see the field documentation.
+    pub fn edge_coloring_fn<NewEdgeColoringFn>(
+        self,
+        edge_coloring: NewEdgeColoringFn,
+    ) -> SettingsBuilder<PositionMapFn, NodeLabelFn, EdgeLabelFn, NodeColoringFn, NewEdgeColoringFn>
+    where
+        NewEdgeColoringFn: Fn(petgraph::prelude::EdgeIndex) -> String,
+    {
+        SettingsBuilder {
+            width: self.width,
+            height: self.height,
+            node_radius: self.node_radius,
+            font_size: self.font_size,
+            stroke_width: self.stroke_width,
+            margin_x: self.margin_x,
+            margin_y: self.margin_y,
+            layout_or_pos_map: self.layout_or_pos_map,
+            node_label_fn: self.node_label_fn,
+            edge_label_fn: self.edge_label_fn,
+            node_coloring_fn: self.node_coloring_fn,
+            edge_coloring_fn: edge_coloring,
         }
     }
 
@@ -392,11 +518,16 @@ impl<PositionMapFn, NodeLabelFn, EdgeLabelFn>
     /// Builds the [`Settings`] instance after validating the provided values.
     pub fn build(
         self,
-    ) -> Result<Settings<PositionMapFn, NodeLabelFn, EdgeLabelFn>, InvalidSettingsError>
+    ) -> Result<
+        Settings<PositionMapFn, NodeLabelFn, EdgeLabelFn, NodeColoringFn, EdgeColoringFn>,
+        InvalidSettingsError,
+    >
     where
         PositionMapFn: Fn(petgraph::prelude::NodeIndex) -> (f32, f32),
         NodeLabelFn: Fn(petgraph::prelude::NodeIndex) -> String,
         EdgeLabelFn: Fn(petgraph::prelude::EdgeIndex) -> String,
+        NodeColoringFn: Fn(petgraph::prelude::NodeIndex) -> String,
+        EdgeColoringFn: Fn(petgraph::prelude::EdgeIndex) -> String,
     {
         self.validate()?;
         let settings = Settings {
@@ -410,6 +541,8 @@ impl<PositionMapFn, NodeLabelFn, EdgeLabelFn>
             layout_or_pos_map: self.layout_or_pos_map,
             node_label_fn: self.node_label_fn,
             edge_label_fn: self.edge_label_fn,
+            node_coloring_fn: self.node_coloring_fn,
+            edge_coloring_fn: self.edge_coloring_fn,
         };
         Ok(settings)
     }

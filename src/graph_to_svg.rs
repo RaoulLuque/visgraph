@@ -67,45 +67,29 @@ const EDGE_CLOSENESS_THRESHOLD: f32 = 0.001;
 ///     &settings,
 /// );
 /// ```
-pub fn graph_to_svg<G, PositionMapFn, NodeLabelFn, EdgeLabelFn>(
+pub fn graph_to_svg<G, PositionMapFn, NodeLabelFn, EdgeLabelFn, NodeColoringFn, EdgeColoringFn>(
     graph: G,
-    settings: &Settings<PositionMapFn, NodeLabelFn, EdgeLabelFn>,
+    settings: &Settings<PositionMapFn, NodeLabelFn, EdgeLabelFn, NodeColoringFn, EdgeColoringFn>,
 ) -> String
 where
     G: IntoNodeReferences + IntoEdgeReferences + NodeIndexable + EdgeIndexable,
     PositionMapFn: Fn(G::NodeId) -> (f32, f32),
     NodeLabelFn: Fn(G::NodeId) -> String,
     EdgeLabelFn: Fn(G::EdgeId) -> String,
+    NodeColoringFn: Fn(G::NodeId) -> String,
+    EdgeColoringFn: Fn(G::EdgeId) -> String,
 {
     match &settings.layout_or_pos_map {
         LayoutOrPositionMap::Layout(Layout::Circular) => {
             let position_map = layout::get_circular_position_map(&graph);
-            internal_graph_to_svg_with_positions_and_labels(
-                graph,
-                position_map,
-                &settings.node_label_fn,
-                &settings.edge_label_fn,
-                settings,
-            )
+            internal_graph_to_svg_with_positions_and_labels(graph, position_map, settings)
         }
         LayoutOrPositionMap::Layout(Layout::Hierarchical) => {
             let position_map = layout::get_hierarchical_position_map(&graph);
-            internal_graph_to_svg_with_positions_and_labels(
-                graph,
-                position_map,
-                &settings.node_label_fn,
-                &settings.edge_label_fn,
-                settings,
-            )
+            internal_graph_to_svg_with_positions_and_labels(graph, position_map, settings)
         }
         LayoutOrPositionMap::PositionMap(position_map) => {
-            internal_graph_to_svg_with_positions_and_labels(
-                graph,
-                position_map,
-                &settings.node_label_fn,
-                &settings.edge_label_fn,
-                settings,
-            )
+            internal_graph_to_svg_with_positions_and_labels(graph, position_map, settings)
         }
     }
 }
@@ -115,27 +99,32 @@ fn internal_graph_to_svg_with_positions_and_labels<
     PositionMapFn,
     NodeLabelFn,
     EdgeLabelFn,
+    NodeColoringFn,
+    EdgeColoringFn,
     S,
-    T,
-    U,
 >(
     graph: G,
     position_map: PositionMapFn,
-    node_label_map: NodeLabelFn,
-    edge_label_map: EdgeLabelFn,
-    settings: &Settings<S, T, U>,
+    settings: &Settings<S, NodeLabelFn, EdgeLabelFn, NodeColoringFn, EdgeColoringFn>,
 ) -> String
 where
     G: IntoNodeReferences + IntoEdgeReferences + NodeIndexable + EdgeIndexable,
     PositionMapFn: Fn(G::NodeId) -> (f32, f32),
     NodeLabelFn: Fn(G::NodeId) -> String,
     EdgeLabelFn: Fn(G::EdgeId) -> String,
+    NodeColoringFn: Fn(G::NodeId) -> String,
+    EdgeColoringFn: Fn(G::EdgeId) -> String,
 {
     let mut svg_buffer = String::with_capacity(graph.node_bound() * 120 + graph.edge_bound() * 50);
     svg_buffer.push_str(&format!(
         "<svg width=\"{}\" height=\"{}\" xmlns=\"http://www.w3.org/2000/svg\">\n",
         settings.width, settings.height
     ));
+
+    let node_label_map = &settings.node_label_fn;
+    let edge_label_map = &settings.edge_label_fn;
+    let node_coloring_map = &settings.node_coloring_fn;
+    let edge_coloring_map = &settings.edge_coloring_fn;
 
     for node in graph.node_references() {
         let id = node.id();
@@ -147,11 +136,13 @@ where
             settings.height,
         );
         let node_label = node_label_map(id);
+        let node_color = node_coloring_map(id);
         draw_node(
             &mut svg_buffer,
             scaled_x,
             scaled_y,
             &node_label,
+            &node_color,
             settings.radius,
             settings.font_size,
         );
@@ -175,12 +166,14 @@ where
             settings.height,
         );
         let edge_label = edge_label_map(edge.id());
+        let edge_color = edge_coloring_map(edge.id());
 
         draw_edge(
             &mut svg_buffer,
             (scaled_x_source, scaled_y_source),
             (scaled_x_target, scaled_y_target),
             &edge_label,
+            &edge_color,
             settings.radius,
             settings.stroke_width,
             settings.font_size,
@@ -192,16 +185,18 @@ where
 }
 
 /// Draws a node as a circle with a text label by writing appropriate <circle> and <text> tags to the provided svg_buffer.
+#[allow(clippy::too_many_arguments)]
 fn draw_node(
     svg_buffer: &mut String,
     coord_x: f32,
     coord_y: f32,
     node_label: &str,
+    node_color: &str,
     radius: f32,
     font_size: f32,
 ) {
     svg_buffer.push_str(&format!("
-    <circle cx=\"{coord_x}\" cy=\"{coord_y}\" r=\"{radius}\" fill=\"white\" stroke=\"black\"/>
+    <circle cx=\"{coord_x}\" cy=\"{coord_y}\" r=\"{radius}\" fill=\"{node_color}\" stroke=\"black\"/>
     <text x=\"{coord_x}\" y=\"{coord_y}\" font-size=\"{font_size}px\" font-family='Arial, sans-serif' fill=\"black\" text-anchor=\"middle\" dominant-baseline=\"central\">{node_label}</text>\n",
         ));
 }
@@ -214,6 +209,7 @@ fn draw_edge(
     coord_source: (f32, f32),
     coord_target: (f32, f32),
     edge_label: &str,
+    edge_color: &str,
     radius: f32,
     stroke_width: f32,
     font_size: f32,
@@ -245,7 +241,7 @@ fn draw_edge(
 
     svg_buffer.push_str(&format!(
         "
-    <line x1=\"{start_x}\" y1=\"{start_y}\" x2=\"{end_x}\" y2=\"{end_y}\" stroke=\"black\" stroke-width=\"{stroke_width}\"/>
+    <line x1=\"{start_x}\" y1=\"{start_y}\" x2=\"{end_x}\" y2=\"{end_y}\" stroke=\"{edge_color}\" stroke-width=\"{stroke_width}\"/>
     <text x= \"{}\" y=\"{}\" font-size=\"{font_size}px\" font-family='Arial, sans-serif' fill=\"blue\" text-anchor=\"middle\" dominant-baseline=\"central\">{edge_label}</text>\n",
     (start_x + end_x) / 2.0, (start_y + end_y) / 2.0
     ));

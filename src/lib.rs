@@ -27,9 +27,9 @@ use crate::{errors::VisGraphError, graph_to_svg::graph_to_svg, settings::Setting
 /// More examples can be found in the [`examples`](https://github.com/RaoulLuque/visgraph/tree/main/examples)
 /// directory.
 #[cfg(feature = "svg_to_img")]
-pub fn graph_to_img<G, PositionMapFn, NodeLabelFn, EdgeLabelFn>(
+pub fn graph_to_img<G, PositionMapFn, NodeLabelFn, EdgeLabelFn, NodeColoringFn, EdgeColoringFn>(
     graph: G,
-    settings: &Settings<PositionMapFn, NodeLabelFn, EdgeLabelFn>,
+    settings: &Settings<PositionMapFn, NodeLabelFn, EdgeLabelFn, NodeColoringFn, EdgeColoringFn>,
     path: impl AsRef<std::path::Path>,
 ) -> Result<(), VisGraphError>
 where
@@ -37,6 +37,8 @@ where
     PositionMapFn: Fn(G::NodeId) -> (f32, f32),
     NodeLabelFn: Fn(G::NodeId) -> String,
     EdgeLabelFn: Fn(G::EdgeId) -> String,
+    NodeColoringFn: Fn(G::NodeId) -> String,
+    EdgeColoringFn: Fn(G::EdgeId) -> String,
 {
     let svg_data = graph_to_svg(graph, settings);
     svg_to_img(&svg_data, settings.width, settings.height, path)?;
