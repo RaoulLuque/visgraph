@@ -69,8 +69,8 @@ pub struct Settings<
     pub(crate) margin_x: f32,
     pub(crate) margin_y: f32,
     pub(crate) layout_or_pos_map: LayoutOrPositionMap<PositionMapFn>,
-    pub(crate) node_label: NodeLabelFn,
-    pub(crate) edge_label: EdgeLabelFn,
+    pub(crate) node_label_fn: NodeLabelFn,
+    pub(crate) edge_label_fn: EdgeLabelFn,
 }
 
 impl Default for Settings<DefaultPositionMapFn, DefaultNodeLabelFn, DefaultEdgeLabelFn> {
@@ -87,8 +87,8 @@ impl Default for Settings<DefaultPositionMapFn, DefaultNodeLabelFn, DefaultEdgeL
             margin_x: DEFAULT_MARGIN,
             margin_y: DEFAULT_MARGIN,
             layout_or_pos_map: DEFAULT_LAYOUT_OR_POS_MAP,
-            node_label: DEFAULT_NODE_LABEL_FN,
-            edge_label: DEFAULT_EDGE_LABEL_FN,
+            node_label_fn: DEFAULT_NODE_LABEL_FN,
+            edge_label_fn: DEFAULT_EDGE_LABEL_FN,
         }
     }
 }
@@ -158,6 +158,13 @@ pub struct SettingsBuilder<PositionMapFn, NodeLabelFn, EdgeLabelFn> {
     /// **Valid values**: f32 in range [0.0, 0.5)
     pub margin_y: f32,
 
+    /// Layout algorithm for graph visualization. If none is provided, the [`DEFAULT_LAYOUT`] will be used.
+    ///
+    /// **Valid values**: If a `PositionMap` is used, the provided function must implement
+    /// `impl Fn(G::NodeId) -> (f32, f32)`. Furthermore, the position map should return normalized
+    /// positions in the range [0.0, 1.0].
+    pub layout_or_pos_map: LayoutOrPositionMap<PositionMapFn>,
+
     /// Function to generate node labels. If none is provided, node indexes will be used as labels.
     ///
     /// **Valid values**: Functions that implement `impl Fn(G::NodeId) -> String`.
@@ -167,13 +174,6 @@ pub struct SettingsBuilder<PositionMapFn, NodeLabelFn, EdgeLabelFn> {
     ///
     /// **Valid values**: Functions that implement `impl Fn(G::EdgeId) -> String`.
     pub edge_label_fn: EdgeLabelFn,
-
-    /// Layout algorithm for graph visualization. If none is provided, the [`DEFAULT_LAYOUT`] will be used.
-    ///
-    /// **Valid values**: If a `PositionMap` is used, the provided function must implement
-    /// `impl Fn(G::NodeId) -> (f32, f32)`. Furthermore, the position map should return normalized
-    /// positions in the range [0.0, 1.0].
-    pub layout_or_pos_map: LayoutOrPositionMap<PositionMapFn>,
 }
 
 impl Default for SettingsBuilder<DefaultPositionMapFn, DefaultNodeLabelFn, DefaultEdgeLabelFn> {
@@ -264,54 +264,6 @@ impl<PositionMapFn, NodeLabelFn, EdgeLabelFn>
         self
     }
 
-    /// Sets the node label function and returns the modified [`SettingsBuilder`].
-    ///
-    /// The node label function should implement `impl Fn(G::NodeId) -> String`.
-    pub fn node_label_fn<NewNodeLabelFn>(
-        self,
-        node_label: NewNodeLabelFn,
-    ) -> SettingsBuilder<PositionMapFn, NewNodeLabelFn, EdgeLabelFn>
-    where
-        NewNodeLabelFn: Fn(petgraph::prelude::NodeIndex) -> String,
-    {
-        SettingsBuilder {
-            width: self.width,
-            height: self.height,
-            node_radius: self.node_radius,
-            font_size: self.font_size,
-            stroke_width: self.stroke_width,
-            margin_x: self.margin_x,
-            margin_y: self.margin_y,
-            layout_or_pos_map: self.layout_or_pos_map,
-            node_label_fn: node_label,
-            edge_label_fn: self.edge_label_fn,
-        }
-    }
-
-    /// Sets the edge label function and returns the modified [`SettingsBuilder`].
-    ///
-    /// The edge label function should implement `impl Fn(G::EdgeId) -> String`.
-    pub fn edge_label_fn<NewEdgeLabelFn>(
-        self,
-        edge_label: NewEdgeLabelFn,
-    ) -> SettingsBuilder<PositionMapFn, NodeLabelFn, NewEdgeLabelFn>
-    where
-        NewEdgeLabelFn: Fn(petgraph::prelude::EdgeIndex) -> String,
-    {
-        SettingsBuilder {
-            width: self.width,
-            height: self.height,
-            node_radius: self.node_radius,
-            font_size: self.font_size,
-            stroke_width: self.stroke_width,
-            margin_x: self.margin_x,
-            margin_y: self.margin_y,
-            layout_or_pos_map: self.layout_or_pos_map,
-            node_label_fn: self.node_label_fn,
-            edge_label_fn: edge_label,
-        }
-    }
-
     /// Sets the layout algorithm and returns the modified [`SettingsBuilder`].
     ///
     /// Note that this overrides any position map previously set using the
@@ -366,6 +318,54 @@ impl<PositionMapFn, NodeLabelFn, EdgeLabelFn>
         }
     }
 
+    /// Sets the node label function and returns the modified [`SettingsBuilder`].
+    ///
+    /// The node label function should implement `impl Fn(G::NodeId) -> String`.
+    pub fn node_label_fn<NewNodeLabelFn>(
+        self,
+        node_label: NewNodeLabelFn,
+    ) -> SettingsBuilder<PositionMapFn, NewNodeLabelFn, EdgeLabelFn>
+    where
+        NewNodeLabelFn: Fn(petgraph::prelude::NodeIndex) -> String,
+    {
+        SettingsBuilder {
+            width: self.width,
+            height: self.height,
+            node_radius: self.node_radius,
+            font_size: self.font_size,
+            stroke_width: self.stroke_width,
+            margin_x: self.margin_x,
+            margin_y: self.margin_y,
+            layout_or_pos_map: self.layout_or_pos_map,
+            node_label_fn: node_label,
+            edge_label_fn: self.edge_label_fn,
+        }
+    }
+
+    /// Sets the edge label function and returns the modified [`SettingsBuilder`].
+    ///
+    /// The edge label function should implement `impl Fn(G::EdgeId) -> String`.
+    pub fn edge_label_fn<NewEdgeLabelFn>(
+        self,
+        edge_label: NewEdgeLabelFn,
+    ) -> SettingsBuilder<PositionMapFn, NodeLabelFn, NewEdgeLabelFn>
+    where
+        NewEdgeLabelFn: Fn(petgraph::prelude::EdgeIndex) -> String,
+    {
+        SettingsBuilder {
+            width: self.width,
+            height: self.height,
+            node_radius: self.node_radius,
+            font_size: self.font_size,
+            stroke_width: self.stroke_width,
+            margin_x: self.margin_x,
+            margin_y: self.margin_y,
+            layout_or_pos_map: self.layout_or_pos_map,
+            node_label_fn: self.node_label_fn,
+            edge_label_fn: edge_label,
+        }
+    }
+
     /// Validates the settings.
     ///
     /// Checks that all settings are within acceptable ranges. If not, returns a corresponding [`SettingsError`].
@@ -408,8 +408,8 @@ impl<PositionMapFn, NodeLabelFn, EdgeLabelFn>
             margin_x: self.margin_x,
             margin_y: self.margin_y,
             layout_or_pos_map: self.layout_or_pos_map,
-            node_label: self.node_label_fn,
-            edge_label: self.edge_label_fn,
+            node_label_fn: self.node_label_fn,
+            edge_label_fn: self.edge_label_fn,
         };
         Ok(settings)
     }

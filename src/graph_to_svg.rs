@@ -83,8 +83,8 @@ where
             internal_graph_to_svg_with_positions_and_labels(
                 graph,
                 position_map,
-                &settings.node_label,
-                &settings.edge_label,
+                &settings.node_label_fn,
+                &settings.edge_label_fn,
                 settings,
             )
         }
@@ -93,8 +93,8 @@ where
             internal_graph_to_svg_with_positions_and_labels(
                 graph,
                 position_map,
-                &settings.node_label,
-                &settings.edge_label,
+                &settings.node_label_fn,
+                &settings.edge_label_fn,
                 settings,
             )
         }
@@ -102,8 +102,8 @@ where
             internal_graph_to_svg_with_positions_and_labels(
                 graph,
                 position_map,
-                &settings.node_label,
-                &settings.edge_label,
+                &settings.node_label_fn,
+                &settings.edge_label_fn,
                 settings,
             )
         }
