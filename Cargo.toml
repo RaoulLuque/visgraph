@@ -11,6 +11,13 @@ repository = "https://github.com/raoulluque/visgraph"
 rust-version = "1.68"
 edition = "2021"
 
+include = [
+    "src/**",
+    "assets/DejaVuSans.ttf",
+    "Cargo.toml",
+    "README.md",
+]
+
 [lib]
 name = "visgraph"
 

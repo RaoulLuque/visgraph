@@ -21,7 +21,9 @@ use crate::errors::SvgToImageError;
 /// strictly positive. Otherwise, an appropriate error will be returned.
 pub fn svg_to_pixmap(svg_data: &str, width: f32, height: f32) -> Result<Pixmap, SvgToImageError> {
     let mut opt = resvg::usvg::Options::default();
-    opt.fontdb_mut().load_system_fonts();
+    opt.fontdb_mut()
+        .load_font_data(include_bytes!("../assets/DejaVuSans.ttf").to_vec());
+    opt.fontdb_mut().set_sans_serif_family("DejaVu Sans");
     opt.default_size =
         resvg::usvg::Size::from_wh(width, height).expect("Provided dimensions should be strictly positive, as Settings struct is validated on creation.");
 

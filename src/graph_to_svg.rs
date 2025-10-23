@@ -197,7 +197,7 @@ fn draw_node(
 ) {
     svg_buffer.push_str(&format!("
     <circle cx=\"{coord_x}\" cy=\"{coord_y}\" r=\"{radius}\" fill=\"{node_color}\" stroke=\"black\"/>
-    <text x=\"{coord_x}\" y=\"{coord_y}\" font-size=\"{font_size}px\" font-family='Arial, sans-serif' fill=\"black\" text-anchor=\"middle\" dominant-baseline=\"central\">{node_label}</text>\n",
+    <text x=\"{coord_x}\" y=\"{coord_y}\" font-size=\"{font_size}px\" font-family=\"DejaVu Sans, sans-serif\" fill=\"black\" text-anchor=\"middle\" dominant-baseline=\"central\">{node_label}</text>\n",
         ));
 }
 
@@ -242,7 +242,7 @@ fn draw_edge(
     svg_buffer.push_str(&format!(
         "
     <line x1=\"{start_x}\" y1=\"{start_y}\" x2=\"{end_x}\" y2=\"{end_y}\" stroke=\"{edge_color}\" stroke-width=\"{stroke_width}\"/>
-    <text x= \"{}\" y=\"{}\" font-size=\"{font_size}px\" font-family='Arial, sans-serif' fill=\"blue\" text-anchor=\"middle\" dominant-baseline=\"central\">{edge_label}</text>\n",
+    <text x= \"{}\" y=\"{}\" font-size=\"{font_size}px\" font-family=\"DejaVu Sans, sans-serif\" fill=\"blue\" text-anchor=\"middle\" dominant-baseline=\"central\">{edge_label}</text>\n",
     (start_x + end_x) / 2.0, (start_y + end_y) / 2.0
     ));
 }
@@ -292,8 +292,6 @@ mod tests {
     fn test_graph_to_svg_with_position_map() {
         let (graph, settings) = test_square_graph_with_position_map();
         let svg_output = graph_to_svg(&graph, &settings);
-
-        println!("{}", svg_output);
 
         let expected_output = "<svg width=\"500\" height=\"500\" xmlns=\"http://www.w3.org/2000/svg\">
 

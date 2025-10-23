@@ -28,11 +28,11 @@ pub const DEFAULT_MARGIN: f32 = 0.05;
 pub const DEFAULT_LAYOUT_OR_POS_MAP: LayoutOrPositionMap<DefaultPositionMapFn> =
     LayoutOrPositionMap::Layout(Layout::Circular);
 /// Default function to generate node labels. Uses node indexes as labels.
-pub const DEFAULT_NODE_LABEL_FN: DefaultNodeLabelFn = |node_id| format!("Node {}", node_id.index());
+pub const DEFAULT_NODE_LABEL_FN: DefaultNodeLabelFn = |node_id| format!("{}", node_id.index());
 /// Default function to generate edge labels. No (empty) edge labels are drawn.
 pub const DEFAULT_EDGE_LABEL_FN: DefaultEdgeLabelFn = |_| "".to_string();
-/// Default function to generate node colors. All nodes are colored black.
-pub const DEFAULT_NODE_COLORING_FN: DefaultNodeColoringFn = |_| "black".to_string();
+/// Default function to generate node colors. All nodes are colored white.
+pub const DEFAULT_NODE_COLORING_FN: DefaultNodeColoringFn = |_| "white".to_string();
 /// Default function to generate edge colors. All edges are colored black.
 pub const DEFAULT_EDGE_COLORING_FN: DefaultEdgeColoringFn = |_| "black".to_string();
 
