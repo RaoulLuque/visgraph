@@ -30,7 +30,7 @@ fn main() {
         .width(1000.0)
         .height(1000.0)
         .node_radius(7.5)
-        .stroke_width(0.1)
+        .stroke_width(0.15)
         .font_size(7.5)
         .layout(Layout::Circular)
         .edge_coloring_fn(edge_coloring_fn)
