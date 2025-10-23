@@ -310,7 +310,10 @@ impl<PositionMapFn, NodeLabelFn, EdgeLabelFn>
 
     /// Sets the layout algorithm and returns the modified [`SettingsBuilder`].
     ///
-    /// To provide a custom position map function, use the [`position_map`] method instead.
+    /// Note that this overrides any position map previously set using the
+    /// [`SettingsBuilder::position_map`] method.
+    ///
+    /// To provide a custom position map, use the [`SettingsBuilder::position_map`] method instead.
     pub fn layout(
         self,
         layout: Layout,
@@ -334,7 +337,10 @@ impl<PositionMapFn, NodeLabelFn, EdgeLabelFn>
     /// The function should implement `impl Fn(G::NodeId) -> (f32, f32)`. Furthermore, the
     /// positions should be normalized in the range [0.0, 1.0].
     ///
-    /// To use a predefined layout algorithm, use the [`layout`] method instead.
+    /// Note that this overrides any layout algorithm previously set using the
+    /// [`SettingsBuilder::layout`] method.
+    ///
+    /// To use a predefined layout algorithm, use the [`SettingsBuilder::layout`] method instead.
     pub fn position_map<NewPositionMapFn>(
         self,
         position_map: NewPositionMapFn,
