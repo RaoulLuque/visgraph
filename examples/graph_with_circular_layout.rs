@@ -41,7 +41,7 @@ fn main() {
     graph_to_img(
         &complete_graph,
         &settings,
-        "examples/results/complete_graph_with_circular_layout.png",
+        "examples/results/graph_with_circular_layout.png",
     )
     .unwrap();
 }

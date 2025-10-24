@@ -107,9 +107,9 @@ pub mod tests {
 
     /// Create a test square graph with a custom position map, along with the corresponding settings.
     ///
-    /// The same as in examples/square_graph_with_position_map.rs
+    /// The same as in examples/graph_with_position_map.rs
     #[allow(clippy::type_complexity)]
-    pub fn test_square_graph_with_position_map() -> (
+    pub fn test_graph_with_position_map() -> (
         UnGraph<(), ()>,
         Settings<impl Fn(NodeIndex) -> (f32, f32), DefaultNodeLabelFn, DefaultEdgeLabelFn>,
     ) {

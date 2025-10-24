@@ -276,7 +276,7 @@ fn scale(
 
 #[cfg(test)]
 mod tests {
-    use crate::{graph_to_svg::graph_to_svg, tests::test_square_graph_with_position_map};
+    use crate::{graph_to_svg::graph_to_svg, tests::test_graph_with_position_map};
 
     #[test]
     fn test_scale() {
@@ -295,7 +295,7 @@ mod tests {
 
     #[test]
     fn test_graph_to_svg_with_position_map() {
-        let (graph, settings) = test_square_graph_with_position_map();
+        let (graph, settings) = test_graph_with_position_map();
         let svg_output = graph_to_svg(&graph, &settings);
 
         println!("SVG Output:\n{}", svg_output);

@@ -72,7 +72,7 @@ mod tests {
     use resvg::tiny_skia::Pixmap;
 
     use crate::graph_to_svg::graph_to_svg;
-    use crate::tests::{test_graph_with_custom_labels, test_square_graph_with_position_map};
+    use crate::tests::{test_graph_with_custom_labels, test_graph_with_position_map};
 
     const MSE_ERROR_TOLERANCE: f64 = 100.0;
 
@@ -142,8 +142,8 @@ mod tests {
     }
 
     #[test]
-    fn test_svg_to_image_on_square_graph_with_position_map() {
-        let (graph, settings) = test_square_graph_with_position_map();
+    fn test_svg_to_image_on_graph_with_position_map() {
+        let (graph, settings) = test_graph_with_position_map();
 
         let svg_data = graph_to_svg(&graph, &settings);
         let pixmap = super::svg_to_pixmap(&svg_data, settings.width, settings.height)
@@ -151,7 +151,7 @@ mod tests {
 
         assert_images_equal(
             &pixmap,
-            "examples/results/square_graph_with_position_map.png".as_ref(),
+            "examples/results/graph_with_position_map.png".as_ref(),
         );
     }
 }

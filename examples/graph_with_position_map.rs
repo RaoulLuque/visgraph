@@ -40,7 +40,7 @@ fn main() {
     graph_to_img(
         &square_graph,
         &settings,
-        "examples/results/square_graph_with_position_map.png",
+        "examples/results/graph_with_position_map.png",
     )
     .unwrap();
 }

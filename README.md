@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="examples/results/complete_graph_with_circular_layout.png#gh-light-mode-only"
+  <img src="examples/results/graph_with_circular_layout.png#gh-light-mode-only"
        width="400"
        alt="Visualization of complete graph with 100 nodes in circular layout. (light mode).">
-  <img src="examples/results/complete_graph_with_circular_layout.png#gh-dark-mode-only"
+  <img src="examples/results/graph_with_circular_layout.png#gh-dark-mode-only"
        width="400"
        alt="Visualization of complete graph with 100 nodes in circular layout. (dark mode).">¹
 </p>
@@ -102,7 +102,7 @@ the [MIT license][mit-license], at your option. This file may
 not be copied, modified, or distributed except according to those
 terms.
 
-¹Image generated using visgraph, see [`examples/complete_graph_with_circular_layout.rs`][complete-graph-example-url].
+¹Image generated using visgraph, see [`examples/graph_with_circular_layout.rs`][complete-graph-example-url].
 
 [apache-license]: http://www.apache.org/licenses/LICENSE-2.0
 
@@ -110,7 +110,7 @@ terms.
 
 [ci-url]: https://github.com/raoulluque/visgraph/actions/workflows/ci.yml
 
-[complete-graph-example-url]: https://github.com/raoulluque/visgraph/blob/main/examples/complete_graph_with_circular_layout.rs
+[complete-graph-example-url]: https://github.com/raoulluque/visgraph/blob/main/examples/graph_with_circular_layout.rs
 
 [crates-badge]: https://img.shields.io/crates/v/visgraph.svg
 
