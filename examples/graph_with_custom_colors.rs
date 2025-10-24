@@ -3,10 +3,9 @@ use std::collections::HashMap;
 use petgraph::graph::{NodeIndex, UnGraph};
 use visgraph::{graph_to_img, settings::SettingsBuilder};
 
-// 7 colors for the 7 layers
-const LAYER_COLORS: [&str; 7] = ["red", "orange", "yellow", "green", "cyan", "blue", "purple"];
-
 fn main() {
+    // This graph is overly complicated for an example, however really neat :)
+    // The node coloring itself can be seen just below when `settings` is created.
     let (graph, node_layers, node_positions) = create_graph();
 
     // Create settings with custom node coloring and position map
@@ -32,6 +31,8 @@ fn main() {
     )
     .unwrap();
 }
+
+const LAYER_COLORS: [&str; 7] = ["red", "orange", "yellow", "green", "cyan", "blue", "purple"];
 
 /// Creates a graph with 7 square layers, each layer connected to the next where each layer
 /// has a different color.
