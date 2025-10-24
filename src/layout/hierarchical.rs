@@ -16,6 +16,12 @@ pub enum Orientation {
 }
 
 /// Returns a position map function that arranges nodes in a hierarchical layout.
+///
+/// The function is structured as follows:
+/// - Identify root nodes (nodes with no incoming edges). If none are found, use nodes with the highest out-degree as starting points.
+/// - Perform a depth-first traversal from each root node, assigning levels (rows) to nodes based on their distance from the root.
+/// - Calculate the column positions for each node, centering parents above their children.
+/// - Normalize the positions to fit within a unit square, adjusting based on the specified orientation.
 pub(crate) fn get_hierarchical_position_map<G>(
     graph: &G,
     orientation: Orientation,
@@ -58,7 +64,7 @@ where
         next_col = curr_max_col + 1;
     }
 
-    // We might not find any roots, especially in undirected graphs.
+    // We might not find any roots, especially in undirected graphs. This is the backup.
     let all_nodes_sorted_by_desc_deg = {
         let mut nodes: Vec<_> = graph.node_references().collect();
         nodes.sort_by_key(|n| {
