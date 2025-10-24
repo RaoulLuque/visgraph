@@ -61,7 +61,8 @@ where
     Ok(())
 }
 
-pub(crate) fn graph_to_svg_string<
+/// Same as [`graph_to_svg`] but returns the SVG data as a `String` instead of saving it to a file.
+pub fn graph_to_svg_string<
     G,
     PositionMapFn,
     NodeLabelFn,

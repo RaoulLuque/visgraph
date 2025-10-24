@@ -80,7 +80,8 @@ mod tests {
 
     const MSE_ERROR_TOLERANCE: f64 = 100.0;
 
-    /// Helper function to convert a tiny-skia Pixmap to an image::DynamicImage for easier testing.
+    /// Helper function to convert a tiny-skia `Pixmap` to an `image::DynamicImage` for easier
+    /// testing.
     fn image_from_pixmap(pixmap: &Pixmap) -> DynamicImage {
         let data = pixmap.data();
         // tiny-skia pixmap is RGBA8

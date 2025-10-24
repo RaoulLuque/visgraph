@@ -106,8 +106,6 @@ fn create_square_layer(graph: &mut UnGraph<(), ()>, side_length: usize) -> Vec<N
 }
 
 /// Calculate normalized positions (0.0 to 1.0) for nodes in a square layer
-/// side_length: number of nodes on each side
-/// layer_idx: which layer this is (0 = innermost)
 fn calculate_square_positions(side_length: usize, layer_idx: usize) -> Vec<(f32, f32)> {
     let mut positions = Vec::new();
     let nodes_per_side = side_length as f32;

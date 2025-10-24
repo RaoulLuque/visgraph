@@ -8,6 +8,7 @@ pub mod settings;
 #[cfg(feature = "svg_to_img")]
 pub mod svg_to_img;
 
+pub use graph_to_svg::graph_to_svg;
 pub use layout::{Layout, Orientation};
 #[cfg(feature = "svg_to_img")]
 use petgraph::visit::IntoNeighborsDirected;
@@ -20,7 +21,7 @@ use crate::{errors::VisGraphError, graph_to_svg::graph_to_svg_string, settings::
 /// Generate and save an image of a graph to the specified path.
 ///
 /// # Usage
-/// 
+///
 /// The following is an example taken from
 /// [`examples/graph_with_default_settings.rs`](https://github.com/RaoulLuque/visgraph/blob/main/examples/graph_with_default_settings.rs):
 /// ```
@@ -65,7 +66,7 @@ pub mod tests {
 
     /// Create a test graph with custom node and edge labels, along with the corresponding settings.
     ///
-    /// The same as in examples/graph_with_custom_labels.rs
+    /// The same as in `examples/graph_with_custom_labels.rs`
     #[allow(clippy::type_complexity)]
     pub fn test_graph_with_custom_labels() -> (
         UnGraph<String, ()>,
@@ -105,7 +106,7 @@ pub mod tests {
     /// Create a test square graph with a custom position map, along with the corresponding
     /// settings.
     ///
-    /// The same as in examples/graph_with_position_map.rs
+    /// The same as in `examples/graph_with_position_map.rs`
     #[allow(clippy::type_complexity)]
     pub fn test_graph_with_position_map() -> (
         UnGraph<(), ()>,

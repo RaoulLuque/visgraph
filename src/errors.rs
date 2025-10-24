@@ -5,13 +5,13 @@ use thiserror::Error;
 pub enum VisGraphError {
     /// Error related to settings validation.
     #[error("Settings error: {0}")]
-    SettingsError(#[from] InvalidSettingsError),
+    Settings(#[from] InvalidSettingsError),
     /// Error while converting SVG to image.
     #[error("SVG to Image conversion error: {0}")]
-    SvgToImageError(#[from] SvgToImageError),
+    SvgToImage(#[from] SvgToImageError),
     /// IO error occurred during file operations.
     #[error("IO error: {0}")]
-    IOError(#[from] std::io::Error),
+    IO(#[from] std::io::Error),
 }
 
 #[derive(Debug, Error)]
