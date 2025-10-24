@@ -35,6 +35,7 @@ fn main() {
 
 /// Creates a graph with 7 square layers, each layer connected to the next where each layer
 /// has a different color.
+#[allow(clippy::type_complexity)]
 fn create_graph() -> (UnGraph<(), ()>, Vec<usize>, HashMap<usize, (f32, f32)>) {
     let mut graph = UnGraph::new_undirected();
 

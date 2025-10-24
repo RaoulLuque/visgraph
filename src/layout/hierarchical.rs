@@ -152,7 +152,7 @@ where
 }
 
 fn normalize_positions(
-    positions: &mut Vec<(f32, f32)>,
+    positions: &mut [(f32, f32)],
     max_col: usize,
     max_row: usize,
     orientation: Orientation,
@@ -171,12 +171,12 @@ fn normalize_positions(
     for (col, row) in positions.iter_mut() {
         match orientation {
             Orientation::TopToBottom => {
-                *row = *row * row_scale;
-                *col = *col * col_scale;
+                *row *= row_scale;
+                *col *= col_scale;
             }
             Orientation::BottomToTop => {
                 *row = 1.0 - (*row * row_scale);
-                *col = *col * col_scale;
+                *col *= col_scale;
             }
             Orientation::LeftToRight => {
                 let temp = *row;
