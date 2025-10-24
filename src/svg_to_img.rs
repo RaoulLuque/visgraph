@@ -74,7 +74,7 @@ mod tests {
     use resvg::tiny_skia::Pixmap;
 
     use crate::{
-        graph_to_svg::graph_to_svg,
+        graph_to_svg::graph_to_svg_string,
         tests::{test_graph_with_custom_labels, test_graph_with_position_map},
     };
 
@@ -135,7 +135,7 @@ mod tests {
     fn test_svg_to_image_on_graph_with_custom_labels() {
         let (graph, settings) = test_graph_with_custom_labels();
 
-        let svg_data = graph_to_svg(&graph, &settings);
+        let svg_data = graph_to_svg_string(&graph, &settings);
         let pixmap = super::svg_to_pixmap(&svg_data, settings.width, settings.height)
             .expect("SVG to pixmap conversion should succeed.");
 
@@ -149,7 +149,7 @@ mod tests {
     fn test_svg_to_image_on_graph_with_position_map() {
         let (graph, settings) = test_graph_with_position_map();
 
-        let svg_data = graph_to_svg(&graph, &settings);
+        let svg_data = graph_to_svg_string(&graph, &settings);
         let pixmap = super::svg_to_pixmap(&svg_data, settings.width, settings.height)
             .expect("SVG to pixmap conversion should succeed.");
 

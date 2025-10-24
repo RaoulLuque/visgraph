@@ -15,7 +15,7 @@ fn main() {
         }
     }
 
-    // Generate and save the graph image using a circular layout and default settings.
+    // Generate and save the graph image using default settings.
     graph_to_img(
         &complete_graph,
         &Settings::default(),

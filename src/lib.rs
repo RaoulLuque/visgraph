@@ -15,11 +15,12 @@ use petgraph::visit::{EdgeIndexable, IntoEdgeReferences, IntoNodeReferences, Nod
 #[cfg(feature = "svg_to_img")]
 use svg_to_img::svg_to_img;
 
-use crate::{errors::VisGraphError, graph_to_svg::graph_to_svg, settings::Settings};
+use crate::{errors::VisGraphError, graph_to_svg::graph_to_svg_string, settings::Settings};
 
 /// Generate and save an image of a graph to the specified path.
 ///
 /// # Usage
+/// 
 /// The following is an example taken from
 /// [`examples/graph_with_default_settings.rs`](https://github.com/RaoulLuque/visgraph/blob/main/examples/graph_with_default_settings.rs):
 /// ```
@@ -46,7 +47,7 @@ where
     NodeColoringFn: Fn(G::NodeId) -> String,
     EdgeColoringFn: Fn(G::EdgeId) -> String,
 {
-    let svg_data = graph_to_svg(graph, settings);
+    let svg_data = graph_to_svg_string(graph, settings);
     svg_to_img(&svg_data, settings.width, settings.height, path)?;
     Ok(())
 }

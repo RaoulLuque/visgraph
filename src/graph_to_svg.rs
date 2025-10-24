@@ -14,59 +14,61 @@ use petgraph::visit::{
 };
 
 use crate::{
+    errors::VisGraphError,
     layout::{self, Layout, LayoutOrPositionMap},
     settings::Settings,
 };
 
 const EDGE_CLOSENESS_THRESHOLD: f32 = 0.001;
 
-/// Generates an SVG representation of the graph using the provided position map and settings.
+/// Generates an SVG representation of the graph using the provided settings and
+/// saves it to the specified path.
 ///
-/// The `position_map` parameter should implement `Fn(G::NodeId) -> (f32, f32)` and return a tuple
-/// of normalized (x, y) coordinates in the range [0.0, 1.0].
+/// # Usage
 ///
-/// Example:
+/// The following is an example taken from
+/// [`examples/graph_to_svg.rs`](https://github.com/RaoulLuque/visgraph/blob/main/examples/graph_to_svg.rs):
 /// ```
-/// use petgraph::graph::UnGraph;
-/// use visgraph::{graph_to_svg::graph_to_svg, settings::SettingsBuilder, Layout};
-///
-/// // Create a square graph with four nodes
-/// // It should look like this:
-/// // A --- B
-/// // |     |
-/// // D --- C
-/// let mut square_graph = UnGraph::new_undirected();
-/// let node_a = square_graph.add_node(());
-/// let node_b = square_graph.add_node(());
-/// let node_c = square_graph.add_node(());
-/// let node_d = square_graph.add_node(());
-///
-/// square_graph.add_edge(node_a, node_b, ());
-/// square_graph.add_edge(node_b, node_c, ());
-/// square_graph.add_edge(node_c, node_d, ());
-/// square_graph.add_edge(node_d, node_a, ());
-///
-/// // Positions should be between (0.0) and (1.0)
-/// let position_map = |node_id| match node_id {
-///     id if id == node_a => (0.25, 0.25),
-///     id if id == node_b => (0.75, 0.25),
-///     id if id == node_c => (0.75, 0.75),
-///     id if id == node_d => (0.25, 0.75),
-///     _ => (0.5, 0.5),
-/// };
-///
-/// // Customize settings using the SettingsBuilder. Values which are not set will use defaults.
-/// let settings = SettingsBuilder::new()
-///     .width(500.0)
-///     .height(500.0)
-///     .position_map(position_map)
-///     .build()
-///     .expect("Values should be valid.");
-///
-/// // Generate svg output using the custom position map.
-/// let svg_data = graph_to_svg(&square_graph, &settings);
+#[allow(clippy::needless_doctest_main)]
+#[doc = include_str!("../examples/graph_to_svg.rs")]
 /// ```
 pub fn graph_to_svg<G, PositionMapFn, NodeLabelFn, EdgeLabelFn, NodeColoringFn, EdgeColoringFn>(
+    graph: G,
+    settings: &Settings<PositionMapFn, NodeLabelFn, EdgeLabelFn, NodeColoringFn, EdgeColoringFn>,
+    path: impl AsRef<std::path::Path>,
+) -> Result<(), VisGraphError>
+where
+    G: IntoNodeReferences
+        + IntoEdgeReferences
+        + NodeIndexable
+        + EdgeIndexable
+        + IntoNeighborsDirected,
+    PositionMapFn: Fn(G::NodeId) -> (f32, f32),
+    NodeLabelFn: Fn(G::NodeId) -> String,
+    EdgeLabelFn: Fn(G::EdgeId) -> String,
+    NodeColoringFn: Fn(G::NodeId) -> String,
+    EdgeColoringFn: Fn(G::EdgeId) -> String,
+{
+    let output = graph_to_svg_string(graph, settings);
+
+    // Create target directory if it doesn't exist
+    if let Some(parent) = path.as_ref().parent() {
+        std::fs::create_dir_all(parent)?;
+    }
+
+    std::fs::write(path, output)?;
+
+    Ok(())
+}
+
+pub(crate) fn graph_to_svg_string<
+    G,
+    PositionMapFn,
+    NodeLabelFn,
+    EdgeLabelFn,
+    NodeColoringFn,
+    EdgeColoringFn,
+>(
     graph: G,
     settings: &Settings<PositionMapFn, NodeLabelFn, EdgeLabelFn, NodeColoringFn, EdgeColoringFn>,
 ) -> String
@@ -283,7 +285,7 @@ fn scale(
 
 #[cfg(test)]
 mod tests {
-    use crate::{graph_to_svg::graph_to_svg, tests::test_graph_with_position_map};
+    use crate::{graph_to_svg::graph_to_svg_string, tests::test_graph_with_position_map};
 
     #[test]
     fn test_scale() {
@@ -303,7 +305,7 @@ mod tests {
     #[test]
     fn test_graph_to_svg_with_position_map() {
         let (graph, settings) = test_graph_with_position_map();
-        let svg_output = graph_to_svg(&graph, &settings);
+        let svg_output = graph_to_svg_string(&graph, &settings);
 
         println!("SVG Output:\n{}", svg_output);
 

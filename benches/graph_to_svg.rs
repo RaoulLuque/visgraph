@@ -15,7 +15,7 @@ fn graph_to_svg_benchmark(c: &mut Criterion) {
                 .position_map(position_map)
                 .build()
                 .unwrap();
-            visgraph::graph_to_svg::graph_to_svg(&graph, &settings)
+            visgraph::graph_to_svg::graph_to_svg_string(&graph, &settings)
         })
     });
 }
