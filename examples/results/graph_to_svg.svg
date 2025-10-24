@@ -1,0 +1,32 @@
+<svg width="1000" height="1000" xmlns="http://www.w3.org/2000/svg">
+
+    <circle cx="950" cy="500" r="25" fill="white" stroke="black"/>
+    <text x="950" y="500" font-size="16px" font-family="DejaVu Sans, sans-serif" fill="black" text-anchor="middle" dominant-baseline="central">0</text>
+
+    <circle cx="499.99997" cy="950" r="25" fill="white" stroke="black"/>
+    <text x="499.99997" y="950" font-size="16px" font-family="DejaVu Sans, sans-serif" fill="black" text-anchor="middle" dominant-baseline="central">1</text>
+
+    <circle cx="50" cy="499.99997" r="25" fill="white" stroke="black"/>
+    <text x="50" y="499.99997" font-size="16px" font-family="DejaVu Sans, sans-serif" fill="black" text-anchor="middle" dominant-baseline="central">2</text>
+
+    <circle cx="500" cy="50" r="25" fill="white" stroke="black"/>
+    <text x="500" y="50" font-size="16px" font-family="DejaVu Sans, sans-serif" fill="black" text-anchor="middle" dominant-baseline="central">3</text>
+
+    <line x1="932.3223" y1="517.6777" x2="517.6776" y2="932.3223" stroke="black" stroke-width="5"/>
+    <text x= "725" y="725" font-size="16px" font-family="DejaVu Sans, sans-serif" fill="blue" text-anchor="middle" dominant-baseline="central"></text>
+
+    <line x1="925" y1="500" x2="75" y2="499.99997" stroke="black" stroke-width="5"/>
+    <text x= "500" y="500" font-size="16px" font-family="DejaVu Sans, sans-serif" fill="blue" text-anchor="middle" dominant-baseline="central"></text>
+
+    <line x1="932.3223" y1="482.32233" x2="517.6777" y2="67.67767" stroke="black" stroke-width="5"/>
+    <text x= "725" y="275" font-size="16px" font-family="DejaVu Sans, sans-serif" fill="blue" text-anchor="middle" dominant-baseline="central"></text>
+
+    <line x1="482.3223" y1="932.3223" x2="67.677666" y2="517.6776" stroke="black" stroke-width="5"/>
+    <text x= "274.99997" y="725" font-size="16px" font-family="DejaVu Sans, sans-serif" fill="blue" text-anchor="middle" dominant-baseline="central"></text>
+
+    <line x1="499.99997" y1="925" x2="500" y2="75" stroke="black" stroke-width="5"/>
+    <text x= "500" y="500" font-size="16px" font-family="DejaVu Sans, sans-serif" fill="blue" text-anchor="middle" dominant-baseline="central"></text>
+
+    <line x1="67.67767" y1="482.3223" x2="482.32233" y2="67.67767" stroke="black" stroke-width="5"/>
+    <text x= "275" y="275" font-size="16px" font-family="DejaVu Sans, sans-serif" fill="blue" text-anchor="middle" dominant-baseline="central"></text>
+</svg>
