@@ -22,8 +22,8 @@ const EDGE_CLOSENESS_THRESHOLD: f32 = 0.001;
 
 /// Generates an SVG representation of the graph using the provided position map and settings.
 ///
-/// The position_map parameter should implement Fn(G::NodeId) -> (f32, f32) and return a tuple of
-/// normalized (x, y) coordinates in the range [0.0, 1.0].
+/// The `position_map` parameter should implement `Fn(G::NodeId) -> (f32, f32)` and return a tuple
+/// of normalized (x, y) coordinates in the range [0.0, 1.0].
 ///
 /// Example:
 /// ```
@@ -188,7 +188,7 @@ where
 }
 
 /// Draws a node as a circle with a text label by writing appropriate <circle> and <text> tags to
-/// the provided svg_buffer.
+/// the provided `svg_buffer`.
 #[allow(clippy::too_many_arguments)]
 fn draw_node(
     svg_buffer: &mut String,
@@ -210,8 +210,8 @@ fn draw_node(
 }
 
 /// Draws an edge as a line between two nodes by writing an appropriate <line> tag to the provided
-/// svg_buffer. Adjusting for the radius of the nodes so that the line starts and ends at the edge
-/// of the nodes rather than their centers.
+/// `svg_buffer`. Adjusting for the radius of the nodes so that the line starts and ends at the
+/// edge of the nodes rather than their centers.
 #[allow(clippy::too_many_arguments)]
 fn draw_edge(
     svg_buffer: &mut String,
@@ -263,8 +263,8 @@ fn draw_edge(
 /// 0 to height). Takes into account the margins specified in the settings. Margins are specified as
 /// a fraction of the total width/height and are applied on both sides (left/right and top/bottom).
 ///
-/// E.g. if margin_x is 0.1, then 10% of the width is reserved as margin on the left and 10% on the
-/// right, leaving 80% of the width for the actual graph drawing area.
+/// E.g. if `margin_x` is 0.1, then 10% of the width is reserved as margin on the left and 10% on
+/// the right, leaving 80% of the width for the actual graph drawing area.
 fn scale(
     (normalized_x, normalized_y): (f32, f32),
     margin_x: f32,

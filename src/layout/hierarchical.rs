@@ -1,5 +1,5 @@
 use fixedbitset::FixedBitSet;
-use petgraph::visit::{IntoNeighborsDirected, NodeIndexable, NodeRef};
+use petgraph::visit::{IntoNeighborsDirected, IntoNodeReferences, NodeIndexable, NodeRef};
 
 #[derive(Debug, Clone, Copy, Default)]
 /// Orientation for hierarchical layout. Top to Bottom is the default.
@@ -30,9 +30,7 @@ pub(crate) fn get_hierarchical_position_map<G>(
     orientation: Orientation,
 ) -> impl Fn(G::NodeId) -> (f32, f32) + '_
 where
-    G: petgraph::visit::IntoNodeReferences
-        + petgraph::visit::NodeIndexable
-        + petgraph::visit::IntoNeighborsDirected,
+    G: IntoNodeReferences + NodeIndexable + IntoNeighborsDirected,
 {
     // Use FixedBitSet and Vec with node bound for better performance
     let mut visited = FixedBitSet::with_capacity(graph.node_bound());

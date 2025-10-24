@@ -54,7 +54,7 @@ where
 #[cfg(test)]
 #[allow(missing_docs)]
 pub mod tests {
-    use petgraph::graph::{NodeIndex, UnGraph};
+    use petgraph::graph::{EdgeIndex, NodeIndex, UnGraph};
 
     use crate::{
         layout::DefaultPositionMapFn,
@@ -68,11 +68,7 @@ pub mod tests {
     #[allow(clippy::type_complexity)]
     pub fn test_graph_with_custom_labels() -> (
         UnGraph<String, ()>,
-        Settings<
-            DefaultPositionMapFn,
-            impl Fn(petgraph::prelude::NodeIndex) -> String,
-            impl Fn(petgraph::prelude::EdgeIndex) -> String,
-        >,
+        Settings<DefaultPositionMapFn, impl Fn(NodeIndex) -> String, impl Fn(EdgeIndex) -> String>,
     ) {
         let mut graph = UnGraph::new_undirected();
         let node_a = graph.add_node("Ljubljana".to_string());

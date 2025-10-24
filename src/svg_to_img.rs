@@ -32,7 +32,7 @@ pub fn svg_to_pixmap(svg_data: &str, width: f32, height: f32) -> Result<Pixmap, 
     let svg_tree = resvg::usvg::Tree::from_data(svg_data.as_bytes(), &opt)?;
 
     // Render to pixmap
-    let mut pixmap = tiny_skia::Pixmap::new(width as u32, height as u32).unwrap();
+    let mut pixmap = Pixmap::new(width as u32, height as u32).unwrap();
     render(
         &svg_tree,
         tiny_skia::Transform::identity(),
