@@ -1600,6 +1600,7 @@ name = "visgraph"
 version = "0.1.0"
 dependencies = [
  "criterion",
+ "fixedbitset",
  "image",
  "petgraph",
  "resvg",

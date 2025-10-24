@@ -1,10 +1,11 @@
-use std::collections::{HashMap, HashSet};
-
+use fixedbitset::FixedBitSet;
 use petgraph::visit::{IntoNeighborsDirected, NodeIndexable, NodeRef};
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Default)]
+/// Orientation for hierarchical layout. Top to Bottom is the default.
 pub enum Orientation {
-    /// Top to Bottom orientation.
+    /// Top to Bottom orientation. This is the default.
+    #[default]
     TopToBottom,
     /// Bottom to Top orientation.
     BottomToTop,
@@ -24,8 +25,9 @@ where
         + petgraph::visit::NodeIndexable
         + petgraph::visit::IntoNeighborsDirected,
 {
-    let mut visited = HashSet::new();
-    let mut positions = HashMap::new();
+    // Use FixedBitSet and Vec with node bound for better performance
+    let mut visited = FixedBitSet::with_capacity(graph.node_bound());
+    let mut positions = vec![(0.0, 0.0); graph.node_bound()];
 
     let mut next_col = 0;
     let roots = graph
@@ -44,7 +46,7 @@ where
 
     // Assign levels starting from root nodes
     for root in roots {
-        if visited.contains(&root) {
+        if visited.contains(root) {
             continue;
         }
 
@@ -71,7 +73,7 @@ where
         .iter()
         .map(|node_ref| NodeIndexable::to_index(&graph, node_ref.id()))
     {
-        if visited.contains(&root) {
+        if visited.contains(root) {
             continue;
         }
 
@@ -85,13 +87,13 @@ where
 
     normalize_positions(&mut positions, max_col, max_row, orientation);
 
-    move |node_id| positions[&NodeIndexable::to_index(&graph, node_id)]
+    move |node_id| positions[NodeIndexable::to_index(&graph, node_id)]
 }
 
 fn assign_levels<G>(
     graph: &G,
-    visited: &mut HashSet<usize>,
-    positions: &mut HashMap<usize, (f32, f32)>,
+    visited: &mut FixedBitSet,
+    positions: &mut Vec<(f32, f32)>,
     node: usize,
     start_col: usize,
     row: usize,
@@ -99,7 +101,7 @@ fn assign_levels<G>(
 where
     G: IntoNeighborsDirected + NodeIndexable,
 {
-    if visited.contains(&node) {
+    if visited.contains(node) {
         return (start_col, row);
     }
 
@@ -116,14 +118,14 @@ where
     let mut max_row = row;
 
     for child in children {
-        if visited.contains(&child) {
+        if visited.contains(child) {
             continue;
         }
 
         let (child_max_col, child_max_row) =
             assign_levels(graph, visited, positions, child, child_col, row + 1);
 
-        child_positions.push(positions[&child]);
+        child_positions.push(positions[child]);
 
         max_col = max_col.max(child_max_col);
         max_row = max_row.max(child_max_row);
@@ -138,13 +140,13 @@ where
         start_col as f32
     };
 
-    positions.insert(node, (parent_col, row as f32));
+    positions[node] = (parent_col, row as f32);
 
     (max_col, max_row)
 }
 
 fn normalize_positions(
-    positions: &mut HashMap<usize, (f32, f32)>,
+    positions: &mut Vec<(f32, f32)>,
     max_col: usize,
     max_row: usize,
     orientation: Orientation,
@@ -160,7 +162,7 @@ fn normalize_positions(
         1.0
     };
 
-    for (_, (col, row)) in positions.iter_mut() {
+    for (col, row) in positions.iter_mut() {
         match orientation {
             Orientation::TopToBottom => {
                 *row = *row * row_scale;
