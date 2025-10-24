@@ -8,7 +8,9 @@ pub mod settings;
 #[cfg(feature = "svg_to_img")]
 pub mod svg_to_img;
 
-pub use layout::Layout;
+pub use layout::{Layout, Orientation};
+#[cfg(feature = "svg_to_img")]
+use petgraph::visit::IntoNeighborsDirected;
 use petgraph::visit::{EdgeIndexable, IntoEdgeReferences, IntoNodeReferences, NodeIndexable};
 #[cfg(feature = "svg_to_img")]
 use svg_to_img::svg_to_img;
@@ -33,7 +35,11 @@ pub fn graph_to_img<G, PositionMapFn, NodeLabelFn, EdgeLabelFn, NodeColoringFn, 
     path: impl AsRef<std::path::Path>,
 ) -> Result<(), VisGraphError>
 where
-    G: IntoNodeReferences + IntoEdgeReferences + NodeIndexable + EdgeIndexable,
+    G: IntoNodeReferences
+        + IntoEdgeReferences
+        + NodeIndexable
+        + EdgeIndexable
+        + IntoNeighborsDirected,
     PositionMapFn: Fn(G::NodeId) -> (f32, f32),
     NodeLabelFn: Fn(G::NodeId) -> String,
     EdgeLabelFn: Fn(G::EdgeId) -> String,

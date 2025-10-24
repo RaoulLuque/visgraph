@@ -8,7 +8,8 @@
 //! For examples, see the `examples/` directory.
 
 use petgraph::visit::{
-    EdgeIndexable, EdgeRef, IntoEdgeReferences, IntoNodeReferences, NodeIndexable, NodeRef,
+    EdgeIndexable, EdgeRef, IntoEdgeReferences, IntoNeighborsDirected, IntoNodeReferences,
+    NodeIndexable, NodeRef,
 };
 
 use crate::layout::{self, Layout, LayoutOrPositionMap};
@@ -72,7 +73,11 @@ pub fn graph_to_svg<G, PositionMapFn, NodeLabelFn, EdgeLabelFn, NodeColoringFn, 
     settings: &Settings<PositionMapFn, NodeLabelFn, EdgeLabelFn, NodeColoringFn, EdgeColoringFn>,
 ) -> String
 where
-    G: IntoNodeReferences + IntoEdgeReferences + NodeIndexable + EdgeIndexable,
+    G: IntoNodeReferences
+        + IntoEdgeReferences
+        + NodeIndexable
+        + EdgeIndexable
+        + IntoNeighborsDirected,
     PositionMapFn: Fn(G::NodeId) -> (f32, f32),
     NodeLabelFn: Fn(G::NodeId) -> String,
     EdgeLabelFn: Fn(G::EdgeId) -> String,
@@ -84,8 +89,8 @@ where
             let position_map = layout::get_circular_position_map(&graph);
             internal_graph_to_svg_with_positions_and_labels(graph, position_map, settings)
         }
-        LayoutOrPositionMap::Layout(Layout::Hierarchical) => {
-            let position_map = layout::get_hierarchical_position_map(&graph);
+        LayoutOrPositionMap::Layout(Layout::Hierarchical(orientation)) => {
+            let position_map = layout::get_hierarchical_position_map(&graph, *orientation);
             internal_graph_to_svg_with_positions_and_labels(graph, position_map, settings)
         }
         LayoutOrPositionMap::PositionMap(position_map) => {
