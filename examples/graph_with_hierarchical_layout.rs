@@ -1,24 +1,24 @@
 use petgraph::Graph;
-use petgraph::graph::UnGraph;
 use visgraph::settings::SettingsBuilder;
 use visgraph::{graph_to_img, Layout, Orientation};
 
 fn main() {
-    // Create a complete graph with 100 nodes.
-    let mut graph = UnGraph::new_undirected();
-    let num_nodes = 5;
-    let nodes: Vec<_> = (0..num_nodes)
-        .map(|_| graph.add_node(()))
-        .collect();
+    let mut graph = Graph::new();
 
-    for i in 0..num_nodes {
-        for j in (i + 1)..num_nodes {
-            graph.add_edge(nodes[i], nodes[j], ());
-        }
-    }
+    let a = graph.add_node(());
+    let b = graph.add_node(());
+    let c = graph.add_node(());
+    let d = graph.add_node(());
+    let e = graph.add_node(());
+
+    graph.add_edge(a, b, ());
+    graph.add_edge(b, c, ());
+    graph.add_edge(b, d, ());
+    graph.add_edge(d, e, ());
 
     let settings = SettingsBuilder::new()
-        .layout(Layout::Hierarchical(Orientation::RightToLeft))
+        // Use hierarchical layout
+        .layout(Layout::Hierarchical(Orientation::default()))
         .build()
         .expect("Values should be valid.");
 
