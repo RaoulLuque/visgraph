@@ -1,6 +1,5 @@
 use petgraph::Graph;
-use visgraph::settings::SettingsBuilder;
-use visgraph::{graph_to_img, Layout, Orientation};
+use visgraph::{graph_to_img, settings::SettingsBuilder, Layout, Orientation};
 
 fn main() {
     let mut graph = Graph::new();

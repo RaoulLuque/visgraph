@@ -108,9 +108,9 @@ jobs:
           key: lints-${{ hashFiles('**/Cargo.toml') }}
           restore-keys: |
             lints-
-      - uses: extractions/setup-just@v3
-      - name: Install stable toolchain
-        uses: dtolnay/rust-toolchain@stable
+      # Use nightly toolchain to be able to use unstable features of rustfmt
+      - name: Install nightly toolchain
+        uses: dtolnay/rust-toolchain@nightly
         with:
           components: rustfmt, clippy
 

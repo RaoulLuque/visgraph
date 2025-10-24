@@ -24,8 +24,10 @@ pub fn svg_to_pixmap(svg_data: &str, width: f32, height: f32) -> Result<Pixmap, 
     opt.fontdb_mut()
         .load_font_data(include_bytes!("../assets/DejaVuSans.ttf").to_vec());
     opt.fontdb_mut().set_sans_serif_family("DejaVu Sans");
-    opt.default_size =
-        resvg::usvg::Size::from_wh(width, height).expect("Provided dimensions should be strictly positive, as Settings struct is validated on creation.");
+    opt.default_size = resvg::usvg::Size::from_wh(width, height).expect(
+        "Provided dimensions should be strictly positive, as Settings struct is validated on \
+         creation.",
+    );
 
     let svg_tree = resvg::usvg::Tree::from_data(svg_data.as_bytes(), &opt)?;
 
@@ -71,8 +73,10 @@ mod tests {
     use image::{DynamicImage, GenericImageView, ImageReader};
     use resvg::tiny_skia::Pixmap;
 
-    use crate::graph_to_svg::graph_to_svg;
-    use crate::tests::{test_graph_with_custom_labels, test_graph_with_position_map};
+    use crate::{
+        graph_to_svg::graph_to_svg,
+        tests::{test_graph_with_custom_labels, test_graph_with_position_map},
+    };
 
     const MSE_ERROR_TOLERANCE: f64 = 100.0;
 

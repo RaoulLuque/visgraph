@@ -105,7 +105,8 @@ pub mod tests {
         (graph, settings)
     }
 
-    /// Create a test square graph with a custom position map, along with the corresponding settings.
+    /// Create a test square graph with a custom position map, along with the corresponding
+    /// settings.
     ///
     /// The same as in examples/graph_with_position_map.rs
     #[allow(clippy::type_complexity)]

@@ -1,6 +1,5 @@
 use petgraph::graph::UnGraph;
-use visgraph::graph_to_img;
-use visgraph::settings::SettingsBuilder;
+use visgraph::{graph_to_img, settings::SettingsBuilder};
 
 fn main() {
     // Create a square graph with four nodes

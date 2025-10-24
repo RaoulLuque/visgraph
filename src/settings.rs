@@ -3,7 +3,8 @@
 //! For the details on the different settings, see the fields of the [`SettingsBuilder`] struct.
 //! One can either create a [`Settings`] instance directly using [`Settings::default()`] or
 //! [`Settings::new()`], which will use default values, or use the [`SettingsBuilder`] struct to
-//! customize specific settings. The latter will validate the provided values upon calling `build()`.
+//! customize specific settings. The latter will validate the provided values upon calling
+//! `build()`.
 
 use crate::{
     errors::InvalidSettingsError,
@@ -45,9 +46,10 @@ pub(crate) type DefaultEdgeColoringFn = fn(petgraph::prelude::EdgeIndex) -> Stri
 ///
 /// For the details on the different settings, see the fields of the [`SettingsBuilder`] struct.
 ///
-/// One can either create a [`Settings`] instance directly using [`Settings::default()`] or `Settings::new()`,
-/// which will use default values, or use the [`SettingsBuilder`] struct to customize specific settings.
-/// The latter will validate the provided values upon calling `build()`.
+/// One can either create a [`Settings`] instance directly using [`Settings::default()`] or
+/// `Settings::new()`, which will use default values, or use the [`SettingsBuilder`] struct to
+/// customize specific settings. The latter will validate the provided values upon calling
+/// `build()`.
 ///
 /// For default values, see the `DEFAULT_*` constants.
 ///
@@ -174,7 +176,8 @@ pub struct SettingsBuilder<PositionMapFn, NodeLabelFn, EdgeLabelFn, NodeColoring
     /// **Valid values**: f32 in range [0.0, 0.5)
     pub margin_y: f32,
 
-    /// Layout algorithm for graph visualization. If none is provided, the [`DEFAULT_LAYOUT_OR_POS_MAP`] will be used.
+    /// Layout algorithm for graph visualization. If none is provided, the
+    /// [`DEFAULT_LAYOUT_OR_POS_MAP`] will be used.
     ///
     /// **Valid values**: If a `PositionMap` is used, the provided function must implement
     /// `impl Fn(G::NodeId) -> (f32, f32)`. Furthermore, the position map should return normalized
@@ -308,7 +311,8 @@ impl<PositionMapFn, NodeLabelFn, EdgeLabelFn, NodeColoringFn, EdgeColoringFn>
         self
     }
 
-    /// Sets the horizontal margin as a fraction of the width and returns the modified [`SettingsBuilder`].
+    /// Sets the horizontal margin as a fraction of the width and returns the modified
+    /// [`SettingsBuilder`].
     ///
     /// For valid values, see the field documentation.
     ///
@@ -318,7 +322,8 @@ impl<PositionMapFn, NodeLabelFn, EdgeLabelFn, NodeColoringFn, EdgeColoringFn>
         self
     }
 
-    /// Sets the vertical margin as a fraction of the height and returns the modified [`SettingsBuilder`].
+    /// Sets the vertical margin as a fraction of the height and returns the modified
+    /// [`SettingsBuilder`].
     ///
     /// For valid values, see the field documentation.
     ///
@@ -497,7 +502,8 @@ impl<PositionMapFn, NodeLabelFn, EdgeLabelFn, NodeColoringFn, EdgeColoringFn>
 
     /// Validates the settings.
     ///
-    /// Checks that all settings are within acceptable ranges. If not, returns a corresponding [`SettingsError`].
+    /// Checks that all settings are within acceptable ranges. If not, returns a corresponding
+    /// [`SettingsError`].
     fn validate(&self) -> Result<(), InvalidSettingsError> {
         if self.width <= 0.0 || self.height <= 0.0 {
             return Err(InvalidSettingsError::Dimensions(self.width, self.height));

@@ -1,7 +1,6 @@
-use petgraph::visit::{IntoNodeReferences, NodeIndexable};
-
 pub(crate) use hierarchical::get_hierarchical_position_map;
 pub use hierarchical::Orientation;
+use petgraph::visit::{IntoNodeReferences, NodeIndexable};
 
 pub(crate) type DefaultPositionMapFn = fn(petgraph::prelude::NodeIndex) -> (f32, f32);
 

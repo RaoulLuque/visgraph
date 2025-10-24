@@ -18,10 +18,13 @@ pub enum Orientation {
 /// Returns a position map function that arranges nodes in a hierarchical layout.
 ///
 /// The function is structured as follows:
-/// - Identify root nodes (nodes with no incoming edges). If none are found, use nodes with the highest out-degree as starting points.
-/// - Perform a depth-first traversal from each root node, assigning levels (rows) to nodes based on their distance from the root.
+/// - Identify root nodes (nodes with no incoming edges). If none are found, use nodes with the
+///   highest out-degree as starting points.
+/// - Perform a depth-first traversal from each root node, assigning levels (rows) to nodes based on
+///   their distance from the root.
 /// - Calculate the column positions for each node, centering parents above their children.
-/// - Normalize the positions to fit within a unit square, adjusting based on the specified orientation.
+/// - Normalize the positions to fit within a unit square, adjusting based on the specified
+///   orientation.
 pub(crate) fn get_hierarchical_position_map<G>(
     graph: &G,
     orientation: Orientation,

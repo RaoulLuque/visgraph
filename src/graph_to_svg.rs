@@ -3,7 +3,8 @@
 //! The main function is [`graph_to_svg`] which generates SVG data from a graph using either a
 //! custom position map or a predefined layout algorithm, respectively.
 //!
-//! Note that if a position map is used, it should return normalized coordinates between 0.0 and 1.0.
+//! Note that if a position map is used, it should return normalized coordinates between 0.0 and
+//! 1.0.
 //!
 //! For examples, see the `examples/` directory.
 
@@ -12,8 +13,10 @@ use petgraph::visit::{
     NodeIndexable, NodeRef,
 };
 
-use crate::layout::{self, Layout, LayoutOrPositionMap};
-use crate::settings::Settings;
+use crate::{
+    layout::{self, Layout, LayoutOrPositionMap},
+    settings::Settings,
+};
 
 const EDGE_CLOSENESS_THRESHOLD: f32 = 0.001;
 
@@ -25,9 +28,7 @@ const EDGE_CLOSENESS_THRESHOLD: f32 = 0.001;
 /// Example:
 /// ```
 /// use petgraph::graph::UnGraph;
-/// use visgraph::graph_to_svg::graph_to_svg;
-/// use visgraph::settings::SettingsBuilder;
-/// use visgraph::Layout;
+/// use visgraph::{graph_to_svg::graph_to_svg, settings::SettingsBuilder, Layout};
 ///
 /// // Create a square graph with four nodes
 /// // It should look like this:
@@ -63,10 +64,7 @@ const EDGE_CLOSENESS_THRESHOLD: f32 = 0.001;
 ///     .expect("Values should be valid.");
 ///
 /// // Generate svg output using the custom position map.
-/// let svg_data = graph_to_svg(
-///     &square_graph,
-///     &settings,
-/// );
+/// let svg_data = graph_to_svg(&square_graph, &settings);
 /// ```
 pub fn graph_to_svg<G, PositionMapFn, NodeLabelFn, EdgeLabelFn, NodeColoringFn, EdgeColoringFn>(
     graph: G,
@@ -189,7 +187,8 @@ where
     svg_buffer
 }
 
-/// Draws a node as a circle with a text label by writing appropriate <circle> and <text> tags to the provided svg_buffer.
+/// Draws a node as a circle with a text label by writing appropriate <circle> and <text> tags to
+/// the provided svg_buffer.
 #[allow(clippy::too_many_arguments)]
 fn draw_node(
     svg_buffer: &mut String,
@@ -200,14 +199,19 @@ fn draw_node(
     radius: f32,
     font_size: f32,
 ) {
-    svg_buffer.push_str(&format!("
-    <circle cx=\"{coord_x}\" cy=\"{coord_y}\" r=\"{radius}\" fill=\"{node_color}\" stroke=\"black\"/>
-    <text x=\"{coord_x}\" y=\"{coord_y}\" font-size=\"{font_size}px\" font-family=\"DejaVu Sans, sans-serif\" fill=\"black\" text-anchor=\"middle\" dominant-baseline=\"central\">{node_label}</text>\n",
-        ));
+    svg_buffer.push_str(&format!(
+        "
+    <circle cx=\"{coord_x}\" cy=\"{coord_y}\" r=\"{radius}\" fill=\"{node_color}\" \
+         stroke=\"black\"/>
+    <text x=\"{coord_x}\" y=\"{coord_y}\" font-size=\"{font_size}px\" font-family=\"DejaVu Sans, \
+         sans-serif\" fill=\"black\" text-anchor=\"middle\" \
+         dominant-baseline=\"central\">{node_label}</text>\n",
+    ));
 }
 
-/// Draws an edge as a line between two nodes by writing an appropriate <line> tag to the provided svg_buffer.
-/// Adjusting for the radius of the nodes so that the line starts and ends at the edge of the nodes rather than their centers.
+/// Draws an edge as a line between two nodes by writing an appropriate <line> tag to the provided
+/// svg_buffer. Adjusting for the radius of the nodes so that the line starts and ends at the edge
+/// of the nodes rather than their centers.
 #[allow(clippy::too_many_arguments)]
 fn draw_edge(
     svg_buffer: &mut String,
@@ -246,18 +250,21 @@ fn draw_edge(
 
     svg_buffer.push_str(&format!(
         "
-    <line x1=\"{start_x}\" y1=\"{start_y}\" x2=\"{end_x}\" y2=\"{end_y}\" stroke=\"{edge_color}\" stroke-width=\"{stroke_width}\"/>
-    <text x= \"{}\" y=\"{}\" font-size=\"{font_size}px\" font-family=\"DejaVu Sans, sans-serif\" fill=\"blue\" text-anchor=\"middle\" dominant-baseline=\"central\">{edge_label}</text>\n",
-    (start_x + end_x) / 2.0, (start_y + end_y) / 2.0
+    <line x1=\"{start_x}\" y1=\"{start_y}\" x2=\"{end_x}\" y2=\"{end_y}\" stroke=\"{edge_color}\" \
+         stroke-width=\"{stroke_width}\"/>
+    <text x= \"{}\" y=\"{}\" font-size=\"{font_size}px\" font-family=\"DejaVu Sans, sans-serif\" \
+         fill=\"blue\" text-anchor=\"middle\" dominant-baseline=\"central\">{edge_label}</text>\n",
+        (start_x + end_x) / 2.0,
+        (start_y + end_y) / 2.0
     ));
 }
 
-/// Scales normalized coordinates (0.0 to 1.0, 0.0 to 1.0) to actual canvas coordinates (0 to width, 0 to height).
-/// Takes into account the margins specified in the settings. Margins are specified as a fraction of the total width/height
-/// and are applied on both sides (left/right and top/bottom).
+/// Scales normalized coordinates (0.0 to 1.0, 0.0 to 1.0) to actual canvas coordinates (0 to width,
+/// 0 to height). Takes into account the margins specified in the settings. Margins are specified as
+/// a fraction of the total width/height and are applied on both sides (left/right and top/bottom).
 ///
-/// E.g. if margin_x is 0.1, then 10% of the width is reserved as margin on the left and 10% on the right,
-/// leaving 80% of the width for the actual graph drawing area.
+/// E.g. if margin_x is 0.1, then 10% of the width is reserved as margin on the left and 10% on the
+/// right, leaving 80% of the width for the actual graph drawing area.
 fn scale(
     (normalized_x, normalized_y): (f32, f32),
     margin_x: f32,
@@ -300,32 +307,42 @@ mod tests {
 
         println!("SVG Output:\n{}", svg_output);
 
-        let expected_output = "<svg width=\"500\" height=\"500\" xmlns=\"http://www.w3.org/2000/svg\">
+        let expected_output =
+            "<svg width=\"500\" height=\"500\" xmlns=\"http://www.w3.org/2000/svg\">
 
     <circle cx=\"137.5\" cy=\"137.5\" r=\"25\" fill=\"white\" stroke=\"black\"/>
-    <text x=\"137.5\" y=\"137.5\" font-size=\"16px\" font-family=\"DejaVu Sans, sans-serif\" fill=\"black\" text-anchor=\"middle\" dominant-baseline=\"central\">0</text>
+    <text x=\"137.5\" y=\"137.5\" font-size=\"16px\" font-family=\"DejaVu Sans, sans-serif\" \
+             fill=\"black\" text-anchor=\"middle\" dominant-baseline=\"central\">0</text>
 
     <circle cx=\"362.5\" cy=\"137.5\" r=\"25\" fill=\"white\" stroke=\"black\"/>
-    <text x=\"362.5\" y=\"137.5\" font-size=\"16px\" font-family=\"DejaVu Sans, sans-serif\" fill=\"black\" text-anchor=\"middle\" dominant-baseline=\"central\">1</text>
+    <text x=\"362.5\" y=\"137.5\" font-size=\"16px\" font-family=\"DejaVu Sans, sans-serif\" \
+             fill=\"black\" text-anchor=\"middle\" dominant-baseline=\"central\">1</text>
 
     <circle cx=\"362.5\" cy=\"362.5\" r=\"25\" fill=\"white\" stroke=\"black\"/>
-    <text x=\"362.5\" y=\"362.5\" font-size=\"16px\" font-family=\"DejaVu Sans, sans-serif\" fill=\"black\" text-anchor=\"middle\" dominant-baseline=\"central\">2</text>
+    <text x=\"362.5\" y=\"362.5\" font-size=\"16px\" font-family=\"DejaVu Sans, sans-serif\" \
+             fill=\"black\" text-anchor=\"middle\" dominant-baseline=\"central\">2</text>
 
     <circle cx=\"137.5\" cy=\"362.5\" r=\"25\" fill=\"white\" stroke=\"black\"/>
-    <text x=\"137.5\" y=\"362.5\" font-size=\"16px\" font-family=\"DejaVu Sans, sans-serif\" fill=\"black\" text-anchor=\"middle\" dominant-baseline=\"central\">3</text>
+    <text x=\"137.5\" y=\"362.5\" font-size=\"16px\" font-family=\"DejaVu Sans, sans-serif\" \
+             fill=\"black\" text-anchor=\"middle\" dominant-baseline=\"central\">3</text>
 
     <line x1=\"162.5\" y1=\"137.5\" x2=\"337.5\" y2=\"137.5\" stroke=\"black\" stroke-width=\"5\"/>
-    <text x= \"250\" y=\"137.5\" font-size=\"16px\" font-family=\"DejaVu Sans, sans-serif\" fill=\"blue\" text-anchor=\"middle\" dominant-baseline=\"central\"></text>
+    <text x= \"250\" y=\"137.5\" font-size=\"16px\" font-family=\"DejaVu Sans, sans-serif\" \
+             fill=\"blue\" text-anchor=\"middle\" dominant-baseline=\"central\"></text>
 
     <line x1=\"362.5\" y1=\"162.5\" x2=\"362.5\" y2=\"337.5\" stroke=\"black\" stroke-width=\"5\"/>
-    <text x= \"362.5\" y=\"250\" font-size=\"16px\" font-family=\"DejaVu Sans, sans-serif\" fill=\"blue\" text-anchor=\"middle\" dominant-baseline=\"central\"></text>
+    <text x= \"362.5\" y=\"250\" font-size=\"16px\" font-family=\"DejaVu Sans, sans-serif\" \
+             fill=\"blue\" text-anchor=\"middle\" dominant-baseline=\"central\"></text>
 
     <line x1=\"337.5\" y1=\"362.5\" x2=\"162.5\" y2=\"362.5\" stroke=\"black\" stroke-width=\"5\"/>
-    <text x= \"250\" y=\"362.5\" font-size=\"16px\" font-family=\"DejaVu Sans, sans-serif\" fill=\"blue\" text-anchor=\"middle\" dominant-baseline=\"central\"></text>
+    <text x= \"250\" y=\"362.5\" font-size=\"16px\" font-family=\"DejaVu Sans, sans-serif\" \
+             fill=\"blue\" text-anchor=\"middle\" dominant-baseline=\"central\"></text>
 
     <line x1=\"137.5\" y1=\"337.5\" x2=\"137.5\" y2=\"162.5\" stroke=\"black\" stroke-width=\"5\"/>
-    <text x= \"137.5\" y=\"250\" font-size=\"16px\" font-family=\"DejaVu Sans, sans-serif\" fill=\"blue\" text-anchor=\"middle\" dominant-baseline=\"central\"></text>
-</svg>".to_owned();
+    <text x= \"137.5\" y=\"250\" font-size=\"16px\" font-family=\"DejaVu Sans, sans-serif\" \
+             fill=\"blue\" text-anchor=\"middle\" dominant-baseline=\"central\"></text>
+</svg>"
+                .to_owned();
 
         assert_eq!(svg_output, expected_output);
     }

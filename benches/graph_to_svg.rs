@@ -1,6 +1,5 @@
 mod common;
 use common::build_2d_grid;
-
 use criterion::{criterion_group, criterion_main, Criterion};
 
 fn graph_to_svg_benchmark(c: &mut Criterion) {

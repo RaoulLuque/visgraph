@@ -1,7 +1,7 @@
-use petgraph::graph::{NodeIndex, UnGraph};
 use std::collections::HashMap;
-use visgraph::graph_to_img;
-use visgraph::settings::SettingsBuilder;
+
+use petgraph::graph::{NodeIndex, UnGraph};
+use visgraph::{graph_to_img, settings::SettingsBuilder};
 
 // 7 colors for the 7 layers
 const LAYER_COLORS: [&str; 7] = ["red", "orange", "yellow", "green", "cyan", "blue", "purple"];

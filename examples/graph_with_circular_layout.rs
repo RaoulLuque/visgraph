@@ -1,6 +1,5 @@
 use petgraph::graph::{EdgeIndex, UnGraph};
-use visgraph::settings::SettingsBuilder;
-use visgraph::{graph_to_img, Layout};
+use visgraph::{graph_to_img, settings::SettingsBuilder, Layout};
 
 const RAINBOW_COLORS: [&str; 7] = [
     "RED", "ORANGE", "YELLOW", "GREEN", "BLUE", "INDIGO", "VIOLET",
