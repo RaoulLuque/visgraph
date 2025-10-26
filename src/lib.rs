@@ -20,6 +20,11 @@ use crate::{errors::VisGraphError, graph_to_svg::graph_to_svg_string, settings::
 
 /// Generate and save an image of a graph to the specified path.
 ///
+/// # Settings
+///
+/// To configure the graph rendering, use the [`SettingsBuilder`](crate::settings::SettingsBuilder)
+/// struct.
+///
 /// # Usage
 ///
 /// The following is an example taken from

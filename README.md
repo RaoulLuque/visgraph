@@ -55,6 +55,11 @@ graph_to_img(
 .unwrap();
 ```
 
+### Settings
+
+There are several customization options available for rendering the graph. These can be set using the
+[`SettingsBuilder`][settings-builder-url] struct using the builder pattern. Like so:
+
 ### Performance
 
 visgraphs performance can be greatly improved  by enabling optimizations. To do so, either build
@@ -131,3 +136,5 @@ terms.
 [msrv-badge]: https://img.shields.io/badge/rustc-1.68+-blue.svg
 
 [resvg-url]: https://github.com/linebender/resvg
+
+[settings-builder-url]: https://docs.rs/visgraph/latest/visgraph/settings/struct.SettingsBuilder.html

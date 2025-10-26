@@ -24,6 +24,11 @@ const EDGE_CLOSENESS_THRESHOLD: f32 = 0.001;
 /// Generates an SVG representation of the graph using the provided settings and
 /// saves it to the specified path.
 ///
+/// # Settings
+///
+/// To configure the graph rendering, use the [`SettingsBuilder`](crate::settings::SettingsBuilder)
+/// struct.
+///
 /// # Usage
 ///
 /// The following is an example taken from
