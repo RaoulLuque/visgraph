@@ -1,5 +1,4 @@
 use petgraph::graph::{NodeIndex, UnGraph};
-use visgraph::Orientation;
 
 fn main() {
     // Create a graph with multiple interconnected triangle subgraphs.
