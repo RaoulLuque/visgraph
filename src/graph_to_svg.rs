@@ -8,6 +8,8 @@
 //!
 //! For examples, see the `examples/` directory.
 
+use std::fmt::Write;
+
 use petgraph::visit::{
     EdgeIndexable, EdgeRef, IntoEdgeReferences, IntoNeighborsDirected, IntoNodeReferences,
     NodeIndexable, NodeRef,
@@ -211,14 +213,16 @@ fn draw_node(
     radius: f32,
     font_size: f32,
 ) {
-    svg_buffer.push_str(&format!(
+    write!(
+        svg_buffer,
         "
     <circle cx=\"{coord_x}\" cy=\"{coord_y}\" r=\"{radius}\" fill=\"{node_color}\" \
          stroke=\"black\"/>
     <text x=\"{coord_x}\" y=\"{coord_y}\" font-size=\"{font_size}px\" font-family=\"DejaVu Sans, \
          sans-serif\" fill=\"black\" text-anchor=\"middle\" \
          dominant-baseline=\"central\">{node_label}</text>\n",
-    ));
+    )
+    .expect("This should not fail according to the std lib: https://doc.rust-lang.org/src/alloc/string.rs.html#3276");
 }
 
 /// Draws an edge as a line between two nodes by writing an appropriate <line> tag to the provided
@@ -260,7 +264,8 @@ fn draw_edge(
     let end_x = coord_x_target - radius * unit_dir_vec_x;
     let end_y = coord_y_target - radius * unit_dir_vec_y;
 
-    svg_buffer.push_str(&format!(
+    write!(
+        svg_buffer,
         "
     <line x1=\"{start_x}\" y1=\"{start_y}\" x2=\"{end_x}\" y2=\"{end_y}\" stroke=\"{edge_color}\" \
          stroke-width=\"{stroke_width}\"/>
@@ -268,7 +273,8 @@ fn draw_edge(
          fill=\"blue\" text-anchor=\"middle\" dominant-baseline=\"central\">{edge_label}</text>\n",
         (start_x + end_x) / 2.0,
         (start_y + end_y) / 2.0
-    ));
+    )
+    .expect("This should not fail according to the std lib: https://doc.rust-lang.org/src/alloc/string.rs.html#3276");
 }
 
 /// Scales normalized coordinates (0.0 to 1.0, 0.0 to 1.0) to actual canvas coordinates (0 to width,
