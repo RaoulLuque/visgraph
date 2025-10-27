@@ -99,6 +99,10 @@ where
             let position_map = layout::get_hierarchical_position_map(&graph, *orientation);
             internal_graph_to_svg_with_positions_and_labels(graph, position_map, settings)
         }
+        LayoutOrPositionMap::Layout(Layout::ForceDirected) => {
+            let position_map = layout::get_force_directed_position_map(&graph);
+            internal_graph_to_svg_with_positions_and_labels(graph, position_map, settings)
+        }
         LayoutOrPositionMap::PositionMap(position_map) => {
             internal_graph_to_svg_with_positions_and_labels(graph, position_map, settings)
         }

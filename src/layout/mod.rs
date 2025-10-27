@@ -1,9 +1,11 @@
+pub(crate) use force_directed::get_force_directed_position_map;
 pub(crate) use hierarchical::get_hierarchical_position_map;
 pub use hierarchical::Orientation;
 use petgraph::visit::{IntoNodeReferences, NodeIndexable};
 
 pub(crate) type DefaultPositionMapFn = fn(petgraph::prelude::NodeIndex) -> (f32, f32);
 
+mod force_directed;
 mod hierarchical;
 
 /// Different layout algorithms for graph visualization.
@@ -15,6 +17,8 @@ pub enum Layout {
     Circular,
     /// Nodes are arranged in a hierarchical layout.
     Hierarchical(Orientation),
+    /// Nodes are arranged using a [force-directed layout](https://en.wikipedia.org/wiki/Force-directed_graph_drawing).
+    ForceDirected,
 }
 
 /// Enum to represent either a layout algorithm or a custom position map function. Only used for
