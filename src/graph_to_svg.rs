@@ -299,12 +299,14 @@ fn draw_edge(
 
     let mut font_size_buffer = ryu::Buffer::new();
     let font_size_str = font_size_buffer.format(font_size);
+    let mut stroke_width_buffer = ryu::Buffer::new();
+    let stroke_width_str = stroke_width_buffer.format(stroke_width);
 
     write!(
         svg_buffer,
         "
     <line x1=\"{start_x_str}\" y1=\"{start_y_str}\" x2=\"{end_x_str}\" y2=\"{end_y_str}\" stroke=\"{edge_color}\" \
-         stroke-width=\"{stroke_width}\"/>
+         stroke-width=\"{stroke_width_str}\"/>
     <text x= \"{x_str}\" y=\"{y_str}\" font-size=\"{font_size_str}px\" font-family=\"DejaVu Sans, sans-serif\" \
          fill=\"blue\" text-anchor=\"middle\" dominant-baseline=\"central\">{edge_label}</text>\n",
     )
