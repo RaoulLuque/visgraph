@@ -138,9 +138,14 @@ where
         graph.node_bound() * ESTIMATED_SVG_NODE_ENTRY_SIZE
             + graph.edge_bound() * ESTIMATED_SVG_EDGE_ENTRY_SIZE,
     );
+    let mut width_buffer = ryu::Buffer::new();
+    let width_str = width_buffer.format(settings.width);
+
+    let mut height_buffer = ryu::Buffer::new();
+    let height_str = height_buffer.format(settings.height);
+
     svg_buffer.push_str(&format!(
-        "<svg width=\"{}\" height=\"{}\" xmlns=\"http://www.w3.org/2000/svg\">\n",
-        settings.width, settings.height
+        "<svg width=\"{width_str}\" height=\"{height_str}\" xmlns=\"http://www.w3.org/2000/svg\">\n",
     ));
 
     let node_label_map = &settings.node_label_fn;
@@ -218,12 +223,21 @@ fn draw_node(
     radius: f32,
     font_size: f32,
 ) {
+    let mut x_buffer = ryu::Buffer::new();
+    let coord_x_str = x_buffer.format(coord_x);
+    let mut y_buffer = ryu::Buffer::new();
+    let coord_y_str = y_buffer.format(coord_y);
+    let mut radius_buffer = ryu::Buffer::new();
+    let radius_str = radius_buffer.format(radius);
+    let mut font_size_buffer = ryu::Buffer::new();
+    let font_size_str = font_size_buffer.format(font_size);
+
     write!(
         svg_buffer,
         "
-    <circle cx=\"{coord_x}\" cy=\"{coord_y}\" r=\"{radius}\" fill=\"{node_color}\" \
+    <circle cx=\"{coord_x_str}\" cy=\"{coord_y_str}\" r=\"{radius_str}\" fill=\"{node_color}\" \
          stroke=\"black\"/>
-    <text x=\"{coord_x}\" y=\"{coord_y}\" font-size=\"{font_size}px\" font-family=\"DejaVu Sans, \
+    <text x=\"{coord_x_str}\" y=\"{coord_y_str}\" font-size=\"{font_size_str}px\" font-family=\"DejaVu Sans, \
          sans-serif\" fill=\"black\" text-anchor=\"middle\" \
          dominant-baseline=\"central\">{node_label}</text>\n",
     )
@@ -269,15 +283,30 @@ fn draw_edge(
     let end_x = coord_x_target - radius * unit_dir_vec_x;
     let end_y = coord_y_target - radius * unit_dir_vec_y;
 
+    let mut start_x_buffer = ryu::Buffer::new();
+    let start_x_str = start_x_buffer.format(start_x);
+    let mut start_y_buffer = ryu::Buffer::new();
+    let start_y_str = start_y_buffer.format(start_y);
+    let mut end_x_buffer = ryu::Buffer::new();
+    let end_x_str = end_x_buffer.format(end_x);
+    let mut end_y_buffer = ryu::Buffer::new();
+    let end_y_str = end_y_buffer.format(end_y);
+
+    let mut x_buffer = ryu::Buffer::new();
+    let x_str = x_buffer.format((start_x + end_x) / 2.0);
+    let mut y_buffer = ryu::Buffer::new();
+    let y_str = y_buffer.format((start_y + end_y) / 2.0);
+
+    let mut font_size_buffer = ryu::Buffer::new();
+    let font_size_str = font_size_buffer.format(font_size);
+
     write!(
         svg_buffer,
         "
-    <line x1=\"{start_x}\" y1=\"{start_y}\" x2=\"{end_x}\" y2=\"{end_y}\" stroke=\"{edge_color}\" \
+    <line x1=\"{start_x_str}\" y1=\"{start_y_str}\" x2=\"{end_x_str}\" y2=\"{end_y_str}\" stroke=\"{edge_color}\" \
          stroke-width=\"{stroke_width}\"/>
-    <text x= \"{}\" y=\"{}\" font-size=\"{font_size}px\" font-family=\"DejaVu Sans, sans-serif\" \
+    <text x= \"{x_str}\" y=\"{y_str}\" font-size=\"{font_size_str}px\" font-family=\"DejaVu Sans, sans-serif\" \
          fill=\"blue\" text-anchor=\"middle\" dominant-baseline=\"central\">{edge_label}</text>\n",
-        (start_x + end_x) / 2.0,
-        (start_y + end_y) / 2.0
     )
     .expect("This should not fail according to the std lib: https://doc.rust-lang.org/src/alloc/string.rs.html#3276");
 }

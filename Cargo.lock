@@ -1604,6 +1604,7 @@ dependencies = [
  "image",
  "petgraph",
  "resvg",
+ "ryu",
  "thiserror 2.0.17",
 ]
 

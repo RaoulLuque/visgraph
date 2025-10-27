@@ -25,6 +25,7 @@ name = "visgraph"
 fixedbitset = "0.5.7"
 petgraph = { version= "0.8.3", features = [] }
 resvg = { version = "0.45.1", features = ["text", "system-fonts"], optional = true}
+ryu = "1.0.20"
 thiserror = "2.0.17"
 
 [profile.dev.package.resvg]
