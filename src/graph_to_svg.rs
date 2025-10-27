@@ -23,7 +23,7 @@ use crate::{
 
 const EDGE_CLOSENESS_THRESHOLD: f32 = 0.001;
 const ESTIMATED_SVG_NODE_ENTRY_SIZE: usize = 120;
-const ESTIMATED_SVG_EDGE_ENTRY_SIZE: usize = 50;
+const ESTIMATED_SVG_EDGE_ENTRY_SIZE: usize = 200;
 
 /// Generates an SVG representation of the graph using the provided settings and
 /// saves it to the specified path.
