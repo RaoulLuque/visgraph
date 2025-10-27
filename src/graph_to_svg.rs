@@ -22,6 +22,8 @@ use crate::{
 };
 
 const EDGE_CLOSENESS_THRESHOLD: f32 = 0.001;
+const ESTIMATED_SVG_NODE_ENTRY_SIZE: usize = 120;
+const ESTIMATED_SVG_EDGE_ENTRY_SIZE: usize = 50;
 
 /// Generates an SVG representation of the graph using the provided settings and
 /// saves it to the specified path.
@@ -132,7 +134,10 @@ where
     NodeColoringFn: Fn(G::NodeId) -> String,
     EdgeColoringFn: Fn(G::EdgeId) -> String,
 {
-    let mut svg_buffer = String::with_capacity(graph.node_bound() * 120 + graph.edge_bound() * 50);
+    let mut svg_buffer = String::with_capacity(
+        graph.node_bound() * ESTIMATED_SVG_NODE_ENTRY_SIZE
+            + graph.edge_bound() * ESTIMATED_SVG_EDGE_ENTRY_SIZE,
+    );
     svg_buffer.push_str(&format!(
         "<svg width=\"{}\" height=\"{}\" xmlns=\"http://www.w3.org/2000/svg\">\n",
         settings.width, settings.height
