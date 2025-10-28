@@ -55,6 +55,8 @@ graph_to_img(
 .unwrap();
 ```
 
+For the result, see [examples/results/graph_with_default_settings.png](examples/results/graph_with_default_settings.png).
+
 ### Settings
 
 There are several customization options available for rendering the graph. These can be set using the
