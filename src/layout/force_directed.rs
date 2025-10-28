@@ -4,6 +4,8 @@ use petgraph::visit::{EdgeRef, IntoEdgeReferences, IntoNodeReferences, NodeIndex
 
 /// Default number of iterations for the [`force_directed_layout`] function.
 pub const DEFAULT_ITERATIONS: u32 = 1000;
+/// Default initial temperature for the [`force_directed_layout`] function.
+pub const DEFAULT_INITIAL_TEMPERATURE: f32 = 0.1;
 const CLIPPING_VALUE: f32 = 0.01;
 
 /// Returns a position map function that arranges nodes using a force-directed layout. The specific
@@ -18,7 +20,11 @@ const CLIPPING_VALUE: f32 = 0.01;
 ///
 /// Fruchterman, T. M. J., Reingold, E. M. (1991). Graph drawing by force-directed placement
 /// <https://doi.org/10.1002/spe.4380211102>.
-pub fn force_directed_layout<G>(graph: &G, iterations: u32) -> impl Fn(G::NodeId) -> (f32, f32) + '_
+pub fn force_directed_layout<G>(
+    graph: &G,
+    iterations: u32,
+    inital_temperature: f32,
+) -> impl Fn(G::NodeId) -> (f32, f32) + '_
 where
     G: IntoNodeReferences + IntoEdgeReferences + NodeIndexable,
 {
@@ -38,7 +44,6 @@ where
 
         // Simulation parameters
         let k = (1.0 / (node_count as f32)).sqrt();
-        let initial_temp = 0.1f32;
 
         let edges: Vec<(usize, usize)> = graph
             .edge_references()
@@ -96,7 +101,8 @@ where
             }
 
             // Apply displacements with cooling
-            let curr_temp = initial_temp - (0.1 * iteration as f32) / ((iterations + 1) as f32);
+            let curr_temp =
+                inital_temperature - (0.1 * iteration as f32) / ((iterations + 1) as f32);
             for &idx in &node_indices {
                 let disp_len = (displacements[idx].0 * displacements[idx].0
                     + displacements[idx].1 * displacements[idx].1)

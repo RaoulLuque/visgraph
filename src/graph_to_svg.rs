@@ -19,7 +19,7 @@ use crate::{
     errors::VisGraphError,
     layout::{
         circular::circular_layout,
-        force_directed::{force_directed_layout, DEFAULT_ITERATIONS},
+        force_directed::{force_directed_layout, DEFAULT_INITIAL_TEMPERATURE, DEFAULT_ITERATIONS},
         hierarchical::hierarchical_layout,
         random::random_layout,
         Layout, LayoutOrPositionMap,
@@ -110,7 +110,8 @@ where
             internal_graph_to_svg_with_positions_and_labels(graph, position_map, settings)
         }
         LayoutOrPositionMap::Layout(Layout::ForceDirected) => {
-            let position_map = force_directed_layout(&graph, DEFAULT_ITERATIONS);
+            let position_map =
+                force_directed_layout(&graph, DEFAULT_ITERATIONS, DEFAULT_INITIAL_TEMPERATURE);
             internal_graph_to_svg_with_positions_and_labels(graph, position_map, settings)
         }
         LayoutOrPositionMap::Layout(Layout::Random) => {
