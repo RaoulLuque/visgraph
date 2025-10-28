@@ -7,9 +7,9 @@
        alt="Visualization of complete graph with 100 nodes in circular layout. (dark mode).">¹
 </p>
 
-
 visgraph
 ===
+
 visgraph is an easy-to-use Rust library for visualizing graphs
 using various layout algorithms and exporting them to simple image formats like PNG or even SVG.
 
@@ -60,7 +60,7 @@ For the result, see [examples/results/graph_with_default_settings.png](examples/
 ### Settings
 
 There are several customization options available for rendering the graph. These can be set using the
-[`SettingsBuilder`][settings-builder-url] struct using the builder pattern. Like so:
+[`SettingsBuilder`][settings-builder-url] struct.
 
 ### Performance
 
@@ -82,7 +82,7 @@ opt-level = 3
 
 visgraph currently only has a single feature which is enabled by default:
 
-- `svg_to_img`: Enables conversion from SVG to PNG using resvg. If you
+* `svg_to_img`: Enables conversion from SVG to PNG using resvg. If you
   disable this feature, only SVG output will be available, but the crate
   will be smaller, as resvg is a large dependency.
 
@@ -96,8 +96,8 @@ or have a feature request, please [open an issue][github-new-issue].
 
 ## Contributing
 
-🦕 Thanks for your help improving the project! There's no contribution guide yet, but feel free 
-to open an issue if you'd like to help out or just open a PR directly and we can discuss the changes 
+🦕 Thanks for your help improving the project! There's no contribution guide yet, but feel free
+to open an issue if you'd like to help out or just open a PR directly and we can discuss the changes
 there.
 
 ## License
