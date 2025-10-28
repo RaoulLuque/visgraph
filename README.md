@@ -1,10 +1,10 @@
 <p align="center">
   <img src="examples/results/graph_with_circular_layout.png#gh-light-mode-only"
        width="400"
-       alt="Visualization of complete graph with 100 nodes in circular layout. (light mode).">
+       alt="">
   <img src="examples/results/graph_with_circular_layout.png#gh-dark-mode-only"
        width="400"
-       alt="Visualization of complete graph with 100 nodes in circular layout. (dark mode).">¹
+       alt="">¹
 </p>
 
 visgraph

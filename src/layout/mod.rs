@@ -1,4 +1,4 @@
-//! Module containing different layout algorithms for graph visualization.
+//! Different layout algorithms for graph visualization.
 //!
 //! The [Layout] enum is the main entry point to select a layout algorithm using the
 //! [`SettingsBuilder`][crate::settings::SettingsBuilder].
