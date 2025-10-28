@@ -100,6 +100,16 @@ or have a feature request, please [open an issue][github-new-issue].
 to open an issue if you'd like to help out or just open a PR directly and we can discuss the changes
 there.
 
+## Other tools
+
+This tools purpose is mostly fast dev-time graph visualization. If you need more advanced
+graph visualization capabilities, consider using one of the following tools:
+
+* [egui-graphs](https://github.com/blitzar-tech/egui_graphs): A Rust library for interactively visualizing `petgraph` graphs in egui applications.
+* [Graphviz](https://graphviz.org/): A popular open-source graph visualization software. `petgraph` has built-in support for exporting to the DOT format used by Graphviz.
+* [Gephi](https://gephi.org/): An open-source network analysis and visualization software package.
+* [Cytoscape](https://cytoscape.org/): An open-source software platform for visualizing complex networks and integrating these with any type of attribute data.
+
 ## License
 
 Dual-licensed to be compatible with the Rust project.
