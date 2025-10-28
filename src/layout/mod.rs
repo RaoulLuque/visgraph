@@ -1,12 +1,9 @@
-pub(crate) use force_directed::get_force_directed_position_map;
-pub(crate) use hierarchical::get_hierarchical_position_map;
-pub use hierarchical::Orientation;
-use petgraph::visit::{IntoNodeReferences, NodeIndexable};
+use crate::layout::hierarchical::Orientation;
 
 pub(crate) type DefaultPositionMapFn = fn(petgraph::prelude::NodeIndex) -> (f32, f32);
 
-mod force_directed;
-mod hierarchical;
+pub mod force_directed;
+pub mod hierarchical;
 
 /// Different layout algorithms for graph visualization.
 ///
@@ -29,17 +26,20 @@ pub enum LayoutOrPositionMap<PositionMapFn = DefaultPositionMapFn> {
     PositionMap(PositionMapFn),
 }
 
-/// Returns a position map function that arranges nodes in a circular layout.
-pub(crate) fn get_circular_position_map<G>(graph: &G) -> impl Fn(G::NodeId) -> (f32, f32) + '_
-where
-    G: IntoNodeReferences + NodeIndexable,
-{
-    let node_count = graph.node_references().count() as f32;
-    move |node_id| {
-        let index = graph.to_index(node_id) as f32;
-        let angle = index / node_count * std::f32::consts::TAU;
-        let x = 0.5 + 0.5 * angle.cos();
-        let y = 0.5 + 0.5 * angle.sin();
-        (x, y)
+pub mod circular {
+    use petgraph::visit::{IntoNodeReferences, NodeIndexable};
+
+    pub fn get_circular_position_map<G>(graph: &G) -> impl Fn(G::NodeId) -> (f32, f32) + '_
+    where
+        G: IntoNodeReferences + NodeIndexable,
+    {
+        let node_count = graph.node_references().count() as f32;
+        move |node_id| {
+            let index = graph.to_index(node_id) as f32;
+            let angle = index / node_count * std::f32::consts::TAU;
+            let x = 0.5 + 0.5 * angle.cos();
+            let y = 0.5 + 0.5 * angle.sin();
+            (x, y)
+        }
     }
 }

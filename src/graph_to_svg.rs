@@ -17,7 +17,12 @@ use petgraph::visit::{
 
 use crate::{
     errors::VisGraphError,
-    layout::{self, Layout, LayoutOrPositionMap},
+    layout::{
+        circular::get_circular_position_map,
+        force_directed::{get_force_directed_position_map, DEFAULT_ITERATIONS},
+        hierarchical::get_hierarchical_position_map,
+        Layout, LayoutOrPositionMap,
+    },
     settings::Settings,
 };
 
@@ -96,15 +101,15 @@ where
 {
     match &settings.layout_or_pos_map {
         LayoutOrPositionMap::Layout(Layout::Circular) => {
-            let position_map = layout::get_circular_position_map(&graph);
+            let position_map = get_circular_position_map(&graph);
             internal_graph_to_svg_with_positions_and_labels(graph, position_map, settings)
         }
         LayoutOrPositionMap::Layout(Layout::Hierarchical(orientation)) => {
-            let position_map = layout::get_hierarchical_position_map(&graph, *orientation);
+            let position_map = get_hierarchical_position_map(&graph, *orientation);
             internal_graph_to_svg_with_positions_and_labels(graph, position_map, settings)
         }
         LayoutOrPositionMap::Layout(Layout::ForceDirected) => {
-            let position_map = layout::get_force_directed_position_map(&graph);
+            let position_map = get_force_directed_position_map(&graph, DEFAULT_ITERATIONS);
             internal_graph_to_svg_with_positions_and_labels(graph, position_map, settings)
         }
         LayoutOrPositionMap::PositionMap(position_map) => {

@@ -1,6 +1,11 @@
 use petgraph::visit::{EdgeRef, IntoEdgeReferences, IntoNodeReferences, NodeIndexable, NodeRef};
 
-pub(crate) fn get_force_directed_position_map<G>(graph: &G) -> impl Fn(G::NodeId) -> (f32, f32) + '_
+pub const DEFAULT_ITERATIONS: u32 = 100;
+
+pub fn get_force_directed_position_map<G>(
+    graph: &G,
+    iterations: u32,
+) -> impl Fn(G::NodeId) -> (f32, f32) + '_
 where
     G: IntoNodeReferences + IntoEdgeReferences + NodeIndexable,
 {
@@ -18,7 +23,6 @@ where
         // Simulation parameters
         let area = 1.0f32;
         let k = (area / (node_count as f32)).sqrt(); // Optimal distance between nodes
-        let iterations = 100000;
         let initial_temp = 0.1f32;
 
         let edges: Vec<_> = graph

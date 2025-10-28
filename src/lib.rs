@@ -3,13 +3,13 @@
 
 mod errors;
 pub mod graph_to_svg;
-mod layout;
+pub mod layout;
 pub mod settings;
 #[cfg(feature = "svg_to_img")]
 pub mod svg_to_img;
 
 pub use graph_to_svg::graph_to_svg;
-pub use layout::{Layout, Orientation};
+pub use layout::{hierarchical::Orientation, Layout};
 #[cfg(feature = "svg_to_img")]
 use petgraph::visit::IntoNeighborsDirected;
 use petgraph::visit::{EdgeIndexable, IntoEdgeReferences, IntoNodeReferences, NodeIndexable};
