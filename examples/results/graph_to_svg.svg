@@ -12,21 +12,21 @@
     <circle cx="500.0" cy="50.0" r="25.0" fill="white" stroke="black"/>
     <text x="500.0" y="50.0" font-size="16.0px" font-family="DejaVu Sans, sans-serif" fill="black" text-anchor="middle" dominant-baseline="central">3</text>
 
-    <line x1="932.3223" y1="517.6777" x2="517.6776" y2="932.3223" stroke="black" stroke-width="5"/>
+    <line x1="932.3223" y1="517.6777" x2="517.6776" y2="932.3223" stroke="black" stroke-width="5.0"/>
     <text x= "725.0" y="725.0" font-size="16.0px" font-family="DejaVu Sans, sans-serif" fill="blue" text-anchor="middle" dominant-baseline="central"></text>
 
-    <line x1="925.0" y1="500.0" x2="75.0" y2="499.99997" stroke="black" stroke-width="5"/>
+    <line x1="925.0" y1="500.0" x2="75.0" y2="499.99997" stroke="black" stroke-width="5.0"/>
     <text x= "500.0" y="500.0" font-size="16.0px" font-family="DejaVu Sans, sans-serif" fill="blue" text-anchor="middle" dominant-baseline="central"></text>
 
-    <line x1="932.3223" y1="482.32233" x2="517.6777" y2="67.67767" stroke="black" stroke-width="5"/>
+    <line x1="932.3223" y1="482.32233" x2="517.6777" y2="67.67767" stroke="black" stroke-width="5.0"/>
     <text x= "725.0" y="275.0" font-size="16.0px" font-family="DejaVu Sans, sans-serif" fill="blue" text-anchor="middle" dominant-baseline="central"></text>
 
-    <line x1="482.3223" y1="932.3223" x2="67.677666" y2="517.6776" stroke="black" stroke-width="5"/>
+    <line x1="482.3223" y1="932.3223" x2="67.677666" y2="517.6776" stroke="black" stroke-width="5.0"/>
     <text x= "274.99997" y="725.0" font-size="16.0px" font-family="DejaVu Sans, sans-serif" fill="blue" text-anchor="middle" dominant-baseline="central"></text>
 
-    <line x1="499.99997" y1="925.0" x2="500.0" y2="75.0" stroke="black" stroke-width="5"/>
+    <line x1="499.99997" y1="925.0" x2="500.0" y2="75.0" stroke="black" stroke-width="5.0"/>
     <text x= "500.0" y="500.0" font-size="16.0px" font-family="DejaVu Sans, sans-serif" fill="blue" text-anchor="middle" dominant-baseline="central"></text>
 
-    <line x1="67.67767" y1="482.3223" x2="482.32233" y2="67.67767" stroke="black" stroke-width="5"/>
+    <line x1="67.67767" y1="482.3223" x2="482.32233" y2="67.67767" stroke="black" stroke-width="5.0"/>
     <text x= "275.0" y="275.0" font-size="16.0px" font-family="DejaVu Sans, sans-serif" fill="blue" text-anchor="middle" dominant-baseline="central"></text>
 </svg>
