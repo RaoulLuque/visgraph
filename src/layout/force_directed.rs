@@ -1,7 +1,17 @@
 use petgraph::visit::{EdgeRef, IntoEdgeReferences, IntoNodeReferences, NodeIndexable, NodeRef};
 
-pub const DEFAULT_ITERATIONS: u32 = 100;
+pub const DEFAULT_ITERATIONS: u32 = 1000;
+const CLIPPING_VALUE: f32 = 0.01;
 
+/// TODO:
+///
+/// # Reference
+///
+/// This is an implementation of the Fruchterman-Reingold force-directed algorithm as presented in
+/// the original paper:
+///
+/// Fruchterman, T. M. J., Reingold, E. M. (1991). Graph drawing by force-directed placement
+/// https://doi.org/10.1002/spe.4380211102.
 pub fn get_force_directed_position_map<G>(
     graph: &G,
     iterations: u32,
@@ -13,24 +23,26 @@ where
     let mut positions = vec![(0.0f32, 0.0f32); graph.node_bound()];
 
     if node_count > 0 {
-        // Initialize positions randomly in a circle to avoid pathological cases
-        for (i, node_ref) in graph.node_references().enumerate() {
+        // Initialize positions randomly
+        let mut rng = fastrand::Rng::new();
+
+        for node_ref in graph.node_references() {
+            let x = rng.f32();
+            let y = rng.f32();
             let idx = graph.to_index(node_ref.id());
-            let angle = (i as f32) / (node_count as f32) * std::f32::consts::TAU;
-            positions[idx] = (angle.cos(), angle.sin());
+            positions[idx] = (x, y);
         }
 
         // Simulation parameters
-        let area = 1.0f32;
-        let k = (area / (node_count as f32)).sqrt(); // Optimal distance between nodes
+        let k = (1.0 / (node_count as f32)).sqrt();
         let initial_temp = 0.1f32;
 
-        let edges: Vec<_> = graph
+        let edges: Vec<(usize, usize)> = graph
             .edge_references()
             .map(|edge| (graph.to_index(edge.source()), graph.to_index(edge.target())))
             .collect();
 
-        let node_indices: Vec<_> = graph
+        let node_indices: Vec<usize> = graph
             .node_references()
             .map(|node_ref| graph.to_index(node_ref.id()))
             .collect();
@@ -46,7 +58,9 @@ where
 
                     let delta_x = positions[idx_i].0 - positions[idx_j].0;
                     let delta_y = positions[idx_i].1 - positions[idx_j].1;
-                    let distance = (delta_x * delta_x + delta_y * delta_y).sqrt().max(0.01);
+                    let distance = (delta_x * delta_x + delta_y * delta_y)
+                        .sqrt()
+                        .max(CLIPPING_VALUE);
 
                     // Repulsive force: f_r = k^2 / d
                     let repulsion = k * k / distance;
@@ -64,7 +78,9 @@ where
             for &(source_idx, target_idx) in &edges {
                 let delta_x = positions[source_idx].0 - positions[target_idx].0;
                 let delta_y = positions[source_idx].1 - positions[target_idx].1;
-                let distance = (delta_x * delta_x + delta_y * delta_y).sqrt().max(0.01);
+                let distance = (delta_x * delta_x + delta_y * delta_y)
+                    .sqrt()
+                    .max(CLIPPING_VALUE);
 
                 let attraction = distance * distance / k;
                 let force_x = (delta_x / distance) * attraction;
@@ -77,21 +93,21 @@ where
             }
 
             // Apply displacements with cooling
-            let temp = initial_temp * (1.0 - (iteration as f32) / (iterations as f32));
+            let curr_temp = initial_temp - (0.1 * iteration as f32) / ((iterations + 1) as f32);
             for &idx in &node_indices {
                 let disp_len = (displacements[idx].0 * displacements[idx].0
                     + displacements[idx].1 * displacements[idx].1)
                     .sqrt();
 
                 if disp_len > 0.0 {
-                    let limited_disp_len = disp_len.min(temp);
+                    let limited_disp_len = disp_len.min(curr_temp);
                     positions[idx].0 += (displacements[idx].0 / disp_len) * limited_disp_len;
                     positions[idx].1 += (displacements[idx].1 / disp_len) * limited_disp_len;
                 }
             }
         }
 
-        // Normalize positions
+        // Normalize positions to [0.0, 1.0]
         if !positions.is_empty() {
             let mut min_x = f32::INFINITY;
             let mut max_x = f32::NEG_INFINITY;

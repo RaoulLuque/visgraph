@@ -22,6 +22,7 @@ include = [
 name = "visgraph"
 
 [dependencies]
+fastrand = "2.3.0"
 fixedbitset = "0.5.7"
 petgraph = { version= "0.8.3", features = [] }
 resvg = { version = "0.45.1", features = ["text", "system-fonts"], optional = true}
