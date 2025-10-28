@@ -2,11 +2,14 @@
 
 use petgraph::visit::{EdgeRef, IntoEdgeReferences, IntoNodeReferences, NodeIndexable, NodeRef};
 
-/// Default number of iterations for the [force_directed_layout] function.
+/// Default number of iterations for the [`force_directed_layout`] function.
 pub const DEFAULT_ITERATIONS: u32 = 1000;
 const CLIPPING_VALUE: f32 = 0.01;
 
-/// TODO:
+/// Returns a position map function that arranges nodes using a force-directed layout. The specific
+/// algorithm used is the Fruchterman-Reingold algorithm, see [Reference](#reference).
+///
+/// The returned position map is normalized to [0.0, 1.0].
 ///
 /// # Reference
 ///
@@ -14,7 +17,7 @@ const CLIPPING_VALUE: f32 = 0.01;
 /// the original paper:
 ///
 /// Fruchterman, T. M. J., Reingold, E. M. (1991). Graph drawing by force-directed placement
-/// https://doi.org/10.1002/spe.4380211102.
+/// <https://doi.org/10.1002/spe.4380211102>.
 pub fn force_directed_layout<G>(graph: &G, iterations: u32) -> impl Fn(G::NodeId) -> (f32, f32) + '_
 where
     G: IntoNodeReferences + IntoEdgeReferences + NodeIndexable,

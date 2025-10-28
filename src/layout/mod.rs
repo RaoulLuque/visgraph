@@ -71,7 +71,7 @@ pub mod random {
 
     /// Returns a position map function that assigns random positions to nodes.
     ///
-    /// All values are in the range [0.0, 1.0].
+    /// The returned position map is normalized to [0.0, 1.0].
     pub fn random_layout<G>(graph: &G) -> impl Fn(G::NodeId) -> (f32, f32) + '_
     where
         G: IntoNodeReferences + NodeIndexable,

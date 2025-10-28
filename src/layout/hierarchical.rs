@@ -19,8 +19,8 @@ pub enum Orientation {
 
 /// Returns a position map function that arranges nodes in a hierarchical layout.
 ///
-/// All values are in the range [0.0, 1.0]. The provided orientation determines the direction
-/// of the hierarchy.
+/// The returned position map is normalized to [0.0, 1.0]. The provided orientation determines the
+/// direction of the hierarchy.
 ///
 /// The basic structure of the algorithm is as follows:
 /// - Identify root nodes (nodes with no incoming edges). If none are found, use nodes with the

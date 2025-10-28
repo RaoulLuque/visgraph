@@ -21,6 +21,7 @@ use crate::{
         circular::circular_layout,
         force_directed::{force_directed_layout, DEFAULT_ITERATIONS},
         hierarchical::hierarchical_layout,
+        random::random_layout,
         Layout, LayoutOrPositionMap,
     },
     settings::Settings,
@@ -113,7 +114,7 @@ where
             internal_graph_to_svg_with_positions_and_labels(graph, position_map, settings)
         }
         LayoutOrPositionMap::Layout(Layout::Random) => {
-            let position_map = crate::layout::random::random_layout(&graph);
+            let position_map = random_layout(&graph);
             internal_graph_to_svg_with_positions_and_labels(graph, position_map, settings)
         }
         LayoutOrPositionMap::PositionMap(position_map) => {
