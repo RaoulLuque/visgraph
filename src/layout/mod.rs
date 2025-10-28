@@ -1,3 +1,11 @@
+//! Module containing different layout algorithms for graph visualization.
+//!
+//! The [Layout] enum is the main entry point to select a layout algorithm using the
+//! [`SettingsBuilder`][crate::settings::SettingsBuilder].
+//!
+//! The layout algorithms can also be called directly from their respective
+//! submodules of this module.
+
 use crate::layout::hierarchical::Orientation;
 
 pub(crate) type DefaultPositionMapFn = fn(petgraph::prelude::NodeIndex) -> (f32, f32);
@@ -6,6 +14,9 @@ pub mod force_directed;
 pub mod hierarchical;
 
 /// Different layout algorithms for graph visualization.
+///
+/// The layout algorithms can also be called directly from their respective submodules of the
+/// [`layout`](crate::layout) module.
 ///
 /// For examples, see the [`examples`](https://github.com/RaoulLuque/visgraph/tree/main/examples) directory.
 #[derive(Debug, Clone, Copy)]
@@ -24,14 +35,21 @@ pub enum Layout {
 /// [`SettingsBuilder`][crate::settings::SettingsBuilder].
 #[derive(Debug, Clone, Copy)]
 pub enum LayoutOrPositionMap<PositionMapFn = DefaultPositionMapFn> {
+    /// A layout algorithm.
     Layout(Layout),
+    /// A custom position map function.
     PositionMap(PositionMapFn),
 }
 
 pub mod circular {
+    //! Module containing functionality for the circular layout.
     use petgraph::visit::{IntoNodeReferences, NodeIndexable};
 
-    pub fn get_circular_position_map<G>(graph: &G) -> impl Fn(G::NodeId) -> (f32, f32) + '_
+    /// Returns a position map function that arranges nodes in a circular layout.
+    ///
+    /// The nodes are evenly distributed around a unit circle centered at (0.5, 0.5). That is
+    /// all values are in the range [0.0, 1.0].
+    pub fn circular_layout<G>(graph: &G) -> impl Fn(G::NodeId) -> (f32, f32) + '_
     where
         G: IntoNodeReferences + NodeIndexable,
     {
@@ -47,9 +65,14 @@ pub mod circular {
 }
 
 pub mod random {
+    //! Module containing functionality for the random layout.
+
     use petgraph::visit::{IntoNodeReferences, NodeIndexable, NodeRef};
 
-    pub fn get_random_position_map<G>(graph: &G) -> impl Fn(G::NodeId) -> (f32, f32) + '_
+    /// Returns a position map function that assigns random positions to nodes.
+    ///
+    /// All values are in the range [0.0, 1.0].
+    pub fn random_layout<G>(graph: &G) -> impl Fn(G::NodeId) -> (f32, f32) + '_
     where
         G: IntoNodeReferences + NodeIndexable,
     {

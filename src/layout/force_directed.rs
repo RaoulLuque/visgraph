@@ -1,5 +1,8 @@
+//! Module containing functionality for the force-directed layout.
+
 use petgraph::visit::{EdgeRef, IntoEdgeReferences, IntoNodeReferences, NodeIndexable, NodeRef};
 
+/// Default number of iterations for the [force_directed_layout] function.
 pub const DEFAULT_ITERATIONS: u32 = 1000;
 const CLIPPING_VALUE: f32 = 0.01;
 
@@ -12,10 +15,7 @@ const CLIPPING_VALUE: f32 = 0.01;
 ///
 /// Fruchterman, T. M. J., Reingold, E. M. (1991). Graph drawing by force-directed placement
 /// https://doi.org/10.1002/spe.4380211102.
-pub fn get_force_directed_position_map<G>(
-    graph: &G,
-    iterations: u32,
-) -> impl Fn(G::NodeId) -> (f32, f32) + '_
+pub fn force_directed_layout<G>(graph: &G, iterations: u32) -> impl Fn(G::NodeId) -> (f32, f32) + '_
 where
     G: IntoNodeReferences + IntoEdgeReferences + NodeIndexable,
 {

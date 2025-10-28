@@ -18,9 +18,9 @@ use petgraph::visit::{
 use crate::{
     errors::VisGraphError,
     layout::{
-        circular::get_circular_position_map,
-        force_directed::{get_force_directed_position_map, DEFAULT_ITERATIONS},
-        hierarchical::get_hierarchical_position_map,
+        circular::circular_layout,
+        force_directed::{force_directed_layout, DEFAULT_ITERATIONS},
+        hierarchical::hierarchical_layout,
         Layout, LayoutOrPositionMap,
     },
     settings::Settings,
@@ -101,19 +101,19 @@ where
 {
     match &settings.layout_or_pos_map {
         LayoutOrPositionMap::Layout(Layout::Circular) => {
-            let position_map = get_circular_position_map(&graph);
+            let position_map = circular_layout(&graph);
             internal_graph_to_svg_with_positions_and_labels(graph, position_map, settings)
         }
         LayoutOrPositionMap::Layout(Layout::Hierarchical(orientation)) => {
-            let position_map = get_hierarchical_position_map(&graph, *orientation);
+            let position_map = hierarchical_layout(&graph, *orientation);
             internal_graph_to_svg_with_positions_and_labels(graph, position_map, settings)
         }
         LayoutOrPositionMap::Layout(Layout::ForceDirected) => {
-            let position_map = get_force_directed_position_map(&graph, DEFAULT_ITERATIONS);
+            let position_map = force_directed_layout(&graph, DEFAULT_ITERATIONS);
             internal_graph_to_svg_with_positions_and_labels(graph, position_map, settings)
         }
         LayoutOrPositionMap::Layout(Layout::Random) => {
-            let position_map = crate::layout::random::get_random_position_map(&graph);
+            let position_map = crate::layout::random::random_layout(&graph);
             internal_graph_to_svg_with_positions_and_labels(graph, position_map, settings)
         }
         LayoutOrPositionMap::PositionMap(position_map) => {

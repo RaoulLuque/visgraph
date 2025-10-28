@@ -1,3 +1,5 @@
+//! Module containing functionality for the hierarchical layout.
+
 use fixedbitset::FixedBitSet;
 use petgraph::visit::{IntoNeighborsDirected, IntoNodeReferences, NodeIndexable, NodeRef};
 
@@ -15,17 +17,20 @@ pub enum Orientation {
     RightToLeft,
 }
 
-// Returns a position map function that arranges nodes in a hierarchical layout.
-//
-// The function is structured as follows:
-// - Identify root nodes (nodes with no incoming edges). If none are found, use nodes with the
-//   highest out-degree as starting points.
-// - Perform a depth-first traversal from each root node, assigning levels (rows) to nodes based on
-//   their distance from the root.
-// - Calculate the column positions for each node, centering parents above their children.
-// - Normalize the positions to fit within a unit square, adjusting based on the specified
-//   orientation.
-pub fn get_hierarchical_position_map<G>(
+/// Returns a position map function that arranges nodes in a hierarchical layout.
+///
+/// All values are in the range [0.0, 1.0]. The provided orientation determines the direction
+/// of the hierarchy.
+///
+/// The basic structure of the algorithm is as follows:
+/// - Identify root nodes (nodes with no incoming edges). If none are found, use nodes with the
+///   highest out-degree as starting points.
+/// - Perform a depth-first traversal from each root node, assigning levels (rows) to nodes based on
+///   their distance from the root.
+/// - Calculate the column positions for each node, centering parents above their children.
+/// - Normalize the positions to fit within a unit square, adjusting based on the specified
+///   orientation.
+pub fn hierarchical_layout<G>(
     graph: &G,
     orientation: Orientation,
 ) -> impl Fn(G::NodeId) -> (f32, f32) + '_
