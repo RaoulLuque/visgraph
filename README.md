@@ -38,7 +38,7 @@ let num_nodes = 4;                                        //|
 let nodes: Vec<_> = (0..num_nodes)                        //|
     .map(|_| complete_graph.add_node(()))                 //| This code just
     .collect();                                           //| creates a graph
-                                                          //| to visualize
+                                                          //| to be visualized
 for i in 0..num_nodes {                                   //| 
     for j in (i + 1)..num_nodes {                         //|
         complete_graph.add_edge(nodes[i], nodes[j], ());  //|
