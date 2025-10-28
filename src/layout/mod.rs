@@ -16,6 +16,8 @@ pub enum Layout {
     Hierarchical(Orientation),
     /// Nodes are arranged using a [force-directed layout](https://en.wikipedia.org/wiki/Force-directed_graph_drawing).
     ForceDirected,
+    /// Nodes are arranged randomly.
+    Random,
 }
 
 /// Enum to represent either a layout algorithm or a custom position map function. Only used for
@@ -40,6 +42,28 @@ pub mod circular {
             let x = 0.5 + 0.5 * angle.cos();
             let y = 0.5 + 0.5 * angle.sin();
             (x, y)
+        }
+    }
+}
+
+pub mod random {
+    use petgraph::visit::{IntoNodeReferences, NodeIndexable, NodeRef};
+
+    pub fn get_random_position_map<G>(graph: &G) -> impl Fn(G::NodeId) -> (f32, f32) + '_
+    where
+        G: IntoNodeReferences + NodeIndexable,
+    {
+        let mut rng = fastrand::Rng::new();
+        let mut positions = vec![(0.0f32, 0.0f32); graph.node_bound()];
+        for node_ref in graph.node_references() {
+            let x = rng.f32();
+            let y = rng.f32();
+            let idx = graph.to_index(node_ref.id());
+            positions[idx] = (x, y);
+        }
+        move |node_id| {
+            let index = graph.to_index(node_id);
+            positions[index]
         }
     }
 }

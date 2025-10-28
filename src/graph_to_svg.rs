@@ -112,6 +112,10 @@ where
             let position_map = get_force_directed_position_map(&graph, DEFAULT_ITERATIONS);
             internal_graph_to_svg_with_positions_and_labels(graph, position_map, settings)
         }
+        LayoutOrPositionMap::Layout(Layout::Random) => {
+            let position_map = crate::layout::random::get_random_position_map(&graph);
+            internal_graph_to_svg_with_positions_and_labels(graph, position_map, settings)
+        }
         LayoutOrPositionMap::PositionMap(position_map) => {
             internal_graph_to_svg_with_positions_and_labels(graph, position_map, settings)
         }
