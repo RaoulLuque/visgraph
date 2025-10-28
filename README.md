@@ -32,18 +32,18 @@ For more examples, see the [examples directory][examples-dir].
 use petgraph::graph::UnGraph;
 use visgraph::{graph_to_img, settings::Settings};
 
-// Create a complete graph with 4 nodes.
-let mut complete_graph = UnGraph::new_undirected();
-let num_nodes = 4;
-let nodes: Vec<_> = (0..num_nodes)
-    .map(|_| complete_graph.add_node(()))
-    .collect();
-
-for i in 0..num_nodes {
-    for j in (i + 1)..num_nodes {
-        complete_graph.add_edge(nodes[i], nodes[j], ());
-    }
-}
+// Create a complete graph with 4 nodes.              //----|
+let mut complete_graph = UnGraph::new_undirected();       //|
+let num_nodes = 4;                                        //|
+let nodes: Vec<_> = (0..num_nodes)                        //|
+    .map(|_| complete_graph.add_node(()))                 //| This code just
+    .collect();                                           //| creates a graph
+                                                          //| to visualize
+for i in 0..num_nodes {                                   //| 
+    for j in (i + 1)..num_nodes {                         //|
+        complete_graph.add_edge(nodes[i], nodes[j], ());  //|
+    }                                                     //|
+}                                                     //----|
 
 // This is the actual functionality of this lib:
 // Generate and save the graph image using default settings.
