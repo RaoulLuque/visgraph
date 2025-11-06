@@ -44,6 +44,50 @@ img = ["resvg"]
 name = "graph_to_svg"
 harness = false
 
+[[example]]
+name = "circular_layout"
+path = "examples/circular_layout.rs"
+required-features = ["img"]
+
+[[example]]
+name = "custom_colors"
+path = "examples/custom_colors.rs"
+required-features = ["img"]
+
+[[example]]
+name = "custom_labels"
+path = "examples/custom_labels.rs"
+required-features = ["img"]
+
+[[example]]
+name = "default_settings"
+path = "examples/default_settings.rs"
+required-features = ["img"]
+
+[[example]]
+name = "force_directed_layout_two"
+path = "examples/force_directed_layout_two.rs"
+required-features = ["img"]
+
+[[example]]
+name = "force_directed_layout"
+path = "examples/force_directed_layout.rs"
+required-features = ["img"]
+
+[[example]]
+name = "graph_to_svg"
+path = "examples/graph_to_svg.rs"
+
+[[example]]
+name = "hierarchical_layout"
+path = "examples/hierarchical_layout.rs"
+required-features = ["img"]
+
+[[example]]
+name = "position_map"
+path = "examples/position_map.rs"
+required-features = ["img"]
+
 [lints.rust]
 # Taken from bevy, subject to change
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(docsrs_dep)'] }
