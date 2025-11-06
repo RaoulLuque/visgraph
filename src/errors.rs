@@ -4,7 +4,7 @@ use thiserror::Error;
 
 #[derive(Debug, Error)]
 #[non_exhaustive]
-/// Errors that can occur in the VisGraph library.
+/// Errors that can occur in the `VisGraph` library.
 ///
 /// Note that some error variants might be feature-gated and only available
 /// when applicable features are enabled, i.e. they can actually occur.
