@@ -1,0 +1,46 @@
+# Lists all available recipes
+default:
+    just --list
+
+# Builds the project in development mode
+build:
+    cargo build
+
+# Tests with all features enabled
+test:
+    cargo test --features all
+
+# Miri with all tests (this might take very long). Consider the fast-miri recipe instead or specify individual tests
+miri:
+    cargo miri test
+
+# Fmt with the same configuration as in CI
+fmt:
+    cargo fmt --all -- --check
+
+# Clippy with the same configuration as in CI
+clippy:
+    cargo clippy --all-features --lib --bins --examples --tests -- -D warnings
+
+# Runs all linting checks that are run in CI
+lint: fmt clippy
+
+# Runs all tests and linting that are run in CI
+ci: fmt clippy test
+
+# Builds the documentation
+docs:
+    cargo doc --no-deps --all-features --open
+
+# Runs all examples
+examples:
+    cargo run --example graph_to_svg --release
+    cargo run --example circular_layout --release
+    cargo run --example custom_colors --release
+    cargo run --example custom_labels --release
+    cargo run --example default_settings --release
+    cargo run --example force_directed_layout_two --release
+    cargo run --example force_directed_layout --release
+    cargo run --example graph_to_svg --release
+    cargo run --example hierarchical_layout --release
+    cargo run --example position_map --release
