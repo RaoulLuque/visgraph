@@ -1,12 +1,19 @@
+#[cfg(feature = "svg_to_img")]
 use resvg::usvg::Error as UsvgError;
 use thiserror::Error;
 
 #[derive(Debug, Error)]
+#[non_exhaustive]
+/// Errors that can occur in the VisGraph library.
+///
+/// Note that some error variants might be feature-gated and only available
+/// when applicable features are enabled, i.e. they can actually occur.
 pub enum VisGraphError {
     /// Error related to settings validation.
     #[error("Settings error: {0}")]
     Settings(#[from] InvalidSettingsError),
     /// Error while converting SVG to image.
+    #[cfg(feature = "svg_to_img")]
     #[error("SVG to Image conversion error: {0}")]
     SvgToImage(#[from] SvgToImageError),
     /// IO error occurred during file operations.
@@ -15,6 +22,7 @@ pub enum VisGraphError {
 }
 
 #[derive(Debug, Error)]
+#[cfg(feature = "svg_to_img")]
 /// Errors that can occur when converting SVG data to an image.
 pub enum SvgToImageError {
     /// Error while parsing SVG data.
