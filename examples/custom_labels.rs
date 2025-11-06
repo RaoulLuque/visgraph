@@ -32,10 +32,5 @@ fn main() {
 
     // Generate and save the graph image using a circular layout and the settings with the custom
     // node and edge labels.
-    graph_to_img(
-        &graph,
-        &settings,
-        "examples/results/custom_labels.png",
-    )
-    .unwrap();
+    graph_to_img(&graph, &settings, "examples/results/custom_labels.png").unwrap();
 }
