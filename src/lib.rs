@@ -28,10 +28,10 @@ use crate::{errors::VisGraphError, graph_to_svg::graph_to_svg_string, settings::
 /// # Usage
 ///
 /// The following is an example taken from
-/// [`examples/graph_with_default_settings.rs`](https://github.com/RaoulLuque/visgraph/blob/main/examples/graph_with_default_settings.rs):
+/// [`examples/default_settings.rs`](https://github.com/RaoulLuque/visgraph/blob/main/examples/default_settings.rs):
 /// ```
 #[allow(clippy::needless_doctest_main)]
-#[doc = include_str!("../examples/graph_with_default_settings.rs")]
+#[doc = include_str!("../examples/default_settings.rs")]
 /// ```
 /// More examples can be found in the [`examples`](https://github.com/RaoulLuque/visgraph/tree/main/examples)
 /// directory.
@@ -71,9 +71,9 @@ pub mod tests {
 
     /// Create a test graph with custom node and edge labels, along with the corresponding settings.
     ///
-    /// The same as in `examples/graph_with_custom_labels.rs`
+    /// The same as in `examples/custom_labels.rs`
     #[allow(clippy::type_complexity)]
-    pub fn test_graph_with_custom_labels() -> (
+    pub fn test_custom_labels() -> (
         UnGraph<String, ()>,
         Settings<DefaultPositionMapFn, impl Fn(NodeIndex) -> String, impl Fn(EdgeIndex) -> String>,
     ) {
@@ -111,9 +111,9 @@ pub mod tests {
     /// Create a test square graph with a custom position map, along with the corresponding
     /// settings.
     ///
-    /// The same as in `examples/graph_with_position_map.rs`
+    /// The same as in `examples/position_map.rs`
     #[allow(clippy::type_complexity)]
-    pub fn test_graph_with_position_map() -> (
+    pub fn test_position_map() -> (
         UnGraph<(), ()>,
         Settings<impl Fn(NodeIndex) -> (f32, f32), DefaultNodeLabelFn, DefaultEdgeLabelFn>,
     ) {

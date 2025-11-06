@@ -86,11 +86,11 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - name: Build examples
         run: |
-            cargo run --release --example graph_with_circular_layout
-            cargo run --release --example graph_with_custom_labels
-            cargo run --release --example graph_with_position_map
-            cargo run --release --example graph_with_default_settings
-            cargo run --release --example graph_with_hierarchical_layout
+            cargo run --release --example circular_layout
+            cargo run --release --example custom_labels
+            cargo run --release --example position_map
+            cargo run --release --example default_settings
+            cargo run --release --example hierarchical_layout
 
   check:
     name: Lints

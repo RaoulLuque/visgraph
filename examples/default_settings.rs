@@ -19,7 +19,7 @@ fn main() {
     graph_to_img(
         &complete_graph,
         &Settings::default(),
-        "examples/results/graph_with_default_settings.png",
+        "examples/results/default_settings.png",
     )
     .unwrap();
 }

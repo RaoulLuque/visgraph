@@ -40,7 +40,7 @@ fn main() {
     graph_to_img(
         &complete_graph,
         &settings,
-        "examples/results/graph_with_circular_layout.png",
+        "examples/results/circular_layout.png",
     )
     .unwrap();
 }

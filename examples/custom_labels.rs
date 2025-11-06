@@ -35,7 +35,7 @@ fn main() {
     graph_to_img(
         &graph,
         &settings,
-        "examples/results/graph_with_custom_labels.png",
+        "examples/results/custom_labels.png",
     )
     .unwrap();
 }

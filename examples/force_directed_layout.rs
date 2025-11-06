@@ -19,7 +19,7 @@ fn main() {
     visgraph::graph_to_img(
         &graph,
         &settings,
-        "examples/results/graph_with_force_directed_layout.png",
+        "examples/results/force_directed_layout.png",
     )
     .unwrap();
 }

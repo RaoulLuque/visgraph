@@ -24,12 +24,7 @@ fn main() {
         .unwrap();
 
     // Generate and save the graph image
-    graph_to_img(
-        &graph,
-        &settings,
-        "examples/results/graph_with_custom_colors.png",
-    )
-    .unwrap();
+    graph_to_img(&graph, &settings, "examples/results/custom_colors.png").unwrap();
 }
 
 const LAYER_COLORS: [&str; 7] = ["red", "orange", "yellow", "green", "cyan", "blue", "purple"];

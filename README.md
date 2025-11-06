@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="examples/results/graph_with_circular_layout.png#gh-light-mode-only"
+  <img src="examples/results/circular_layout.png#gh-light-mode-only"
        width="400"
        alt="">
-  <img src="examples/results/graph_with_circular_layout.png#gh-dark-mode-only"
+  <img src="examples/results/circular_layout.png#gh-dark-mode-only"
        width="400"
        alt="">¹
 </p>
@@ -28,7 +28,7 @@ Supports Rust 1.68 and later. This will only change on major releases.
 For more examples, see the [examples directory][examples-dir].
 
 ```rust
-// This example is taken from examples/graph_with_default_settings.rs
+// This example is taken from examples/default_settings.rs
 use petgraph::graph::UnGraph;
 use visgraph::{graph_to_img, settings::Settings};
 
@@ -50,12 +50,12 @@ for i in 0..num_nodes {                                   //|
 graph_to_img(
     &complete_graph,
     &Settings::default(),
-    "examples/results/graph_with_default_settings.png",
+    "examples/results/default_settings.png",
 )
 .unwrap();
 ```
 
-For the result, see [examples/results/graph_with_default_settings.png](examples/results/graph_with_default_settings.png).
+For the result, see [examples/results/default_settings.png](examples/results/default_settings.png).
 
 ### Settings
 
@@ -119,7 +119,7 @@ the [MIT license][mit-license], at your option. This file may
 not be copied, modified, or distributed except according to those
 terms.
 
-¹Image generated using visgraph, see [`examples/graph_with_circular_layout.rs`][complete-graph-example-url].
+¹Image generated using visgraph, see [`examples/circular_layout.rs`][complete-graph-example-url].
 
 [apache-license]: http://www.apache.org/licenses/LICENSE-2.0
 
@@ -127,7 +127,7 @@ terms.
 
 [ci-url]: https://github.com/raoulluque/visgraph/actions/workflows/ci.yml
 
-[complete-graph-example-url]: https://github.com/raoulluque/visgraph/blob/main/examples/graph_with_circular_layout.rs
+[complete-graph-example-url]: https://github.com/raoulluque/visgraph/blob/main/examples/circular_layout.rs
 
 [crates-badge]: https://img.shields.io/crates/v/visgraph.svg
 

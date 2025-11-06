@@ -75,7 +75,7 @@ mod tests {
 
     use crate::{
         graph_to_svg::graph_to_svg_string,
-        tests::{test_graph_with_custom_labels, test_graph_with_position_map},
+        tests::{test_custom_labels, test_position_map},
     };
 
     const MSE_ERROR_TOLERANCE: f64 = 100.0;
@@ -133,30 +133,24 @@ mod tests {
     }
 
     #[test]
-    fn test_svg_to_image_on_graph_with_custom_labels() {
-        let (graph, settings) = test_graph_with_custom_labels();
+    fn test_svg_to_image_on_custom_labels() {
+        let (graph, settings) = test_custom_labels();
 
         let svg_data = graph_to_svg_string(&graph, &settings);
         let pixmap = super::svg_to_pixmap(&svg_data, settings.width, settings.height)
             .expect("SVG to pixmap conversion should succeed.");
 
-        assert_images_equal(
-            &pixmap,
-            "examples/results/graph_with_custom_labels.png".as_ref(),
-        );
+        assert_images_equal(&pixmap, "examples/results/custom_labels.png".as_ref());
     }
 
     #[test]
-    fn test_svg_to_image_on_graph_with_position_map() {
-        let (graph, settings) = test_graph_with_position_map();
+    fn test_svg_to_image_on_position_map() {
+        let (graph, settings) = test_position_map();
 
         let svg_data = graph_to_svg_string(&graph, &settings);
         let pixmap = super::svg_to_pixmap(&svg_data, settings.width, settings.height)
             .expect("SVG to pixmap conversion should succeed.");
 
-        assert_images_equal(
-            &pixmap,
-            "examples/results/graph_with_position_map.png".as_ref(),
-        );
+        assert_images_equal(&pixmap, "examples/results/position_map.png".as_ref());
     }
 }

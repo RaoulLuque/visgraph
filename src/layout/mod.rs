@@ -22,12 +22,24 @@ pub mod hierarchical;
 #[derive(Debug, Clone, Copy)]
 pub enum Layout {
     /// Nodes are arranged in a [circular layout](https://en.wikipedia.org/wiki/Circular_layout).
+    ///
+    /// See [`circular_layout`][crate::layout::circular::circular_layout] for more details or
+    /// calling the layout function directly.
     Circular,
     /// Nodes are arranged in a hierarchical layout.
+    ///
+    /// See [`hierarchical_layout`][crate::layout::hierarchical::hierarchical_layout] for more
+    /// details or calling the layout function directly.
     Hierarchical(Orientation),
     /// Nodes are arranged using a [force-directed layout](https://en.wikipedia.org/wiki/Force-directed_graph_drawing).
+    ///
+    /// See [`force_directed_layout`][crate::layout::force_directed::force_directed_layout] for
+    /// more details or calling the layout function directly.
     ForceDirected,
     /// Nodes are arranged randomly.
+    ///
+    /// See [`random_layout`][crate::layout::random::random_layout] for more details or calling the
+    /// layout function directly.
     Random,
 }
 
@@ -49,6 +61,9 @@ pub mod circular {
     ///
     /// The nodes are evenly distributed around a unit circle centered at (0.5, 0.5). That is
     /// all values are in the range [0.0, 1.0].
+    ///
+    /// The node with the first (usually index 0) index is placed at the topmost point of the
+    /// circle. Following nodes are placed in a clockwise manner.
     pub fn circular_layout<G>(graph: &G) -> impl Fn(G::NodeId) -> (f32, f32) + '_
     where
         G: IntoNodeReferences + NodeIndexable,
@@ -56,7 +71,7 @@ pub mod circular {
         let node_count = graph.node_references().count() as f32;
         move |node_id| {
             let index = graph.to_index(node_id) as f32;
-            let angle = index / node_count * std::f32::consts::TAU;
+            let angle = index / node_count * std::f32::consts::TAU - std::f32::consts::FRAC_PI_2;
             let x = 0.5 + 0.5 * angle.cos();
             let y = 0.5 + 0.5 * angle.sin();
             (x, y)

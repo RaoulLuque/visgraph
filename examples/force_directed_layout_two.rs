@@ -25,7 +25,7 @@ fn main() {
     visgraph::graph_to_img(
         &graph,
         &settings,
-        "examples/results/graph_with_force_directed_layout_two.png",
+        "examples/results/force_directed_layout_two.png",
     )
     .unwrap();
 }
