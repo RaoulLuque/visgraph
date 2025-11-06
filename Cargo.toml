@@ -38,7 +38,7 @@ image = "0.25.4"
 
 [features]
 default = []
-svg_to_img = ["resvg"]
+img = ["resvg"]
 
 [[bench]]
 name = "graph_to_svg"

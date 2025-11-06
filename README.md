@@ -80,11 +80,10 @@ opt-level = 3
 
 ### Crate features
 
-visgraph currently only has a single feature which is enabled by default:
+visgraph currently only has a single feature:
 
-* `svg_to_img`: Enables conversion from SVG to PNG using resvg. If you
-  disable this feature, only SVG output will be available, but the crate
-  will be smaller, as resvg is a large dependency.
+* `img`: Enables exporting graphs to PNG using [resvg][resvg-url]. Enabling this feature adds
+    a dependency on the [resvg][resvg-url] crate and thus increases compile times.
 
 ## Getting Help
 

@@ -2,15 +2,15 @@
 #![warn(missing_debug_implementations, missing_docs)]
 
 mod errors;
-#[cfg(feature = "svg_to_img")]
+#[cfg(feature = "img")]
 pub mod graph_to_img;
 pub mod graph_to_svg;
 pub mod layout;
 pub mod settings;
-#[cfg(feature = "svg_to_img")]
+#[cfg(feature = "img")]
 pub mod svg_to_img;
 
-#[cfg(feature = "svg_to_img")]
+#[cfg(feature = "img")]
 pub use graph_to_img::graph_to_img;
 pub use graph_to_svg::graph_to_svg;
 pub use layout::{hierarchical::Orientation, Layout};

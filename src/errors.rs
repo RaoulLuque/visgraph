@@ -1,4 +1,4 @@
-#[cfg(feature = "svg_to_img")]
+#[cfg(feature = "img")]
 use resvg::usvg::Error as UsvgError;
 use thiserror::Error;
 
@@ -13,7 +13,7 @@ pub enum VisGraphError {
     #[error("Settings error: {0}")]
     Settings(#[from] InvalidSettingsError),
     /// Error while converting SVG to image.
-    #[cfg(feature = "svg_to_img")]
+    #[cfg(feature = "img")]
     #[error("SVG to Image conversion error: {0}")]
     SvgToImage(#[from] SvgToImageError),
     /// IO error occurred during file operations.
@@ -22,7 +22,7 @@ pub enum VisGraphError {
 }
 
 #[derive(Debug, Error)]
-#[cfg(feature = "svg_to_img")]
+#[cfg(feature = "img")]
 /// Errors that can occur when converting SVG data to an image.
 pub enum SvgToImageError {
     /// Error while parsing SVG data.

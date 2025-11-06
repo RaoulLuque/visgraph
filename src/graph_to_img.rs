@@ -34,7 +34,7 @@ use crate::{
 /// ```
 /// More examples can be found in the [`examples`](https://github.com/RaoulLuque/visgraph/tree/main/examples)
 /// directory.
-#[cfg(feature = "svg_to_img")]
+#[cfg(feature = "img")]
 pub fn graph_to_img<G, PositionMapFn, NodeLabelFn, EdgeLabelFn, NodeColoringFn, EdgeColoringFn>(
     graph: G,
     settings: &Settings<PositionMapFn, NodeLabelFn, EdgeLabelFn, NodeColoringFn, EdgeColoringFn>,
