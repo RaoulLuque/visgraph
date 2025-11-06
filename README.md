@@ -55,7 +55,7 @@ graph_to_img(
 .unwrap();
 ```
 
-For the result, see [examples/results/default_settings.png](examples/results/default_settings.png).
+For the result, see [examples/results/default_settings.png](https://github.com/RaoulLuque/visgraph/blob/main/examples/results/graph_with_default_settings.png).
 
 ### Settings
 
