@@ -8,7 +8,7 @@ build:
 
 # Tests with all features enabled
 test:
-    cargo test --features all
+    cargo test --all-features
 
 # Miri with all tests (this might take very long). Consider the fast-miri recipe instead or specify individual tests
 miri:

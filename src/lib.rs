@@ -21,16 +21,14 @@ pub mod tests {
     use petgraph::graph::{EdgeIndex, NodeIndex, UnGraph};
 
     use crate::{
-        layout::DefaultPositionMapFn,
-        settings::{DefaultEdgeLabelFn, DefaultNodeLabelFn, Settings, SettingsBuilder},
-        Layout,
+        Layout, layout::DefaultPositionMapFn, settings::{DefaultEdgeLabelFn, DefaultNodeLabelFn, Settings, SettingsBuilder}
     };
 
     /// Create a test graph with custom node and edge labels, along with the corresponding settings.
     ///
     /// The same as in `examples/custom_labels.rs`
     #[allow(clippy::type_complexity)]
-    pub fn test_custom_labels() -> (
+    pub fn custom_labels_test_case() -> (
         UnGraph<String, ()>,
         Settings<DefaultPositionMapFn, impl Fn(NodeIndex) -> String, impl Fn(EdgeIndex) -> String>,
     ) {
@@ -70,7 +68,7 @@ pub mod tests {
     ///
     /// The same as in `examples/position_map.rs`
     #[allow(clippy::type_complexity)]
-    pub fn test_position_map() -> (
+    pub fn position_map_test_case() -> (
         UnGraph<(), ()>,
         Settings<impl Fn(NodeIndex) -> (f32, f32), DefaultNodeLabelFn, DefaultEdgeLabelFn>,
     ) {

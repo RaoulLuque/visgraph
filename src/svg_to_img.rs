@@ -75,7 +75,7 @@ mod tests {
 
     use crate::{
         graph_to_svg::graph_to_svg_string,
-        tests::{test_custom_labels, test_position_map},
+        tests::{custom_labels_test_case, position_map_test_case},
     };
 
     const MSE_ERROR_TOLERANCE: f64 = 100.0;
@@ -134,7 +134,7 @@ mod tests {
 
     #[test]
     fn test_svg_to_image_on_custom_labels() {
-        let (graph, settings) = test_custom_labels();
+        let (graph, settings) = custom_labels_test_case();
 
         let svg_data = graph_to_svg_string(&graph, &settings);
         let pixmap = super::svg_to_pixmap(&svg_data, settings.width, settings.height)
@@ -145,7 +145,7 @@ mod tests {
 
     #[test]
     fn test_svg_to_image_on_position_map() {
-        let (graph, settings) = test_position_map();
+        let (graph, settings) = position_map_test_case();
 
         let svg_data = graph_to_svg_string(&graph, &settings);
         let pixmap = super::svg_to_pixmap(&svg_data, settings.width, settings.height)

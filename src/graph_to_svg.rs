@@ -348,7 +348,7 @@ fn scale(
 
 #[cfg(test)]
 mod tests {
-    use crate::{graph_to_svg::graph_to_svg_string, tests::test_position_map};
+    use crate::{graph_to_svg::graph_to_svg_string, tests::position_map_test_case};
 
     #[test]
     fn test_scale() {
@@ -367,7 +367,7 @@ mod tests {
 
     #[test]
     fn test_graph_to_svg_with_position_map() {
-        let (graph, settings) = test_position_map();
+        let (graph, settings) = position_map_test_case();
         let svg_output = graph_to_svg_string(&graph, &settings);
 
         println!("SVG Output:\n{}", svg_output);
