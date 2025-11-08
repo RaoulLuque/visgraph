@@ -11,10 +11,13 @@ visgraph
 ===
 
 visgraph is an easy-to-use Rust library for visualizing graphs
-using various layout algorithms and exporting them to simple image formats like PNG or even SVG.
+using various layout algorithms and exporting them to image formats like PNG or even SVG.
 
 The current implementation uses SVG as an intermediate format, allowing for high-quality
 rendering and scalability, in order to be able to use [resvg][resvg-url].
+
+The various layout algorithms that are supported can be found in the
+[`layout`][layout-module-url] module documentation.
 
 Supports Rust 1.68 and later. This will only change on major releases.
 
@@ -150,6 +153,8 @@ terms.
 [github-discussions]: https://github.com/visgraph/visgraph/discussions
 
 [github-new-issue]: https://github.com/visgraph/visgraph/issues/new
+
+[layout-module-url]: https://docs.rs/visgraph/latest/visgraph/layout/index.html
 
 [mit-license]: http://opensource.org/licenses/MIT
 

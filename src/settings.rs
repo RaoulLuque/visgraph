@@ -53,7 +53,7 @@ pub(crate) type DefaultEdgeColoringFn = fn(petgraph::prelude::EdgeIndex) -> Stri
 ///
 /// For default values, see the `DEFAULT_*` constants.
 ///
-/// /// Example usage:
+/// Example usage:
 /// ```rust
 /// use visgraph::settings::SettingsBuilder;
 /// // All values we don't explicitly set will use their default values.
