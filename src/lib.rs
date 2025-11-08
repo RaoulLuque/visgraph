@@ -21,7 +21,9 @@ pub mod tests {
     use petgraph::graph::{EdgeIndex, NodeIndex, UnGraph};
 
     use crate::{
-        Layout, layout::DefaultPositionMapFn, settings::{DefaultEdgeLabelFn, DefaultNodeLabelFn, Settings, SettingsBuilder}
+        layout::DefaultPositionMapFn,
+        settings::{DefaultEdgeLabelFn, DefaultNodeLabelFn, Settings, SettingsBuilder},
+        Layout,
     };
 
     /// Create a test graph with custom node and edge labels, along with the corresponding settings.

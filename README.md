@@ -83,7 +83,7 @@ opt-level = 3
 visgraph currently only has a single feature:
 
 * `img`: Enables exporting graphs to PNG using [resvg][resvg-url]. Enabling this feature adds
-    a dependency on the [resvg][resvg-url] crate and thus increases compile times.
+  a dependency on the [resvg][resvg-url] crate and thus increases compile times.
 
 ## Getting Help
 
