@@ -30,7 +30,7 @@ For more examples, see the [examples directory][examples-dir].
 ```rust
 // This example is taken from examples/default_settings.rs
 use petgraph::graph::UnGraph;
-use visgraph::{graph_to_img, settings::Settings};
+use visgraph::{graph_to_img, graph_to_svg, settings::Settings};
 
 // Create a complete graph with 4 nodes.              //----|
 let mut complete_graph = UnGraph::new_undirected();       //|
@@ -46,7 +46,16 @@ for i in 0..num_nodes {                                   //|
 }                                                     //----|
 
 // This is the actual functionality of this lib:
-// Generate and save the graph image using default settings.
+// Save the graph as a an SVG (using default settings in this case)
+// Save the graph as a an SVG (using default settings in this case)
+graph_to_svg(
+    &complete_graph,
+    &Settings::default(),
+    "examples/results/default_settings.svg",
+)
+.unwrap();
+
+// The graph can also be saved as a PNG image (requires the "img" feature):
 graph_to_img(
     &complete_graph,
     &Settings::default(),

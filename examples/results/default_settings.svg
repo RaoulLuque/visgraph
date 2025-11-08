@@ -1,0 +1,32 @@
+<svg width="1000.0" height="1000.0" xmlns="http://www.w3.org/2000/svg">
+
+    <circle cx="499.99997" cy="50.0" r="25.0" fill="white" stroke="black"/>
+    <text x="499.99997" y="50.0" font-size="16.0px" font-family="DejaVu Sans, sans-serif" fill="black" text-anchor="middle" dominant-baseline="central">0</text>
+
+    <circle cx="950.0" cy="500.0" r="25.0" fill="white" stroke="black"/>
+    <text x="950.0" y="500.0" font-size="16.0px" font-family="DejaVu Sans, sans-serif" fill="black" text-anchor="middle" dominant-baseline="central">1</text>
+
+    <circle cx="499.99997" cy="950.0" r="25.0" fill="white" stroke="black"/>
+    <text x="499.99997" y="950.0" font-size="16.0px" font-family="DejaVu Sans, sans-serif" fill="black" text-anchor="middle" dominant-baseline="central">2</text>
+
+    <circle cx="50.0" cy="500.00003" r="25.0" fill="white" stroke="black"/>
+    <text x="50.0" y="500.00003" font-size="16.0px" font-family="DejaVu Sans, sans-serif" fill="black" text-anchor="middle" dominant-baseline="central">3</text>
+
+    <line x1="517.6776" y1="67.67767" x2="932.3223" y2="482.32233" stroke="black" stroke-width="5.0"/>
+    <text x= "725.0" y="275.0" font-size="16.0px" font-family="DejaVu Sans, sans-serif" fill="blue" text-anchor="middle" dominant-baseline="central"></text>
+
+    <line x1="499.99997" y1="75.0" x2="499.99997" y2="925.0" stroke="black" stroke-width="5.0"/>
+    <text x= "499.99997" y="500.0" font-size="16.0px" font-family="DejaVu Sans, sans-serif" fill="blue" text-anchor="middle" dominant-baseline="central"></text>
+
+    <line x1="482.3223" y1="67.67767" x2="67.677666" y2="482.32236" stroke="black" stroke-width="5.0"/>
+    <text x= "274.99997" y="275.0" font-size="16.0px" font-family="DejaVu Sans, sans-serif" fill="blue" text-anchor="middle" dominant-baseline="central"></text>
+
+    <line x1="932.3223" y1="517.6777" x2="517.6776" y2="932.3223" stroke="black" stroke-width="5.0"/>
+    <text x= "725.0" y="725.0" font-size="16.0px" font-family="DejaVu Sans, sans-serif" fill="blue" text-anchor="middle" dominant-baseline="central"></text>
+
+    <line x1="925.0" y1="500.0" x2="75.0" y2="500.00003" stroke="black" stroke-width="5.0"/>
+    <text x= "500.0" y="500.0" font-size="16.0px" font-family="DejaVu Sans, sans-serif" fill="blue" text-anchor="middle" dominant-baseline="central"></text>
+
+    <line x1="482.3223" y1="932.3223" x2="67.67767" y2="517.6777" stroke="black" stroke-width="5.0"/>
+    <text x= "275.0" y="725.0" font-size="16.0px" font-family="DejaVu Sans, sans-serif" fill="blue" text-anchor="middle" dominant-baseline="central"></text>
+</svg>
