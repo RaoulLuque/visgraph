@@ -45,6 +45,11 @@ name = "graph_to_svg"
 harness = false
 
 [[example]]
+name = "bipartite_layout"
+path = "examples/bipartite_layout.rs"
+required-features = ["img"]
+
+[[example]]
 name = "circular_layout"
 path = "examples/circular_layout.rs"
 required-features = ["img"]
@@ -65,13 +70,13 @@ path = "examples/default_settings.rs"
 required-features = ["img"]
 
 [[example]]
-name = "force_directed_layout_two"
-path = "examples/force_directed_layout_two.rs"
+name = "force_directed_layout"
+path = "examples/force_directed_layout.rs"
 required-features = ["img"]
 
 [[example]]
-name = "force_directed_layout"
-path = "examples/force_directed_layout.rs"
+name = "force_directed_layout_big"
+path = "examples/force_directed_layout_big.rs"
 required-features = ["img"]
 
 [[example]]

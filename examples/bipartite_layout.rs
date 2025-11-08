@@ -1,5 +1,5 @@
 use petgraph::graph::{NodeIndex, UnGraph};
-use visgraph::Layout;
+use visgraph::{graph_to_img, settings::SettingsBuilder, Layout};
 
 fn main() {
     let mut graph = UnGraph::new_undirected();
@@ -11,21 +11,17 @@ fn main() {
     graph.add_edge(nodes[2], nodes[7], ());
     graph.add_edge(nodes[3], nodes[8], ());
 
-    // Create settings with force-directed layout
-    let settings = visgraph::settings::SettingsBuilder::new()
+    // Create settings with bipartite layout
+    let settings = SettingsBuilder::new()
         .width(1000.0)
         .height(1000.0)
         .node_radius(30.0)
         .font_size(20.0)
-        .layout(Layout::ForceDirected)
+        // Set the bipartite layout without predefined partitions
+        .layout(Layout::Bipartite(None))
         .build()
         .expect("Values should be valid.");
 
     // Generate and save the graph image using our settings.
-    visgraph::graph_to_img(
-        &graph,
-        &settings,
-        "examples/results/force_directed_layout_two.png",
-    )
-    .unwrap();
+    graph_to_img(&graph, &settings, "examples/results/bipartite_layout.png").unwrap();
 }

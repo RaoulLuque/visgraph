@@ -34,13 +34,13 @@ docs:
 
 # Runs all examples
 examples:
-    cargo run --example graph_to_svg --release --features "img"
+    cargo run --example bipartite_layout --release --features "img"
     cargo run --example circular_layout --release --features "img"
     cargo run --example custom_colors --release --features "img"
     cargo run --example custom_labels --release --features "img"
     cargo run --example default_settings --release --features "img"
-    cargo run --example force_directed_layout_two --release --features "img"
     cargo run --example force_directed_layout --release --features "img"
+    cargo run --example force_directed_layout_big --release --features "img"
     cargo run --example graph_to_svg --release --features "img"
     cargo run --example hierarchical_layout --release --features "img"
     cargo run --example position_map --release --features "img"
