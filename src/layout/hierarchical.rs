@@ -1,4 +1,7 @@
 //! Module containing functionality for the hierarchical layout.
+//!
+//! The main function is [`hierarchical_layout`], which returns a position map function that
+//! arranges nodes in a hierarchical layout.
 
 use fixedbitset::FixedBitSet;
 use petgraph::visit::{IntoNeighborsDirected, IntoNodeReferences, NodeIndexable, NodeRef};

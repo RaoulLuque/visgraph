@@ -70,6 +70,9 @@ pub enum LayoutOrPositionMap<PositionMapFn = DefaultPositionMapFn> {
 
 pub mod circular {
     //! Module containing functionality for the circular layout.
+    //!
+    //! The main function is [`circular_layout`], which returns a position map function that
+    //! arranges nodes in a circular layout.
     use petgraph::visit::{IntoNodeReferences, NodeIndexable};
 
     /// Returns a position map function that arranges nodes in a circular layout.
@@ -96,6 +99,9 @@ pub mod circular {
 
 pub mod random {
     //! Module containing functionality for the random layout.
+    //!
+    //! The main function is [`random_layout`], which returns a position map function that
+    //! assigns random positions to nodes.
 
     use petgraph::visit::{IntoNodeReferences, NodeIndexable, NodeRef};
 

@@ -1,4 +1,7 @@
 //! Module containing functionality for the force-directed layout.
+//!
+//! The main function is [`force_directed_layout`], which returns a position map function that
+//! arranges nodes in a force-directed layout.
 
 use petgraph::visit::{EdgeRef, IntoEdgeReferences, IntoNodeReferences, NodeIndexable, NodeRef};
 
