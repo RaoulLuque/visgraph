@@ -59,7 +59,7 @@ jobs:
         run: cargo build --verbose
       - name: Test
         if: matrix.rust != '1.68.0'
-        run: cargo test ${{ matrix.test_all }} --verbose
+        run: cargo test ${{ matrix.test_all }} --verbose --all-features
 
       - name: Build benchmarks
         if: ${{ matrix.bench }}
