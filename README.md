@@ -49,8 +49,7 @@ for i in 0..num_nodes {                                   //|
 }                                                     //----|
 
 // This is the actual functionality of this lib:
-// Save the graph as a an SVG (using default settings in this case)
-// Save the graph as a an SVG (using default settings in this case)
+// Save the graph as an SVG (using default settings in this case):
 graph_to_svg(
     &complete_graph,
     &Settings::default(),
@@ -67,7 +66,7 @@ graph_to_img(
 .unwrap();
 ```
 
-For the result, see [examples/results/default_settings.png](https://github.com/RaoulLuque/visgraph/blob/main/examples/results/graph_with_default_settings.png).
+For the result, see [examples/results/default_settings.png](https://github.com/RaoulLuque/visgraph/blob/main/examples/results/default_settings.png).
 
 ### Settings
 
@@ -150,9 +149,9 @@ terms.
 
 [examples-dir]: https://github.com/RaoulLuque/visgraph/tree/main/examples
 
-[github-discussions]: https://github.com/visgraph/visgraph/discussions
+[github-discussions]: https://github.com/raoulluque/visgraph/discussions
 
-[github-new-issue]: https://github.com/visgraph/visgraph/issues/new
+[github-new-issue]: https://github.com/raoulluque/visgraph/issues/new
 
 [layout-module-url]: https://docs.rs/visgraph/latest/visgraph/layout/index.html
 
