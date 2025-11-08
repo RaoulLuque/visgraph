@@ -8,6 +8,8 @@
 //!
 //! For examples, see the `examples/` directory.
 
+use std::hash::Hash;
+
 use petgraph::visit::{
     EdgeIndexable, IntoEdgeReferences, IntoNeighborsDirected, IntoNodeReferences, NodeIndexable,
 };
@@ -46,6 +48,7 @@ where
         + NodeIndexable
         + EdgeIndexable
         + IntoNeighborsDirected,
+    G::NodeId: Hash + Eq,
     PositionMapFn: Fn(G::NodeId) -> (f32, f32),
     NodeLabelFn: Fn(G::NodeId) -> String,
     EdgeLabelFn: Fn(G::EdgeId) -> String,

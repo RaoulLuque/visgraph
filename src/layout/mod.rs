@@ -6,10 +6,15 @@
 //! The layout algorithms can also be called directly from their respective
 //! submodules of this module.
 
+use std::collections::HashSet;
+
+use petgraph::graph::NodeIndex;
+
 use crate::layout::hierarchical::Orientation;
 
-pub(crate) type DefaultPositionMapFn = fn(petgraph::prelude::NodeIndex) -> (f32, f32);
+pub(crate) type DefaultPositionMapFn = fn(NodeIndex) -> (f32, f32);
 
+pub mod bipartite;
 pub mod force_directed;
 pub mod hierarchical;
 
@@ -19,7 +24,11 @@ pub mod hierarchical;
 /// [`layout`](crate::layout) module.
 ///
 /// For examples, see the [`examples`](https://github.com/RaoulLuque/visgraph/tree/main/examples) directory.
-#[derive(Debug, Clone, Copy)]
+///
+/// This enum is marked as non-exhaustive to allow for adding more layout algorithms without
+/// necessitating a breaking change.
+#[non_exhaustive]
+#[derive(Debug, Clone)]
 pub enum Layout {
     /// Nodes are arranged in a [circular layout](https://en.wikipedia.org/wiki/Circular_layout).
     ///
@@ -36,6 +45,12 @@ pub enum Layout {
     /// See [`force_directed_layout`][crate::layout::force_directed::force_directed_layout] for
     /// more details or calling the layout function directly.
     ForceDirected,
+    /// Nodes are arranged in a [bipartite layout](https://en.wikipedia.org/wiki/Bipartite_graph).
+    ///
+    /// The provided `HashSet` contains the node IDs for the left partition. If `None` is
+    /// provided, the layout function will attempt to determine the bipartition using a
+    /// breadth-first traversal.
+    Bipartite(Option<HashSet<NodeIndex>>),
     /// Nodes are arranged randomly.
     ///
     /// See [`random_layout`][crate::layout::random::random_layout] for more details or calling the
@@ -45,7 +60,7 @@ pub enum Layout {
 
 /// Enum to represent either a layout algorithm or a custom position map function. Only used for
 /// [`SettingsBuilder`][crate::settings::SettingsBuilder].
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone)]
 pub enum LayoutOrPositionMap<PositionMapFn = DefaultPositionMapFn> {
     /// A layout algorithm.
     Layout(Layout),

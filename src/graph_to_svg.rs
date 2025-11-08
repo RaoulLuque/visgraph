@@ -8,7 +8,7 @@
 //!
 //! For examples, see the `examples/` directory.
 
-use std::fmt::Write;
+use std::{fmt::Write, hash::Hash};
 
 use petgraph::visit::{
     EdgeIndexable, EdgeRef, IntoEdgeReferences, IntoNeighborsDirected, IntoNodeReferences,
@@ -18,6 +18,7 @@ use petgraph::visit::{
 use crate::{
     errors::VisGraphError,
     layout::{
+        bipartite::bipartite_layout,
         circular::circular_layout,
         force_directed::{force_directed_layout, DEFAULT_INITIAL_TEMPERATURE, DEFAULT_ITERATIONS},
         hierarchical::hierarchical_layout,
@@ -58,6 +59,7 @@ where
         + NodeIndexable
         + EdgeIndexable
         + IntoNeighborsDirected,
+    G::NodeId: Hash + Eq,
     PositionMapFn: Fn(G::NodeId) -> (f32, f32),
     NodeLabelFn: Fn(G::NodeId) -> String,
     EdgeLabelFn: Fn(G::EdgeId) -> String,
@@ -94,6 +96,7 @@ where
         + NodeIndexable
         + EdgeIndexable
         + IntoNeighborsDirected,
+    G::NodeId: Hash + Eq,
     PositionMapFn: Fn(G::NodeId) -> (f32, f32),
     NodeLabelFn: Fn(G::NodeId) -> String,
     EdgeLabelFn: Fn(G::EdgeId) -> String,
@@ -112,6 +115,10 @@ where
         LayoutOrPositionMap::Layout(Layout::ForceDirected) => {
             let position_map =
                 force_directed_layout(&graph, DEFAULT_ITERATIONS, DEFAULT_INITIAL_TEMPERATURE);
+            internal_graph_to_svg_with_positions_and_labels(graph, position_map, settings)
+        }
+        LayoutOrPositionMap::Layout(Layout::Bipartite(left_partition)) => {
+            let position_map = bipartite_layout(&graph, left_partition.as_ref());
             internal_graph_to_svg_with_positions_and_labels(graph, position_map, settings)
         }
         LayoutOrPositionMap::Layout(Layout::Random) => {
