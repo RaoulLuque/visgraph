@@ -3,19 +3,24 @@ name = "visgraph"
 version = "0.1.0"
 readme = "README.md"
 license = "MIT OR Apache-2.0"
-
-description = "A library to visualize graphs as images in Rust."
+description = "Visualize Graphs as Images with one Function Call."
 documentation = "https://docs.rs/visgraph"
 repository = "https://github.com/raoulluque/visgraph"
 
 rust-version = "1.68"
 edition = "2021"
 
+authors = ["Raoul Luque <raoulsluque@gmail.com>"]
+keywords = ["visualization", "graphs", "networks"]
+categories = ["visualization", "development-tools::debugging"]
+
 include = [
     "src/**",
     "assets/DejaVuSans.ttf",
     "Cargo.toml",
     "README.md",
+    # These examples are included in docstrings
+    "examples/graph_to_svg.rs",
 ]
 
 [lib]
