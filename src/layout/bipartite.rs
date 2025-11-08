@@ -51,10 +51,10 @@ where
                     }
                     visited.insert(current_node_index);
                     if layer % 2 == 0 {
-                        node_lr_positions.insert(current_node_index, Some(NodePosition::Left));
+                        node_lr_positions[current_node_index] = Some(NodePosition::Left);
                         left_count += 1;
                     } else {
-                        node_lr_positions.insert(current_node_index, Some(NodePosition::Right));
+                        node_lr_positions[current_node_index] = Some(NodePosition::Right);
                         right_count += 1;
                     }
                     for neighbor in graph.neighbors(graph.from_index(current_node_index)) {
@@ -76,9 +76,9 @@ where
         for node_id in graph.node_identifiers() {
             let node_index = graph.to_index(node_id);
             if left_nodes.contains(&NodeIndex::new(node_index)) {
-                node_lr_positions.insert(node_index, Some(NodePosition::Left));
+                node_lr_positions[node_index] = Some(NodePosition::Left);
             } else {
-                node_lr_positions.insert(node_index, Some(NodePosition::Right));
+                node_lr_positions[node_index] = Some(NodePosition::Right);
             }
         }
 
@@ -106,12 +106,12 @@ where
             match position {
                 NodePosition::Left => {
                     let y = left_index as f32 * left_spacing;
-                    node_positions.insert(node_index, (0.25, y));
+                    node_positions[node_index] = (0.25, y);
                     left_index += 1;
                 }
                 NodePosition::Right => {
                     let y = right_index as f32 * right_spacing;
-                    node_positions.insert(node_index, (0.75, y));
+                    node_positions[node_index] = (0.75, y);
                     right_index += 1;
                 }
             }
