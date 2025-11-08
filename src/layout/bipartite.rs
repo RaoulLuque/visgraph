@@ -38,7 +38,22 @@ where
     let mut visited: FixedBitSet = FixedBitSet::with_capacity(graph.node_bound());
     let mut dfs_stack = Vec::new();
 
-    let (node_lr_positions, left_count, right_count) = if left.is_none() {
+    let (node_lr_positions, left_count, right_count) = if let Some(left_nodes) = left {
+        let mut node_lr_positions = vec![None; graph.node_bound()];
+        let left_count = left_nodes.len();
+        let right_count = graph.node_identifiers().count() - left_count;
+
+        for node_id in graph.node_identifiers() {
+            let node_index = graph.to_index(node_id);
+            if left_nodes.contains(&NodeIndex::new(node_index)) {
+                node_lr_positions[node_index] = Some(NodePosition::Left);
+            } else {
+                node_lr_positions[node_index] = Some(NodePosition::Right);
+            }
+        }
+
+        (node_lr_positions, left_count, right_count)
+    } else {
         let mut node_lr_positions = vec![None; graph.node_bound()];
         let mut left_count = 0;
         let mut right_count = 0;
@@ -66,22 +81,6 @@ where
                 }
             }
         }
-        (node_lr_positions, left_count, right_count)
-    } else {
-        let left_nodes = left.expect("Left nodes should be Some by if case");
-        let mut node_lr_positions = vec![None; graph.node_bound()];
-        let left_count = left_nodes.len();
-        let right_count = graph.node_identifiers().count() - left_count;
-
-        for node_id in graph.node_identifiers() {
-            let node_index = graph.to_index(node_id);
-            if left_nodes.contains(&NodeIndex::new(node_index)) {
-                node_lr_positions[node_index] = Some(NodePosition::Left);
-            } else {
-                node_lr_positions[node_index] = Some(NodePosition::Right);
-            }
-        }
-
         (node_lr_positions, left_count, right_count)
     };
 
