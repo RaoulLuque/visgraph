@@ -21,11 +21,8 @@ jobs:
         include:
           - rust: 1.68.0  # MSRV
           - rust: stable
-            test_all: --all
           - rust: beta
-            test_all: --all
           - rust: nightly
-            test_all: --all
             bench: true
     name: Tests (Rust ${{ matrix.rust }})
 
@@ -50,6 +47,7 @@ jobs:
         run: |
           cargo generate-lockfile
           cargo update -p zune-jpeg --precise 0.4.14
+      - uses: extractions/setup-just@v3
       - id: toolchain
         uses: dtolnay/rust-toolchain@master
         with:
@@ -59,7 +57,7 @@ jobs:
         run: cargo build --verbose
       - name: Test
         if: matrix.rust != '1.68.0'
-        run: cargo test ${{ matrix.test_all }} --verbose --all-features
+        run: just test
 
       - name: Build benchmarks
         if: ${{ matrix.bench }}

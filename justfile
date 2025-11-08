@@ -8,7 +8,7 @@ build:
 
 # Tests with all features enabled
 test:
-    cargo test --all-features
+    cargo test --all --all-features
 
 # Miri with all tests (this might take very long). Consider the fast-miri recipe instead or specify individual tests
 miri:
@@ -25,8 +25,8 @@ clippy:
 # Runs all linting checks that are run in CI
 lint: fmt clippy
 
-# Runs all tests and linting that are run in CI
-ci: fmt clippy test
+# Runs all tests, linting and examples that are run in CI
+ci: fmt clippy test examples
 
 # Builds the documentation
 docs:
