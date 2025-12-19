@@ -42,9 +42,18 @@ pub enum Layout {
     Hierarchical(Orientation),
     /// Nodes are arranged using a [force-directed layout](https://en.wikipedia.org/wiki/Force-directed_graph_drawing).
     ///
+    /// This uses the Fruchterman-Reingold algorithm.
+    ///
     /// See [`force_directed_layout`][crate::layout::force_directed::force_directed_layout] for
     /// more details or calling the layout function directly.
     ForceDirected,
+    /// Nodes are arranged using the Kamada-Kawai force-directed layout algorithm.
+    ///
+    /// The Kamada-Kawai algorithm uses spring forces based on graph-theoretic distances
+    /// to position nodes.
+    /// See [`kamada_kawai_layout`][crate::layout::force_directed::kamada_kawai_layout] for
+    /// more details or calling the layout function directly.
+    KamadaKawai,
     /// Nodes are arranged in a [bipartite layout](https://en.wikipedia.org/wiki/Bipartite_graph).
     ///
     /// The provided `HashSet` contains the node IDs for the left partition. If `None` is

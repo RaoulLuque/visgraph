@@ -20,7 +20,11 @@ use crate::{
     layout::{
         bipartite::bipartite_layout,
         circular::circular_layout,
-        force_directed::{force_directed_layout, DEFAULT_INITIAL_TEMPERATURE, DEFAULT_ITERATIONS},
+        force_directed::{
+            force_directed_layout, kamada_kawai_layout, DEFAULT_IDEAL_EDGE_LENGTH,
+            DEFAULT_INITIAL_TEMPERATURE, DEFAULT_ITERATIONS, DEFAULT_KK_ITERATIONS,
+            DEFAULT_SPRING_CONSTANT,
+        },
         hierarchical::hierarchical_layout,
         random::random_layout,
         Layout, LayoutOrPositionMap,
@@ -115,6 +119,15 @@ where
         LayoutOrPositionMap::Layout(Layout::ForceDirected) => {
             let position_map =
                 force_directed_layout(&graph, DEFAULT_ITERATIONS, DEFAULT_INITIAL_TEMPERATURE);
+            internal_graph_to_svg_with_positions_and_labels(graph, position_map, settings)
+        }
+        LayoutOrPositionMap::Layout(Layout::KamadaKawai) => {
+            let position_map = kamada_kawai_layout(
+                &graph,
+                DEFAULT_KK_ITERATIONS,
+                DEFAULT_SPRING_CONSTANT,
+                DEFAULT_IDEAL_EDGE_LENGTH,
+            );
             internal_graph_to_svg_with_positions_and_labels(graph, position_map, settings)
         }
         LayoutOrPositionMap::Layout(Layout::Bipartite(left_partition)) => {
